@@ -1,7 +1,5 @@
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
-import Dashboard from "./pages/Dashboard";
-import Layout from "./pages/Layout";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { Routes } from "react-router-dom";
@@ -9,6 +7,10 @@ import { Navigate } from "react-router-dom";
 import { Route } from "react-router-dom";
 import { BrowserRouter } from "react-router-dom";
 import { themeSettings } from "./theme";
+import Layout from "./pages/Layout";
+import Login from "./pages/Login";
+import SignUp from "./pages/SignUp";
+import Dashboard from "./pages/Dashboard";
 
 function App() {
   const mode = useSelector((state) => state.global.mode);
@@ -23,6 +25,8 @@ function App() {
               <Route path="/" element={<Navigate to="/dashboard" />} />
               <Route path="/dashboard" element={<Dashboard />} />
             </Route>
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<SignUp />} />
           </Routes>
         </ThemeProvider>
       </BrowserRouter>
