@@ -1,15 +1,13 @@
-import dotenv from "dotenv";
-import express from "express";
-import helmet from "helmet";
-import bodyParser from "body-parser";
-import morgan from "morgan";
-import cors from "cors";
-import mongoose from "mongoose";
+const authRoutes = require("./routes/auth");
+const userRoutes = require("./routes/users");
 
-import clientRoutes from "./routes/client.js";
-import managementRoutes from "./routes/management.js";
-import salesRoutes from "./routes/sales.js";
-import generalRoutes from "./routes/general.js";
+const dotenv = require("dotenv");
+const express = require("express");
+const helmet = require("helmet");
+const bodyParser = require("body-parser");
+const morgan = require("morgan");
+const cors = require("cors");
+const mongoose = require("mongoose");
 
 // Configuration for the server
 
@@ -24,10 +22,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
 
 // Routes
-app.use("/client", clientRoutes);
-app.use("/general", generalRoutes);
-app.use("/management", managementRoutes);
-app.use("/sales", salesRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
 
 // Mongoose setup
 const PORT = process.env.Port || 9000;
