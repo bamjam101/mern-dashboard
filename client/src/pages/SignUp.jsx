@@ -1,4 +1,5 @@
 import { LockOutlined } from "@mui/icons-material";
+import axios from "axios";
 import {
   Avatar,
   Box,
@@ -10,12 +11,37 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { useAddNewRegistrantMutation } from "../state/api";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
   const theme = useTheme();
-  const handleUserSignUp = () => {};
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleUserSignUp = async (e) => {
+    e.preventDefault();
+    if (password.length < 6) {
+      return new Error("Password too short!");
+    } else {
+      const newRegistrant = {
+        email,
+        password,
+      };
+      try {
+        await axios.post(
+          `${import.meta.env.VITE_APP_BASE_URL}/registrant/signup`,
+          newRegistrant
+        );
+        navigate("/login");
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  };
   return (
     <Container component={"main"} maxWidth="xs">
       <CssBaseline />
@@ -47,33 +73,27 @@ const Register = () => {
         >
           <Grid container sx={{ gap: 2 }}>
             <TextField
-              name="name"
-              id="name"
-              autoFocus
-              label="Name"
-              fullWidth
-              required
-            ></TextField>
-            <TextField
               name="email"
               id="email"
               autoComplete="email"
+              type="email"
               autoFocus
               label="Email"
               fullWidth
+              onChange={(e) => setEmail(e.target.value)}
               required
             ></TextField>
             <TextField
               name="password"
               id="password"
-              type={"password"}
-              autoFocus
+              type="password"
               sx={{
                 padding: "0",
                 margin: "0",
               }}
               label="Password"
               fullWidth
+              onChange={(e) => setPassword(e.target.value)}
               required
             ></TextField>
           </Grid>

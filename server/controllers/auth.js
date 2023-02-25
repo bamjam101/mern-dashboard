@@ -40,7 +40,7 @@ const handleRegistrantApproval = async (req, res) => {
 
 const handleUserLogin = async (req, res) => {
   try {
-    const user = await User.findOne({ name: req.body.username });
+    const user = await User.findOne({ name: req.body.name });
     !user && res.status(400).json("Wrong credentials!");
 
     const validated = await bcrypt.compare(req.body.password, user.password);

@@ -43,7 +43,7 @@ const navItems = [
     icon: null,
   },
   {
-    text: "Products",
+    text: "Network",
     icon: <ShoppingCartOutlined />,
   },
   {
@@ -53,10 +53,6 @@ const navItems = [
   {
     text: "Transactions",
     icon: <ReceiptLongOutlined />,
-  },
-  {
-    text: "Geography",
-    icon: <PublicOutlined />,
   },
   {
     text: "Sales",
@@ -156,7 +152,7 @@ const Sidebar = ({
                   <Typography
                     key={text}
                     gutterBottom
-                    sx={{ m: "2.25rem 0 0 3rem", fontWeight: "bold" }}
+                    sx={{ m: "2.25rem 0 0.5rem 3rem", fontWeight: "bold" }}
                   >
                     {text}
                   </Typography>

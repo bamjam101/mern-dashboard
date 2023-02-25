@@ -10,15 +10,37 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import React from "react";
+import axios from "axios";
+import React, { useState } from "react";
 import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const theme = useTheme();
+  const dispatch = useDispatch();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleUserLogin = () => {};
+  const handleUserLogin = async (e) => {
+    e.preventDefault();
+    const newUser = {
+      name,
+      email,
+      password,
+    };
+    try {
+      const res = await axios.post(
+        `${import.meta.env.VITE_APP_BASE_URL}/auth/login`,
+        newUser
+      );
+      console.log(res.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
   return (
     <Container component={"main"} maxWidth="xs">
       <CssBaseline />
@@ -52,13 +74,26 @@ const Login = () => {
           <TextField
             variant="outlined"
             margin="normal"
+            label="Name"
+            required
+            fullWidth
+            id="name"
+            name="name"
+            autoFocus
+            autoComplete="off"
+            onChange={(e) => setName(e.target.value)}
+          ></TextField>
+          <TextField
+            variant="outlined"
+            margin="normal"
             label="Email"
+            type="email"
             required
             fullWidth
             id="email"
             name="email"
-            autoFocus
             autoComplete="off"
+            onChange={(e) => setEmail(e.target.value)}
           ></TextField>
           <TextField
             variant="outlined"
@@ -70,6 +105,7 @@ const Login = () => {
             id="password"
             name="password"
             autoComplete="off"
+            onChange={(e) => setEmail(e.target.value)}
           ></TextField>
           <Button
             type="submit"

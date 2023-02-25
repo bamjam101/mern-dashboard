@@ -9,8 +9,19 @@ const api = createApi({
       query: () => `/registrant/all`,
       providesTags: ["Registrant"],
     }),
+    addNewRegistrant: build.mutation({
+      query: (payload) => ({
+        url: `/registrant/signup`,
+        method: "POST",
+        body: payload,
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+        },
+        invalidatesTags: ["Post"],
+      }),
+    }),
   }),
 });
 
-export const { useGetRegistrantQuery } = api;
+export const { useGetRegistrantQuery, useAddNewRegistrantMutation } = api;
 export default api;

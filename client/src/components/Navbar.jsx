@@ -56,12 +56,19 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
           <FlexBetween
             backgroundColor={theme.palette.background}
             borderRadius="1rem"
-            gap="3rem"
+            gap="1rem"
             p="0.1rem 1.5rem"
           >
-            <InputBase placeholder="Search..." />
+            <InputBase
+              sx={{
+                border: `2px solid ${theme.palette.primary[100]}`,
+                padding: "0.2rem 0.5rem",
+                borderRadius: "1.5rem",
+              }}
+              placeholder="Search..."
+            />
             <IconButton>
-              <Search />
+              <Search sx={{ fontSize: "1.6rem" }} />
             </IconButton>
           </FlexBetween>
         </FlexBetween>
