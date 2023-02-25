@@ -23,9 +23,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
 
 // Routes
-app.use("/api/registrant", registrantRoutes);
-app.use("/api/user", userRoutes);
-app.use("/api/auth", authRoutes);
+app.use("/registrant", registrantRoutes);
+app.use("/user", userRoutes);
+app.use("/auth", authRoutes);
 
 // Mongoose setup
 const PORT = process.env.Port || 9000;

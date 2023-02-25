@@ -21,10 +21,13 @@ import {
   ChevronRightOutlined,
   Groups2Outlined,
   HomeOutlined,
+  PersonOffOutlined,
+  PersonOutlined,
   PieChartOutlined,
   PointOfSaleOutlined,
   PublicOutlined,
   ReceiptLongOutlined,
+  SettingsOutlined,
   ShoppingCartOutlined,
   TodayOutlined,
   TrendingUpOutlined,
@@ -86,6 +89,7 @@ const navItems = [
 ];
 
 const Sidebar = ({
+  user,
   drawerWidth,
   isSidebarOpen,
   setIsSidebarOpen,
@@ -149,7 +153,11 @@ const Sidebar = ({
             {navItems.map(({ text, icon }) => {
               if (!icon) {
                 return (
-                  <Typography key={text} sx={{ m: "2.25rem 0 2rem 3rem" }}>
+                  <Typography
+                    key={text}
+                    gutterBottom
+                    sx={{ m: "2.25rem 0 0 3rem", fontWeight: "bold" }}
+                  >
                     {text}
                   </Typography>
                 );
@@ -193,6 +201,42 @@ const Sidebar = ({
               );
             })}
           </List>
+          <Box
+            position="fixed"
+            widht="100%"
+            bottom="2rem"
+            m="1.5rem 2rem 0 3rem"
+          >
+            <Divider />
+            <FlexBetween textTransform={"none"} gap="1rem" mt={"0.5rem"}>
+              <PersonOutlined
+                sx={{
+                  fontSize: "1.5rem",
+                }}
+              />
+              <Typography
+                fontWeight={"bold"}
+                fontSize="0.9rem"
+                mt={"0.2rem"}
+                sx={{ color: theme.palette.secondary[100] }}
+              >
+                {user?.name}jam200111
+              </Typography>
+              <SettingsOutlined
+                sx={{
+                  "&:hover": { transform: "scale(1.1)" },
+                  fontSize: "1.5rem",
+                  color: theme.palette.secondary[300],
+                }}
+              />
+            </FlexBetween>
+            <Typography
+              fontSize="0.8rem"
+              sx={{ color: theme.palette.secondary[200], textAlign: "center" }}
+            >
+              {user?.name}Superadmin
+            </Typography>
+          </Box>
         </Drawer>
       ) : null}
     </Box>

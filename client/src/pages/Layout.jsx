@@ -10,10 +10,12 @@ import { useGetRegistrantQuery } from "../state/api";
 const Layout = () => {
   const isNonMobile = useMediaQuery("(min-width: 600px)");
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const { data } = useGetRegistrantQuery();
+  // const { data } = useGetRegistrantQuery();
+  const data = {};
   return (
     <Box width="100%" height="100%" display={isNonMobile ? "flex" : "block"}>
       <Sidebar
+        user={data || {}}
         isNonMobile={isNonMobile}
         drawerWidth="250px"
         isSidebarOpen={isSidebarOpen}
@@ -21,6 +23,7 @@ const Layout = () => {
       />
       <Box component="header" sx={{ width: "100%" }}>
         <Navbar
+          user={data || {}}
           isSidebarOpen={isSidebarOpen}
           setIsSidebarOpen={setIsSidebarOpen}
         />
