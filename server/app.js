@@ -1,5 +1,6 @@
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/users");
+const registrantRoutes = require("./routes/registrants");
 
 const dotenv = require("dotenv");
 const express = require("express");
@@ -22,8 +23,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
 
 // Routes
+app.use("/api/registrant", registrantRoutes);
+app.use("/api/user", userRoutes);
 app.use("/api/auth", authRoutes);
-app.use("/api/users", userRoutes);
 
 // Mongoose setup
 const PORT = process.env.Port || 9000;

@@ -6,6 +6,8 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
+      max: 50,
+      min: 5,
     },
     email: {
       type: String,
@@ -18,7 +20,7 @@ const UserSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      required: true,
+      enum: ["regular", "admin", "superadmin"],
       default: "regular",
     },
   },

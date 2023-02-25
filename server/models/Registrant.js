@@ -6,14 +6,12 @@ const RegistrantSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
+      max: 50,
     },
     password: {
       type: String,
       required: true,
-    },
-    role: {
-      type: String,
-      default: "regular",
+      min: 6,
     },
   },
   { timestamps: true }

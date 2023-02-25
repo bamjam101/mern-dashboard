@@ -1,7 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { getItemInLocalStorage } from "../utlis";
 
 const initialState = {
   mode: "dark",
+  userId: "",
 };
 
 export const globalSlice = createSlice({
@@ -10,6 +12,9 @@ export const globalSlice = createSlice({
   reducers: {
     setMode: (state) => {
       state.mode = state.mode === "light" ? "dark" : "light";
+    },
+    setUser: (state) => {
+      state.userId === getItemInLocalStorage("USER_ID");
     },
   },
 });
