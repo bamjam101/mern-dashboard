@@ -20,6 +20,7 @@ const handleRegistrantSignUp = async (req, res) => {
         email: req.body.email,
         password: hashedPass,
         role: "superadmin",
+        isApproved: true,
       });
       const user = await newUser.save();
       res.status(200).json(user);
@@ -52,10 +53,8 @@ const handleRegistrantApproval = async (req, res) => {
 const handleUserLogin = async (req, res) => {
   try {
     const user = await User.findOne({ name: req.body.name });
-    console.log(hashedPass, user.password);
     if (user) {
       const validated = await bcrypt.compare(req.body.password, user.password);
-      console.log(validated);
       if (validated) {
         const { password, ...others } = user._doc;
         res.status(200).json(others);
@@ -65,7 +64,6 @@ const handleUserLogin = async (req, res) => {
     } else {
       res.status(400).json("Wrong credentials!");
     }
-    console.log(user);
   } catch (err) {
     res.status(500).json(err);
   }

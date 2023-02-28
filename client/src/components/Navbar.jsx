@@ -9,7 +9,7 @@ import {
   PersonOutlined,
 } from "@mui/icons-material";
 import { useDispatch } from "react-redux";
-import { setMode } from "../state";
+import { setLogout, setMode } from "../state";
 import {
   AppBar,
   Button,
@@ -22,10 +22,12 @@ import {
   useTheme,
 } from "@mui/material";
 import FlexBetween from "./FlexBetween";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
   const dispatch = useDispatch();
   const theme = useTheme();
+  const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const isOpen = Boolean(anchorEl);
   const handleClick = (e) => {
@@ -36,7 +38,11 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
     setAnchorEl(null);
   };
 
-  const handleLogout = () => {};
+  const handleLogout = () => {
+    localStorage.clear();
+    dispatch(setLogout());
+    navigate("/login");
+  };
 
   return (
     <AppBar
@@ -95,7 +101,7 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
               fontSize="0.85rem"
               sx={{ color: theme.palette.secondary[100] }}
             >
-              {user?.name}jam200111
+              {user?.username}
             </Typography>
             <ArrowDropDownOutlined
               sx={{

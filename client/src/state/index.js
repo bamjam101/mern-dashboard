@@ -1,9 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getItemInLocalStorage } from "../utlis";
+import { getItemInLocalStorage, setItemInLocalStorage } from "../utlis";
 
 const initialState = {
-  mode: "dark",
-  userId: "",
+  mode: getItemInLocalStorage("MODE") || "dark",
+  userId: getItemInLocalStorage("USER_ID") || "",
+  username: getItemInLocalStorage("NAME") || "STRANGER",
+  isAdmin: getItemInLocalStorage("IS_ADMIN") || false,
+  role: getItemInLocalStorage("ROLE") || "regular",
 };
 
 export const globalSlice = createSlice({
@@ -12,13 +15,37 @@ export const globalSlice = createSlice({
   reducers: {
     setMode: (state) => {
       state.mode = state.mode === "light" ? "dark" : "light";
+      setItemInLocalStorage("MODE", state.mode);
     },
-    setUser: (state) => {
-      state.userId === getItemInLocalStorage("USER_ID");
+    setUser: (state, id) => {
+      state.userId = id.payload;
+      setItemInLocalStorage("USER_ID", state.userId);
+    },
+    setAdmin: (state) => {
+      state.isAdmin = state.isAdmin ? false : true;
+      setItemInLocalStorage("IS_ADMIN", state.isAdmin);
+    },
+    setUsername: (state, username) => {
+      state.username = username.payload;
+      setItemInLocalStorage("NAME", username.payload);
+    },
+    setUserRole: (state, role) => {
+      state.role = role.payload;
+      setItemInLocalStorage("ROLE", state.role);
+    },
+    setLogout: (state) => {
+      state = initialState;
     },
   },
 });
 
-export const { setMode } = globalSlice.actions;
+export const {
+  setMode,
+  setUser,
+  setUsername,
+  setUserRole,
+  setAdmin,
+  setLogout,
+} = globalSlice.actions;
 
 export default globalSlice.reducer;

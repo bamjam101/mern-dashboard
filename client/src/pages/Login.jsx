@@ -13,13 +13,17 @@ import {
 import axios from "axios";
 import React, { useState } from "react";
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { setAdmin, setUser, setUsername, setUserRole } from "../state";
+import { setItemInLocalStorage } from "../utlis";
 
 const Login = () => {
   const theme = useTheme();
+  const userId = useSelector((state) => state.global.userId);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -32,16 +36,33 @@ const Login = () => {
       password,
     };
     try {
-      console.log(newUser);
-      const res = await axios.post(
+      const response = await axios.post(
         `${import.meta.env.VITE_APP_BASE_URL}/auth/login`,
         newUser
       );
-      console.log(res.data);
+      if (response.data) {
+        const result = response.data;
+        setItemInLocalStorage("USER_ID", result._id);
+        dispatch(setUser(result._id));
+        dispatch(setUsername(result.name));
+        dispatch(setUserRole(result.role));
+        if (result?.role === "superadmin") {
+          dispatch(setAdmin());
+        } else if (result?.role === "admin") {
+          dispatch(setAdmin());
+        }
+      }
+      navigate("/dashboard");
     } catch (err) {
       console.log(err);
     }
   };
+
+  useEffect(() => {
+    if (userId) {
+      navigate("/dashboard");
+    }
+  }, []);
   return (
     <Container component={"main"} maxWidth="xs">
       <CssBaseline />

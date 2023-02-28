@@ -32,6 +32,7 @@ import {
   TodayOutlined,
   TrendingUpOutlined,
 } from "@mui/icons-material";
+import { useSelector } from "react-redux";
 
 const navItems = [
   {
@@ -134,7 +135,7 @@ const Sidebar = ({
                       },
                     }}
                   >
-                    NetworkMarket
+                    Richdollar
                   </Typography>
                 </Link>
               </Box>
@@ -204,7 +205,7 @@ const Sidebar = ({
             m="1.5rem 2rem 0 3rem"
           >
             <Divider />
-            <FlexBetween textTransform={"none"} gap="1rem" mt={"0.5rem"}>
+            <FlexBetween textTransform={"none"} gap="0.4rem" mt={"0.5rem"}>
               <PersonOutlined
                 sx={{
                   fontSize: "1.5rem",
@@ -213,10 +214,10 @@ const Sidebar = ({
               <Typography
                 fontWeight={"bold"}
                 fontSize="0.9rem"
-                mt={"0.2rem"}
+                m={"0.2rem 0"}
                 sx={{ color: theme.palette.secondary[100] }}
               >
-                {user?.name}jam200111
+                {user?.username}
               </Typography>
               <SettingsOutlined
                 sx={{
@@ -226,11 +227,15 @@ const Sidebar = ({
                 }}
               />
             </FlexBetween>
+            <Divider />
             <Typography
               fontSize="0.8rem"
-              sx={{ color: theme.palette.secondary[200], textAlign: "center" }}
+              sx={{
+                color: theme.palette.secondary[200],
+                textAlign: "center",
+              }}
             >
-              {user?.name}Superadmin
+              {user?.role}
             </Typography>
           </Box>
         </Drawer>

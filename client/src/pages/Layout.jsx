@@ -5,25 +5,24 @@ import { useSelector } from "react-redux";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 
-import { useGetRegistrantQuery } from "../state/api";
-
 const Layout = () => {
   const isNonMobile = useMediaQuery("(min-width: 600px)");
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  // const { data } = useGetRegistrantQuery();
-  const data = {};
+  const state = useSelector((state) => state.global);
   return (
     <Box width="100%" height="100%" display={isNonMobile ? "flex" : "block"}>
-      <Sidebar
-        user={data || {}}
-        isNonMobile={isNonMobile}
-        drawerWidth="250px"
-        isSidebarOpen={isSidebarOpen}
-        setIsSidebarOpen={setIsSidebarOpen}
-      />
+      {state?.isAdmin ? (
+        <Sidebar
+          user={state || {}}
+          isNonMobile={isNonMobile}
+          drawerWidth="250px"
+          isSidebarOpen={isSidebarOpen}
+          setIsSidebarOpen={setIsSidebarOpen}
+        />
+      ) : null}
       <Box component="header" sx={{ width: "100%" }}>
         <Navbar
-          user={data || {}}
+          user={state || {}}
           isSidebarOpen={isSidebarOpen}
           setIsSidebarOpen={setIsSidebarOpen}
         />

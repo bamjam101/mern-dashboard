@@ -23,6 +23,24 @@ const UserSchema = new mongoose.Schema(
       enum: ["regular", "admin", "superadmin"],
       default: "regular",
     },
+    isApproved: {
+      type: Boolean,
+      default: false,
+    },
+    referredBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+    referralLinks: [
+      {
+        link: { type: String, unique: true },
+        isUsed: { type: Boolean, default: false },
+        connectedUser: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+        },
+      },
+    ],
   },
   { timestamps: true }
 );

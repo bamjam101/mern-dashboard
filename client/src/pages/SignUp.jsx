@@ -11,14 +11,15 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { useAddNewRegistrantMutation } from "../state/api";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const Register = () => {
   const theme = useTheme();
   const navigate = useNavigate();
+  const userId = useSelector((state) => state.global.userId);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -42,6 +43,12 @@ const Register = () => {
       }
     }
   };
+
+  useEffect(() => {
+    if (userId) {
+      navigate("/dashboard");
+    }
+  }, []);
   return (
     <Container component={"main"} maxWidth="xs">
       <CssBaseline />
