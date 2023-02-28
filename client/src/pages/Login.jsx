@@ -32,6 +32,7 @@ const Login = () => {
       password,
     };
     try {
+      console.log(newUser);
       const res = await axios.post(
         `${import.meta.env.VITE_APP_BASE_URL}/auth/login`,
         newUser
@@ -105,7 +106,7 @@ const Login = () => {
             id="password"
             name="password"
             autoComplete="off"
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => setPassword(e.target.value)}
           ></TextField>
           <Button
             type="submit"

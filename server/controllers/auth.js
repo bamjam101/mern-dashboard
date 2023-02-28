@@ -6,13 +6,24 @@ const handleRegistrantSignUp = async (req, res) => {
   try {
     const salt = await bcrypt.genSalt(8);
     const hashedPass = await bcrypt.hash(req.body.password, salt);
-    const newRegistrant = new Registrant({
-      email: req.body.email,
-      password: hashedPass,
-    });
-
-    const registrant = await newRegistrant.save();
-    res.status(200).json(registrant);
+    const existingUser = await User.find();
+    if (existingUser?.length) {
+      const newRegistrant = new Registrant({
+        email: req.body.email,
+        password: hashedPass,
+      });
+      const registrant = await newRegistrant.save();
+      res.status(200).json(registrant);
+    } else {
+      const newUser = new User({
+        name: "superadmin",
+        email: req.body.email,
+        password: hashedPass,
+        role: "superadmin",
+      });
+      const user = await newUser.save();
+      res.status(200).json(user);
+    }
   } catch (err) {
     res.status(500).json(err);
   }
@@ -41,13 +52,20 @@ const handleRegistrantApproval = async (req, res) => {
 const handleUserLogin = async (req, res) => {
   try {
     const user = await User.findOne({ name: req.body.name });
-    !user && res.status(400).json("Wrong credentials!");
-
-    const validated = await bcrypt.compare(req.body.password, user.password);
-    !validated && res.status(400).json("Wrong credentials!");
-
-    const { password, ...others } = user._doc;
-    res.status(200).json(others);
+    console.log(hashedPass, user.password);
+    if (user) {
+      const validated = await bcrypt.compare(req.body.password, user.password);
+      console.log(validated);
+      if (validated) {
+        const { password, ...others } = user._doc;
+        res.status(200).json(others);
+      } else {
+        res.status(400).json("Wrong credentials!");
+      }
+    } else {
+      res.status(400).json("Wrong credentials!");
+    }
+    console.log(user);
   } catch (err) {
     res.status(500).json(err);
   }

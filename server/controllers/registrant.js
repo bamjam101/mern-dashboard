@@ -4,7 +4,6 @@ const User = require("../models/User");
 const getAllRegistrants = async (req, res) => {
   try {
     const registrants = await Registrant.find();
-    console.log(registrants);
     if (registrants?.length < 1) {
       res.status(200).json("No registrants to display.");
     } else {
