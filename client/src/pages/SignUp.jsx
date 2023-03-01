@@ -22,6 +22,7 @@ const Register = () => {
   const userId = useSelector((state) => state.global.userId);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [contact, setContact] = useState("");
 
   const handleUserSignUp = async (e) => {
     e.preventDefault();
@@ -29,6 +30,7 @@ const Register = () => {
       return new Error("Password too short!");
     } else {
       const newRegistrant = {
+        contact,
         email,
         password,
       };
@@ -80,11 +82,19 @@ const Register = () => {
         >
           <Grid container sx={{ gap: 2 }}>
             <TextField
+              name="contact"
+              id="contact"
+              type="number"
+              autoFocus
+              label="Contact"
+              fullWidth
+              onChange={(e) => setContact(e.target.value)}
+              required
+            ></TextField>
+            <TextField
               name="email"
               id="email"
-              autoComplete="email"
               type="email"
-              autoFocus
               label="Email"
               fullWidth
               onChange={(e) => setEmail(e.target.value)}

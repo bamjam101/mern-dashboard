@@ -31,18 +31,25 @@ const UserSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
-    referralLinks: [
-      {
-        link: { type: String, unique: true },
-        isUsed: { type: Boolean, default: false },
-        connectedUser: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "User",
+    referralLinks: {
+      type: [
+        {
+          link: { type: String, unique: true },
+          isUsed: { type: Boolean, default: false },
+          connectedUser: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+          },
         },
-      },
-    ],
+      ],
+      validate: [referralLimit, "Referrals Have Been Exhausted!"],
+    },
   },
   { timestamps: true }
 );
+
+function referralLimit(val) {
+  return val.length < 5;
+}
 
 module.exports = mongoose.model("User", UserSchema);

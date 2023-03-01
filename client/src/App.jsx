@@ -11,6 +11,8 @@ import Layout from "./pages/Layout";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import Dashboard from "./pages/Dashboard";
+import Registrant from "./pages/Registrant";
+import Network from "./pages/Network";
 
 const ProtectedRoute = ({ children }) => {
   const user = useSelector((state) => state.global.userId);
@@ -39,6 +41,15 @@ function App() {
                   </ProtectedRoute>
                 }
               />
+              <Route
+                path="registrants"
+                element={
+                  <ProtectedRoute>
+                    <Registrant />
+                  </ProtectedRoute>
+                }
+              />
+              <Route path="/network" element={<Network />} />
             </Route>
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />

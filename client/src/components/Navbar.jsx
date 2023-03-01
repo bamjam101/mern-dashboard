@@ -90,7 +90,19 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
           <IconButton>
             <SettingsOutlined />
           </IconButton>
-          <FlexBetween onClick={handleClick} textTransform={"none"} gap="1rem">
+          <FlexBetween
+            onClick={handleClick}
+            textTransform={"none"}
+            gap="1rem"
+            sx={{
+              cursor: "pointer",
+              "&:hover": {
+                background: theme.palette.primary[400],
+              },
+              padding: "0.5rem 1rem",
+              borderRadius: "22px",
+            }}
+          >
             <PersonOutlined
               sx={{
                 fontSize: "1.5rem",
@@ -115,7 +127,10 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
             anchorEl={anchorEl}
             open={isOpen}
             onClose={handleClose}
-            anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "center",
+            }}
           >
             <MenuItem onClick={handleLogout}>Log Out</MenuItem>
           </Menu>

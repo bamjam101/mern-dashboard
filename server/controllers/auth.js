@@ -9,6 +9,7 @@ const handleRegistrantSignUp = async (req, res) => {
     const existingUser = await User.find();
     if (existingUser?.length) {
       const newRegistrant = new Registrant({
+        contact: req.body.contact,
         email: req.body.email,
         password: hashedPass,
       });

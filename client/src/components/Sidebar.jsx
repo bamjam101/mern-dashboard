@@ -40,7 +40,7 @@ const navItems = [
     icon: <HomeOutlined />,
   },
   {
-    text: "Client Facing",
+    text: "Registrant",
     icon: null,
   },
   {
@@ -48,12 +48,12 @@ const navItems = [
     icon: <ShoppingCartOutlined />,
   },
   {
-    text: "Customers",
-    icon: <Groups2Outlined />,
+    text: "Registrants",
+    icon: <ReceiptLongOutlined />,
   },
   {
-    text: "Transactions",
-    icon: <ReceiptLongOutlined />,
+    text: "Customers",
+    icon: <Groups2Outlined />,
   },
   {
     text: "Sales",
@@ -176,6 +176,9 @@ const Sidebar = ({
                         active === lcText
                           ? theme.palette.primary[600]
                           : theme.palette.secondary[100],
+                      "&:hover": {
+                        color: "white",
+                      },
                     }}
                   >
                     <ListItemIcon

@@ -2,6 +2,11 @@ const mongoose = require("mongoose");
 
 const RegistrantSchema = new mongoose.Schema(
   {
+    contact: {
+      type: String,
+      unique: true,
+      max: 12,
+    },
     email: {
       type: String,
       required: true,
