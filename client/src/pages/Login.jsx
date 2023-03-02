@@ -17,11 +17,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { setAdmin, setUser, setUsername, setUserRole } from "../state";
-import { setItemInLocalStorage } from "../utlis";
+import { getItemInLocalStorage, setItemInLocalStorage } from "../utlis";
 
 const Login = () => {
   const theme = useTheme();
-  const userId = useSelector((state) => state.global.userId);
+  const userId = getItemInLocalStorage("USER_ID");
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [name, setName] = useState("");

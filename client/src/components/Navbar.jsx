@@ -39,8 +39,8 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
   };
 
   const handleLogout = () => {
-    localStorage.clear();
     dispatch(setLogout());
+    localStorage.clear();
     navigate("/login");
   };
 

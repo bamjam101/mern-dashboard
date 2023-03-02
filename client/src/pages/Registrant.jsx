@@ -8,6 +8,26 @@ const Registrant = () => {
   const [isEmpty, setIsEmpty] = useState(false);
   const [data, setData] = useState([]);
   const theme = useTheme();
+  const [isClicked, setIsClicked] = useState(false);
+  const [updatingRow, setUpdatingRow] = useState(null);
+
+  async function handleEditSubmit() {
+    if (updatingRow) {
+      const { _id, name, role } = updatingRow;
+      const response = await axios.patch(
+        `${import.meta.env.VITE_APP_BASE_URL}/auth/approve`,
+        {
+          _id,
+          name,
+          role,
+        }
+      );
+      console.log(response.data);
+    }
+  }
+  useEffect(() => {
+    handleEditSubmit();
+  }, [updatingRow]);
 
   const columns = [
     { field: "_id", headerName: "ID", flex: 0.5 },
@@ -22,13 +42,43 @@ const Registrant = () => {
     { field: "email", headerName: "Email", flex: 1 },
     { field: "name", headerName: "Name", flex: 0.5, editable: true },
     { field: "role", headerName: "Role", flex: 0.5, editable: true },
-    { field: "isApproved", headerName: "Verified", flex: 0.5, editable: true },
+    {
+      field: "isApproved",
+      headerName: "Verified",
+      flex: 0.5,
+      editable: true,
+      renderCell: (params) => {
+        if (isClicked) {
+          const { row } = params;
+          setUpdatingRow(row);
+        }
+        return params.value ? (
+          <button
+            type="button"
+            style={{
+              width: "100%",
+              height: "100%",
+              outline: "none",
+              border: "none",
+              backgroundColor: theme.palette.background.alt,
+              color: theme.palette.primary[100],
+              fontWeight: "bold",
+            }}
+            onClick={() => setIsClicked(true)}
+          >
+            Submit
+          </button>
+        ) : (
+          "false"
+        );
+      },
+    },
   ];
 
   useEffect(() => {
     const fetchRegistrants = async () => {
       const response = await axios.get(
-        `${import.meta.env.VITE_APP_BASE_URL}/registrant/all`
+        `${import.meta.env.VITE_APP_BASE_URL}/user/registrants/all`
       );
       const result = response.data;
       if (typeof result === "string") {

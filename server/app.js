@@ -1,6 +1,6 @@
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/users");
-const registrantRoutes = require("./routes/registrants");
+// const registrantRoutes = require("./routes/registrants");
 
 const dotenv = require("dotenv");
 const express = require("express");
@@ -23,7 +23,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
 
 // Routes
-app.use("/registrant", registrantRoutes);
+// app.use("/registrant", registrantRoutes);
 app.use("/user", userRoutes);
 app.use("/auth", authRoutes);
 

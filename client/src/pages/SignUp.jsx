@@ -36,7 +36,7 @@ const Register = () => {
       };
       try {
         await axios.post(
-          `${import.meta.env.VITE_APP_BASE_URL}/registrant/signup`,
+          `${import.meta.env.VITE_APP_BASE_URL}/auth/signup`,
           newRegistrant
         );
         navigate("/login");
@@ -84,8 +84,9 @@ const Register = () => {
             <TextField
               name="contact"
               id="contact"
-              type="number"
+              type="text"
               autoFocus
+              value={contact}
               label="Contact"
               fullWidth
               onChange={(e) => setContact(e.target.value)}
@@ -97,6 +98,7 @@ const Register = () => {
               type="email"
               label="Email"
               fullWidth
+              value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
             ></TextField>
@@ -110,6 +112,7 @@ const Register = () => {
               }}
               label="Password"
               fullWidth
+              value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
             ></TextField>

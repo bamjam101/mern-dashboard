@@ -14,6 +14,21 @@ const getAllUsers = async (req, res) => {
   }
 };
 
+const getUnapprovedUsers = async (req, res) => {
+  try {
+    const registrants = await User.find({ isApproved: false }).select(
+      "-password"
+    );
+    if (registrants?.length < 1) {
+      res.status(200).json("No registrants to display.");
+    } else {
+      res.status(200).json(registrants);
+    }
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+
 const getUser = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
@@ -31,4 +46,5 @@ const getUser = async (req, res) => {
 module.exports = {
   getUser,
   getAllUsers,
+  getUnapprovedUsers,
 };

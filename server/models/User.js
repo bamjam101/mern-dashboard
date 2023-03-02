@@ -5,7 +5,6 @@ const UserSchema = new mongoose.Schema(
     name: {
       type: String,
       required: true,
-      unique: true,
       max: 50,
       min: 5,
     },
@@ -13,43 +12,31 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
+      max: 50,
+    },
+    contact: {
+      type: String,
+      required: true,
+      unique: true,
+      max: 12,
     },
     password: {
       type: String,
       required: true,
-    },
-    role: {
-      type: String,
-      enum: ["regular", "admin", "superadmin"],
-      default: "regular",
+      min: 6,
+      max: 30,
     },
     isApproved: {
       type: Boolean,
       default: false,
     },
-    referredBy: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    },
-    referralLinks: {
-      type: [
-        {
-          link: { type: String, unique: true },
-          isUsed: { type: Boolean, default: false },
-          connectedUser: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "User",
-          },
-        },
-      ],
-      validate: [referralLimit, "Referrals Have Been Exhausted!"],
+    role: {
+      type: String,
+      enum: ["regular", "admin", "superadmin", "partialAdmin"],
+      default: "regular",
     },
   },
   { timestamps: true }
 );
-
-function referralLimit(val) {
-  return val.length < 5;
-}
 
 module.exports = mongoose.model("User", UserSchema);
