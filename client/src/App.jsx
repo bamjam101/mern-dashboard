@@ -13,6 +13,7 @@ import SignUp from "./pages/SignUp";
 import Dashboard from "./pages/Dashboard";
 import Registrant from "./pages/Registrant";
 import Network from "./pages/Network";
+import Verification from "./pages/Verification";
 
 const ProtectedRoute = ({ children }) => {
   const user = useSelector((state) => state.global.userId);
@@ -51,8 +52,9 @@ function App() {
               />
               <Route path="/network" element={<Network />} />
             </Route>
-            <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
+            <Route path="/user/:id/verify/:token" element={<Verification />} />
+            <Route path="/login" element={<Login />} />
           </Routes>
         </ThemeProvider>
       </BrowserRouter>

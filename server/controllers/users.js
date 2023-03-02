@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const Token = require("../models/Token");
 
 const getAllUsers = async (req, res) => {
   try {
@@ -16,9 +17,10 @@ const getAllUsers = async (req, res) => {
 
 const getUnapprovedUsers = async (req, res) => {
   try {
-    const registrants = await User.find({ isApproved: false }).select(
-      "-password"
-    );
+    const registrants = await User.find({
+      isApproved: false,
+      isEmailVerified: true,
+    }).select("-password");
     if (registrants?.length < 1) {
       res.status(200).json("No registrants to display.");
     } else {
@@ -43,7 +45,26 @@ const getUser = async (req, res) => {
   }
 };
 
+const handleEmailVerification = async (req, res) => {
+  try {
+    const user = await User.findOne({ _id: req.params.id });
+    if (!user) return res.status(400).json("Invalid Link");
+    const token = await Token.findOne({
+      userId: user._id,
+      token: req.params.token,
+    });
+    if (!token) return res.status(400).json("Invalid Link");
+
+    await User.updateOne({ _id: user._id, isVerified: true });
+    await token.remove();
+    res.status(200).json("Email Verified");
+  } catch (err) {
+    res.status(200).json(err);
+  }
+};
+
 module.exports = {
+  handleEmailVerification,
   getUser,
   getAllUsers,
   getUnapprovedUsers,

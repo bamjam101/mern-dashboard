@@ -30,6 +30,10 @@ const UserSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    isEmailVerified: {
+      type: Boolean,
+      default: false,
+    },
     role: {
       type: String,
       enum: ["regular", "admin", "superadmin", "partialAdmin"],

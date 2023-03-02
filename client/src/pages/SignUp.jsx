@@ -15,11 +15,12 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { getItemInLocalStorage } from "../utlis";
 
 const Register = () => {
   const theme = useTheme();
   const navigate = useNavigate();
-  const userId = useSelector((state) => state.global.userId);
+  const userId = getItemInLocalStorage("USER_ID");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [contact, setContact] = useState("");

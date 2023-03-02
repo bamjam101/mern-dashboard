@@ -9,6 +9,8 @@ const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const cors = require("cors");
 const mongoose = require("mongoose");
+const path = require("path");
+const nodemailer = require("nodemailer");
 
 // Configuration for the server
 
@@ -22,13 +24,16 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
 
+//static folder
+app.use("/public", express.static(path.join(__dirname, "public")));
+
 // Routes
 // app.use("/registrant", registrantRoutes);
 app.use("/user", userRoutes);
 app.use("/auth", authRoutes);
 
 // Mongoose setup
-const PORT = process.env.Port || 9000;
+const PORT = process.env.Port || 5001;
 mongoose
   .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
