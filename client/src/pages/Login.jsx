@@ -144,6 +144,17 @@ const Login = () => {
         <Grid container justifyContent={"center"}>
           <Grid item>
             <Typography paragraph>
+              Forgot Your Password?{" "}
+              <Link
+                style={{ color: theme.palette.secondary[300] }}
+                to={"/forgot-password"}
+              >
+                Reset Password
+              </Link>
+            </Typography>
+          </Grid>
+          <Grid item>
+            <Typography paragraph>
               New User? Go to{" "}
               <Link
                 style={{ color: theme.palette.secondary[300] }}

@@ -16,10 +16,14 @@ module.exports = async (email, subject, url) => {
       to: email,
       subject: subject,
       text: `${url}`,
-      html: `<div style="display: 'flex', flexDirection='column', gap: '1rem', width: '100%', justifyContent: 'center', alignItems: 'center'">
-      <a href=${url} style="padding: '0.5rem 1rem', background: 'sky-blue', color: 'black', fontWeight: 'bold', textDecoration: 'none'">Verify Your Account</a>
-      <p>Upon clicking on the button your account will be automatically verified and you will be redirected to our login page.</p>
-    </div>`,
+      html: `
+      <body style="height:'100vh', width:'100%', display: 'flex', flexDirection: 'column', gap: '2rem', padding: '0 1rem', backgroundColor: '#191F45'">
+        <header style="width: '100%', padding: '0.5rem 0', color: 'gold'">Richdollar</header>
+        <main style="display: 'flex', flexDirection='column', gap: '1rem', width: '100%', justifyContent: 'center', alignItems: 'center'">
+          <a href=${url} style="padding: '0.5rem 1rem', background: 'sky-blue', color: 'black', fontWeight: 'bold', textDecoration: 'none'">Authenticate Yourself</a>
+          <p>Upon clicking the above button your authentication will be automatically completed.</p>
+        </main>
+    </body>`,
     });
     console.log("Email Send Successfully");
   } catch (err) {

@@ -14,6 +14,8 @@ import Dashboard from "./pages/Dashboard";
 import Registrant from "./pages/Registrant";
 import Network from "./pages/Network";
 import Verification from "./pages/Verification";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 
 const ProtectedRoute = ({ children }) => {
   const user = useSelector((state) => state.global.userId);
@@ -55,6 +57,8 @@ function App() {
             <Route path="/signup" element={<SignUp />} />
             <Route path="/user/:id/verify/:token" element={<Verification />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/user/:id/reset/:token" element={<ResetPassword />} />
           </Routes>
         </ThemeProvider>
       </BrowserRouter>

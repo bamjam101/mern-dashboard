@@ -13,40 +13,46 @@ const handleUserSignUp = async (req, res) => {
       return res.status(409).res("This Email Is Already In Use!");
     const salt = await bcrypt.genSalt(8);
     const hashedPass = await bcrypt.hash(req.body.password, salt);
-    let user = await User.findOne({ email: req.body.email });
-    if (user) return res.status(409).res("This Email Is Already In Use!");
-    const newUser = new User({
-      name: "username",
-      email: req.body.email,
-      contact: req.body.contact,
-      password: hashedPass,
-    });
 
-    user = await newUser.save();
+    const existingUser = await User.find();
+    if (existingUser?.length) {
+      let user = await User.findOne({ email: req.body.email });
+      if (user) return res.status(409).res("This Email Is Already In Use!");
+      const newUser = new User({
+        name: "username",
+        email: req.body.email,
+        contact: req.body.contact,
+        password: hashedPass,
+      });
 
-    const token = await new Token({
-      userId: user._id,
-      token: crypto.randomBytes(32).toString("hex"),
-    }).save();
+      user = await newUser.save();
 
-    const url = `${process.env.APP_BASE_URL}/user/${token.userId}/verify/${token.token}`;
-    await sendEmail(user.email, "Verify Your Gmail For Richdollar", url);
-    res
-      .status(200)
-      .json("Email registered. Please verify your email to proceed to login.");
-    //   const admin = new User({
-    //     name: "anonymous",
-    //     email: req.body.email,
-    //     contact: req.body.contact,
-    //     password: hashedPass,
-    //     role: "superadmin",
-    //     isApproved: true,
-    //     isEmailVerified: true,
-    //   });
+      const token = await new Token({
+        userId: user._id,
+        token: crypto.randomBytes(32).toString("hex"),
+      }).save();
 
-    //   const user = await admin.save();
-    //   res.status(200).json("Superadmin declared successfully");
-    // }
+      const url = `${process.env.APP_BASE_URL}/user/${token.userId}/verify/${token.token}`;
+      await sendEmail(user.email, "Verify Your Gmail For Richdollar", url);
+      res
+        .status(200)
+        .json(
+          "Email registered. Please verify your email to proceed to login."
+        );
+    } else {
+      const admin = new User({
+        name: "anonymous",
+        email: req.body.email,
+        contact: req.body.contact,
+        password: hashedPass,
+        role: "superadmin",
+        isApproved: true,
+        isEmailVerified: true,
+      });
+
+      const user = await admin.save();
+      res.status(200).json("Superadmin declared successfully");
+    }
   } catch (err) {
     res.status(500).json(err);
   }
