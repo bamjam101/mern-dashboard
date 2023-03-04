@@ -21,6 +21,8 @@
     "mongoose": "^6.9.2",
     "morgan": "^1.10.0",
     "nodemailer": "^6.9.1",
-    "path": "^0.12.7"
+    "nodemailer-express-handlebars": "^6.0.0",
+    "path": "^0.12.7",
+    "referral-codes": "^2.0.3"
   }
 }

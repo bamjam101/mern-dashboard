@@ -28,7 +28,6 @@ app.use(cors());
 app.use("/public", express.static(path.join(__dirname, "public")));
 
 // Routes
-// app.use("/registrant", registrantRoutes);
 app.use("/user", userRoutes);
 app.use("/auth", authRoutes);
 

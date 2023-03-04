@@ -18,9 +18,9 @@ import { useSelector } from "react-redux";
 import { getItemInLocalStorage } from "../utlis";
 
 const Register = () => {
-  const theme = useTheme();
   const navigate = useNavigate();
   const userId = getItemInLocalStorage("USER_ID");
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [contact, setContact] = useState("");
@@ -32,6 +32,7 @@ const Register = () => {
       return new Error("Password too short!");
     } else {
       const newRegistrant = {
+        name,
         contact,
         email,
         password,
@@ -42,6 +43,7 @@ const Register = () => {
           newRegistrant
         );
         setResponse(response.data);
+        setName("");
         setContact("");
         setEmail("");
         setPassword("");
@@ -87,10 +89,20 @@ const Register = () => {
         >
           <Grid container sx={{ gap: 2 }}>
             <TextField
+              name="name"
+              id="name"
+              type="text"
+              autoFocus
+              value={name}
+              label="Full Name"
+              fullWidth
+              onChange={(e) => setName(e.target.value)}
+              required
+            ></TextField>
+            <TextField
               name="contact"
               id="contact"
               type="text"
-              autoFocus
               value={contact}
               label="Contact"
               fullWidth

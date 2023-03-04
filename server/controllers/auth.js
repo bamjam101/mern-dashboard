@@ -1,32 +1,54 @@
+const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const User = require("../models/User");
 const Token = require("../models/Token");
 const sendEmail = require("../utlis");
+const referralCodes = require("referral-codes");
 
 const handleUserSignUp = async (req, res) => {
   try {
     const { error } = req.body;
     if (error) return res.status(400).json("App error encountered.");
-    const repeatedEmail = await User.findOne({ email: req.body.email });
-    if (repeatedEmail)
-      return res.status(409).res("This Email Is Already In Use!");
+    let user = await User.findOne({ email: req.body.email });
+    if (user) return res.status(409).res("This Email Is Already In Use!");
     const salt = await bcrypt.genSalt(8);
     const hashedPass = await bcrypt.hash(req.body.password, salt);
 
     const existingUser = await User.find();
     if (existingUser?.length) {
-      let user = await User.findOne({ email: req.body.email });
-      if (user) return res.status(409).res("This Email Is Already In Use!");
+      const referrals = referralCodes.generate({
+        prefix: "richdollar-",
+        length: 10,
+        count: 5,
+      });
+
       const newUser = new User({
-        name: "username",
+        name: req.body.name,
         email: req.body.email,
         contact: req.body.contact,
         password: hashedPass,
+        referralLinks: [
+          {
+            link: referrals[0],
+          },
+          {
+            link: referrals[1],
+          },
+          {
+            link: referrals[2],
+          },
+          {
+            link: referrals[3],
+          },
+          {
+            link: referrals[4],
+          },
+        ],
       });
 
       user = await newUser.save();
-
+      console.log(user);
       const token = await new Token({
         userId: user._id,
         token: crypto.randomBytes(32).toString("hex"),
@@ -50,7 +72,7 @@ const handleUserSignUp = async (req, res) => {
         isEmailVerified: true,
       });
 
-      const user = await admin.save();
+      await admin.save();
       res.status(200).json("Superadmin declared successfully");
     }
   } catch (err) {
@@ -78,7 +100,6 @@ const handleUserLogin = async (req, res) => {
     const user = await User.findOne({ email: req.body.email });
     if (user) {
       const validated = await bcrypt.compare(req.body.password, user.password);
-      console.log(validated);
       if (validated) {
         const { password, ...others } = user._doc;
         res.status(200).json(others);
