@@ -6,38 +6,81 @@ import { Container, Typography, Button, Box } from "@mui/material";
 
 const Verification = () => {
   const [validUrl, setValidUrl] = useState(true);
-  const param = useParams();
+  const [response, setResponse] = useState("");
+
+  const params = useParams();
 
   useEffect(() => {
     const verifyEmailUrl = async () => {
       try {
         const url = `${import.meta.env.VITE_APP_BASE_URL}/user/${
-          param.id
-        }/verify/${param.token}`;
-        const { data } = await axios.get(url);
-        console.log(data);
+          params.id
+        }/verify/${params.token}`;
+        const res = await axios.get(url);
         setValidUrl(true);
+        console.log(res);
       } catch (error) {
-        console.log(error);
-        setValidUrl(false);
+        setResponse("Email has already been verified.");
       }
     };
     verifyEmailUrl();
-  }, [param]);
+  }, [params]);
 
   return (
-    <Container component="main">
+    <Container
+      component="main"
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        flexDirection: "column",
+        gap: "1rem",
+        minHeight: "100vh",
+        width: "100%",
+      }}
+    >
       {validUrl ? (
-        <Box>
+        <Box display={"flex"} gap="1rem" flexDirection={"column"}>
           <img src={success} alt="success_img" />
           <Typography variant="h4">Email verified successfully</Typography>
-          <Link to="/login">
-            <Button type="button">Login</Button>
-          </Link>
+          <Typography paragraph textAlign={"center"}>
+            <Link style={{ color: "gold" }} to={"/login"}>
+              Login
+            </Link>
+          </Typography>
         </Box>
       ) : (
-        <Typography variant="h4">404 Not Found</Typography>
+        <Typography
+          variant="h4"
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          404 Not Found
+        </Typography>
       )}
+      <Box
+        width={"100%"}
+        padding="2rem 0"
+        display={"flex"}
+        justifyContent="center"
+        alignItems={"center"}
+      >
+        {response ? (
+          <Typography
+            paragraph
+            color="lightgreen"
+            padding={"0.5rem 1rem"}
+            border="2px dotted lightgreen"
+            textAlign={"center"}
+            sx={{ borderRadius: "8px" }}
+          >
+            {response}
+          </Typography>
+        ) : null}
+      </Box>
     </Container>
   );
 };

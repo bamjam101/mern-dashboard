@@ -53,10 +53,19 @@ const handleEmailVerification = async (req, res) => {
       userId: user._id,
       token: req.params.token,
     });
-    if (!token) return res.status(400).json("Invalid Link");
-
-    await User.updateOne({ _id: user._id, isVerified: true });
-    await token.remove();
+    if (!token)
+      return res
+        .status(400)
+        .json("Email has already been verified. Move to Login.");
+    await User.updateOne(
+      {
+        _id: user._id,
+      },
+      {
+        isEmailVerified: true,
+      }
+    );
+    await Token.deleteMany({ userId: user._id });
     res.status(200).json("Email Verified");
   } catch (err) {
     res.status(200).json(err);

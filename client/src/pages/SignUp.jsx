@@ -24,6 +24,7 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [contact, setContact] = useState("");
+  const [response, setResponse] = useState("");
 
   const handleUserSignUp = async (e) => {
     e.preventDefault();
@@ -36,11 +37,14 @@ const Register = () => {
         password,
       };
       try {
-        await axios.post(
+        const response = await axios.post(
           `${import.meta.env.VITE_APP_BASE_URL}/auth/signup`,
           newRegistrant
         );
-        navigate("/login");
+        setResponse(response.data);
+        setContact("");
+        setEmail("");
+        setPassword("");
       } catch (err) {
         console.log(err);
       }
@@ -129,16 +133,33 @@ const Register = () => {
             <Grid item>
               <Typography paragraph>
                 Already have an account? Go to{" "}
-                <Link
-                  style={{ color: theme.palette.secondary[300] }}
-                  to={"/login"}
-                >
+                <Link style={{ color: "gold" }} to={"/login"}>
                   Login
                 </Link>
               </Typography>
             </Grid>
           </Grid>
         </form>
+        <Box
+          width={"100%"}
+          padding="2rem 0"
+          display={"flex"}
+          justifyContent="center"
+          alignItems={"center"}
+        >
+          {response ? (
+            <Typography
+              paragraph
+              color="lightgreen"
+              padding={"0.5rem 1rem"}
+              border="2px dotted lightgreen"
+              textAlign={"center"}
+              sx={{ borderRadius: "8px" }}
+            >
+              {response}
+            </Typography>
+          ) : null}
+        </Box>
       </Box>
     </Container>
   );
