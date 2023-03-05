@@ -5,21 +5,22 @@ import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
 
 const Registrant = () => {
-  const [isEmpty, setIsEmpty] = useState(false);
   const [data, setData] = useState([]);
   const theme = useTheme();
-  const [isClicked, setIsClicked] = useState(false);
+  const [isUpdated, setIsUpdated] = useState(false);
   const [updatingRow, setUpdatingRow] = useState(null);
 
   async function handleEditSubmit() {
     if (updatingRow) {
-      const { _id, name, role } = updatingRow;
+      const { _id, name, pan, aadhar, role } = updatingRow;
       const response = await axios.patch(
         `${import.meta.env.VITE_APP_BASE_URL}/auth/approve`,
         {
           _id,
           name,
           role,
+          pan,
+          aadhar,
         }
       );
       console.log(response.data);
@@ -31,16 +32,15 @@ const Registrant = () => {
 
   const columns = [
     { field: "_id", headerName: "ID", flex: 0.5 },
+    { field: "name", headerName: "Name", flex: 0.5 },
     {
       field: "contact",
-      headerName: "Phone Number",
-      flex: 1,
-      renderCell: (params) => {
-        return params.value.replace(/^(\d{3})(\d{3})(\d{4})/, "($1)$2-$3");
-      },
+      headerName: "Contact",
+      flex: 0.5,
     },
     { field: "email", headerName: "Email", flex: 1 },
-    { field: "name", headerName: "Name", flex: 0.5, editable: true },
+    { field: "pan", headerName: "PAN", flex: 0.6, editable: true },
+    { field: "aadhar", headerName: "Aadhar", flex: 1, editable: true },
     { field: "role", headerName: "Role", flex: 0.5, editable: true },
     {
       field: "isApproved",
@@ -48,7 +48,7 @@ const Registrant = () => {
       flex: 0.5,
       editable: true,
       renderCell: (params) => {
-        if (isClicked) {
+        if (isUpdated) {
           const { row } = params;
           setUpdatingRow(row);
         }
@@ -64,7 +64,7 @@ const Registrant = () => {
               color: theme.palette.primary[100],
               fontWeight: "bold",
             }}
-            onClick={() => setIsClicked(true)}
+            onClick={() => setIsUpdated(true)}
           >
             Submit
           </button>
@@ -82,7 +82,7 @@ const Registrant = () => {
       );
       const result = response.data;
       if (typeof result === "string") {
-        setIsEmpty(true);
+        setData([]);
       } else {
         setData(result);
       }

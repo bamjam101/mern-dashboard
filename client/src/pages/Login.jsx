@@ -24,14 +24,12 @@ const Login = () => {
   const userId = getItemInLocalStorage("USER_ID");
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleUserLogin = async (e) => {
     e.preventDefault();
     const newUser = {
-      name,
       email,
       password,
     };
@@ -46,6 +44,7 @@ const Login = () => {
         dispatch(setUser(result._id));
         dispatch(setUsername(result.name));
         dispatch(setUserRole(result.role));
+        // dispatch(setToken(result.token));
         if (result?.role === "superadmin") {
           dispatch(setAdmin());
         } else if (result?.role === "admin") {
@@ -93,18 +92,6 @@ const Login = () => {
           }}
           onSubmit={handleUserLogin}
         >
-          <TextField
-            variant="outlined"
-            margin="normal"
-            label="Name"
-            required
-            fullWidth
-            id="name"
-            name="name"
-            autoFocus
-            autoComplete="off"
-            onChange={(e) => setName(e.target.value)}
-          ></TextField>
           <TextField
             variant="outlined"
             margin="normal"

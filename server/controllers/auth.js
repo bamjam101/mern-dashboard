@@ -1,19 +1,23 @@
-const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const User = require("../models/User");
 const Token = require("../models/Token");
 const sendEmail = require("../utlis");
 const referralCodes = require("referral-codes");
+const jwt = require("jsonwebtoken");
 
 const handleUserSignUp = async (req, res) => {
   try {
-    const { error } = req.body;
-    if (error) return res.status(400).json("App error encountered.");
-    let user = await User.findOne({ email: req.body.email });
+    const { name, contact, email, password, error } = req.body;
+
+    if (error) return res.status(400).json("Application error encountered.");
+    if (!(email && password && name && contact)) {
+      res.status(400).send("All inputs are required");
+    }
+    let user = await User.findOne({ email });
     if (user) return res.status(409).res("This Email Is Already In Use!");
     const salt = await bcrypt.genSalt(8);
-    const hashedPass = await bcrypt.hash(req.body.password, salt);
+    const hashedPass = await bcrypt.hash(password, salt);
 
     const existingUser = await User.find();
     if (existingUser?.length) {
@@ -24,9 +28,9 @@ const handleUserSignUp = async (req, res) => {
       });
 
       const newUser = new User({
-        name: req.body.name,
-        email: req.body.email,
-        contact: req.body.contact,
+        name,
+        email,
+        contact,
         password: hashedPass,
         referralLinks: [
           {
@@ -46,15 +50,24 @@ const handleUserSignUp = async (req, res) => {
           },
         ],
       });
-
+      // declare jwt token
+      // const jwtToken = jwt.sign(
+      //   { user_id: user._id, email },
+      //   process.env.TOKEN_KEY,
+      //   {
+      //     expiresIn: "1h",
+      //   }
+      // );
+      // save user token
+      // newUser.token = jwtToken;
       user = await newUser.save();
-      console.log(user);
-      const token = await new Token({
+
+      const modelToken = await new Token({
         userId: user._id,
         token: crypto.randomBytes(32).toString("hex"),
       }).save();
 
-      const url = `${process.env.APP_BASE_URL}/user/${token.userId}/verify/${token.token}`;
+      const url = `${process.env.APP_BASE_URL}/user/${modelToken.userId}/verify/${modelToken.token}`;
       await sendEmail(user.email, "Verify Your Gmail For Richdollar", url);
       res
         .status(200)
@@ -97,15 +110,26 @@ const handleUserApproval = async (req, res) => {
 
 const handleUserLogin = async (req, res) => {
   try {
-    const user = await User.findOne({ email: req.body.email });
-    if (user) {
-      const validated = await bcrypt.compare(req.body.password, user.password);
-      if (validated) {
-        const { password, ...others } = user._doc;
-        res.status(200).json(others);
-      } else {
-        res.status(400).json("Wrong credentials!");
-      }
+    const { email, password, error } = req.body;
+    if (error) return res.status(400).json("Application error encountered.");
+    if (!(email && password)) {
+      res.status(400).json("All inputs are required.");
+    }
+    const user = await User.findOne({ email });
+    if (user && (await bcrypt.compare(password, user.password))) {
+      // const jwtToken = jwt.sign(
+      //   { user_id: user._id, email },
+      //   process.env.TOKEN_KEY,
+      //   {
+      //     expiresIn: "1h",
+      //   }
+      // );
+
+      // // save user token
+      // user.token = jwtToken;
+
+      const { password, ...others } = user._doc;
+      res.status(200).json(others);
     } else {
       res.status(400).json("Wrong credentials!");
     }

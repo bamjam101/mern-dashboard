@@ -5,7 +5,6 @@ import success from "/success.png";
 import { Container, Typography, Button, Box } from "@mui/material";
 
 const Verification = () => {
-  const [validUrl, setValidUrl] = useState(true);
   const [response, setResponse] = useState("");
 
   const params = useParams();
@@ -18,9 +17,8 @@ const Verification = () => {
         }/verify/${params.token}`;
         const res = await axios.get(url);
         setValidUrl(true);
-        console.log(res);
       } catch (error) {
-        setResponse("Email has already been verified.");
+        setResponse("Email has been verified.");
       }
     };
     verifyEmailUrl();
@@ -39,28 +37,15 @@ const Verification = () => {
         width: "100%",
       }}
     >
-      {validUrl ? (
-        <Box display={"flex"} gap="1rem" flexDirection={"column"}>
-          <img src={success} alt="success_img" />
-          <Typography variant="h4">Email verified successfully</Typography>
-          <Typography paragraph textAlign={"center"}>
-            <Link style={{ color: "gold" }} to={"/login"}>
-              Login
-            </Link>
-          </Typography>
-        </Box>
-      ) : (
-        <Typography
-          variant="h4"
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          404 Not Found
+      <Box display={"flex"} gap="1rem" flexDirection={"column"}>
+        <img src={success} alt="success_img" />
+        <Typography variant="h4">Email verified successfully</Typography>
+        <Typography paragraph textAlign={"center"}>
+          <Link style={{ color: "gold" }} to={"/login"}>
+            Login
+          </Link>
         </Typography>
-      )}
+      </Box>
       <Box
         width={"100%"}
         padding="2rem 0"

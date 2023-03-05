@@ -7,6 +7,7 @@ const initialState = {
   username: getItemInLocalStorage("NAME") || "STRANGER",
   isAdmin: getItemInLocalStorage("IS_ADMIN") || false,
   role: getItemInLocalStorage("ROLE") || "regular",
+  // token: getItemInLocalStorage("TOKEN") || "",
 };
 
 export const globalSlice = createSlice({
@@ -33,6 +34,10 @@ export const globalSlice = createSlice({
       state.role = role.payload;
       setItemInLocalStorage("ROLE", state.role);
     },
+    // setToken: (state, token) => {
+    //   state.token = token.payload;
+    //   setItemInLocalStorage("TOKEN", state.token);
+    // },
     setLogout: (state) => {
       state = initialState;
     },
@@ -46,6 +51,7 @@ export const {
   setUserRole,
   setAdmin,
   setLogout,
+  // setToken,
 } = globalSlice.actions;
 
 export default globalSlice.reducer;

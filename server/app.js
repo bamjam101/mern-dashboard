@@ -1,6 +1,5 @@
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/users");
-// const registrantRoutes = require("./routes/registrants");
 
 const dotenv = require("dotenv");
 const express = require("express");
@@ -10,7 +9,6 @@ const morgan = require("morgan");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const path = require("path");
-const nodemailer = require("nodemailer");
 
 // Configuration for the server
 
@@ -41,4 +39,7 @@ mongoose
   .then(() => {
     app.listen(PORT, () => console.log(`Server Port: ${PORT}`));
   })
-  .catch((err) => console.log(`${err}. Could Not Connect.`));
+  .catch((err) => {
+    console.log(`${err}. Could Not Connect.`);
+    process.exit(1);
+  });

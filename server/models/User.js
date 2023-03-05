@@ -29,10 +29,15 @@ const UserSchema = new mongoose.Schema(
     pan: {
       type: String,
       unique: true,
+      default: null,
     },
     aadhar: {
       type: String,
       unique: true,
+      default: null,
+    },
+    token: {
+      type: String,
     },
     isApproved: {
       type: Boolean,
