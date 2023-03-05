@@ -26,9 +26,12 @@ const Registrant = () => {
       console.log(response.data);
     }
   }
+
   useEffect(() => {
     handleEditSubmit();
-  }, [updatingRow]);
+    console.log(updatingRow);
+    setIsUpdated(false);
+  }, [isUpdated]);
 
   const columns = [
     { field: "_id", headerName: "ID", flex: 0.5 },
@@ -48,11 +51,8 @@ const Registrant = () => {
       flex: 0.5,
       editable: true,
       renderCell: (params) => {
-        if (isUpdated) {
-          const { row } = params;
-          setUpdatingRow(row);
-        }
-        return params.value ? (
+        const { row } = params;
+        return (
           <button
             type="button"
             style={{
@@ -63,13 +63,17 @@ const Registrant = () => {
               backgroundColor: theme.palette.background.alt,
               color: theme.palette.primary[100],
               fontWeight: "bold",
+              zIndex: "1000",
+              cursor: "pointer",
             }}
-            onClick={() => setIsUpdated(true)}
+            onClick={() => {
+              const { isApproved, ...others } = row;
+              setUpdatingRow({ ...others, isApproved: true });
+              setIsUpdated(true);
+            }}
           >
-            Submit
+            Verify
           </button>
-        ) : (
-          "false"
         );
       },
     },

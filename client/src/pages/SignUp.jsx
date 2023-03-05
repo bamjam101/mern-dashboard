@@ -24,6 +24,7 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [contact, setContact] = useState("");
+  const [referral, setReferral] = useState("");
   const [response, setResponse] = useState("");
 
   const handleUserSignUp = async (e) => {
@@ -36,6 +37,7 @@ const Register = () => {
         contact,
         email,
         password,
+        referral,
       };
       try {
         const response = await axios.post(
@@ -47,6 +49,7 @@ const Register = () => {
         setContact("");
         setEmail("");
         setPassword("");
+        setReferral("");
       } catch (err) {
         console.log(err);
       }
@@ -132,6 +135,17 @@ const Register = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+            ></TextField>
+            <TextField
+              type="text"
+              label="Referral"
+              placeholder="Do you have a referral? If No, Skip."
+              fullWidth
+              id="referral"
+              name="referral"
+              value={referral}
+              autoComplete="off"
+              onChange={(e) => setReferral(e.target.value)}
             ></TextField>
           </Grid>
           <Button

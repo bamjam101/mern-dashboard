@@ -49,9 +49,7 @@ const Profile = () => {
   ];
 
   useEffect(() => {
-    navigator.clipboard.writeText(
-      `from=${userId}/to=${rowData._id}/ref=${rowData.link}`
-    );
+    navigator.clipboard.writeText(`${userId}/${rowData._id}/${rowData.link}`);
   }, [rowData]);
 
   useEffect(() => {

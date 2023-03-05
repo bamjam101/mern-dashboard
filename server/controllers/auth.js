@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const User = require("../models/User");
@@ -8,7 +9,7 @@ const jwt = require("jsonwebtoken");
 
 const handleUserSignUp = async (req, res) => {
   try {
-    const { name, contact, email, password, error } = req.body;
+    const { name, contact, email, password, referral, error } = req.body;
 
     if (error) return res.status(400).json("Application error encountered.");
     if (!(email && password && name && contact)) {
@@ -18,7 +19,6 @@ const handleUserSignUp = async (req, res) => {
     if (user) return res.status(409).res("This Email Is Already In Use!");
     const salt = await bcrypt.genSalt(8);
     const hashedPass = await bcrypt.hash(password, salt);
-
     const existingUser = await User.find();
     if (existingUser?.length) {
       const referrals = referralCodes.generate({
@@ -27,53 +27,102 @@ const handleUserSignUp = async (req, res) => {
         count: 5,
       });
 
-      const newUser = new User({
-        name,
-        email,
-        contact,
-        password: hashedPass,
-        referralLinks: [
-          {
-            link: referrals[0],
-          },
-          {
-            link: referrals[1],
-          },
-          {
-            link: referrals[2],
-          },
-          {
-            link: referrals[3],
-          },
-          {
-            link: referrals[4],
-          },
-        ],
-      });
-      // declare jwt token
-      // const jwtToken = jwt.sign(
-      //   { user_id: user._id, email },
-      //   process.env.TOKEN_KEY,
-      //   {
-      //     expiresIn: "1h",
-      //   }
-      // );
-      // save user token
-      // newUser.token = jwtToken;
-      user = await newUser.save();
+      if (referral) {
+        const array = referral.split("/");
+        const referralInfo = {
+          referredBy: array[0],
+          uid: mongoose.Types.ObjectId(array[1]),
+          link: array[2],
+        };
+        console.log(referralInfo.uid);
+        const referredByUser = await User.findOne({
+          _id: referralInfo.referredBy,
+        });
+        if (!referredByUser) return res.status(400).json("Invalid Referral");
+        console.log(referredByUser);
+        console.log("running");
+        if (referredByUser.referralLinks[0].isUsed)
+          return res
+            .status(400)
+            .json("Referral is either exhausted or invalid.");
+        const newUser = new User({
+          _id: referralInfo.uid,
+          name,
+          email,
+          contact,
+          password: hashedPass,
+          referredBy: referralInfo.referredBy,
+          referralLinks: [
+            {
+              link: referrals[0],
+            },
+            {
+              link: referrals[1],
+            },
+            {
+              link: referrals[2],
+            },
+            {
+              link: referrals[3],
+            },
+            {
+              link: referrals[4],
+            },
+          ],
+        });
+        user = await newUser.save();
 
-      const modelToken = await new Token({
-        userId: user._id,
-        token: crypto.randomBytes(32).toString("hex"),
-      }).save();
+        const modelToken = await new Token({
+          userId: user._id,
+          token: crypto.randomBytes(32).toString("hex"),
+        }).save();
 
-      const url = `${process.env.APP_BASE_URL}/user/${modelToken.userId}/verify/${modelToken.token}`;
-      await sendEmail(user.email, "Verify Your Gmail For Richdollar", url);
-      res
-        .status(200)
-        .json(
-          "Email registered. Please verify your email to proceed to login."
-        );
+        const url = `${process.env.APP_BASE_URL}/user/${modelToken.userId}/verify/${modelToken.token}`;
+        await sendEmail(user.email, "Verify Your Gmail For Richdollar", url);
+        res
+          .status(200)
+          .json(
+            "Email registered. Please verify your email to proceed to login."
+          );
+      } else {
+        const newUser = new User({
+          name,
+          email,
+          contact,
+          password: hashedPass,
+          referralLinks: [
+            {
+              link: referrals[0],
+            },
+            {
+              link: referrals[1],
+            },
+            {
+              link: referrals[2],
+            },
+            {
+              link: referrals[3],
+            },
+            {
+              link: referrals[4],
+            },
+          ],
+        });
+        user = await newUser.save();
+
+        const modelToken = await new Token({
+          userId: user._id,
+          token: crypto.randomBytes(32).toString("hex"),
+        }).save();
+
+        const url = `${process.env.APP_BASE_URL}/user/${modelToken.userId}/verify/${modelToken.token}`;
+        await sendEmail(user.email, "Verify Your Gmail For Richdollar", url);
+        res
+          .status(200)
+          .json(
+            "Email registered. Please verify your email to proceed to login."
+          );
+      }
     } else {
       const admin = new User({
         name: "anonymous",
