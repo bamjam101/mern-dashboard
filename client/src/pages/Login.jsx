@@ -51,7 +51,6 @@ const Login = () => {
         );
         dispatch(setUserRole(result.role));
         // dispatch(setToken(result.token));
-        console.log(result.role);
         if (result?.role === "superadmin") {
           dispatch(setAdmin(true));
         } else if (result?.role === "admin") {

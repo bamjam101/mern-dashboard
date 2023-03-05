@@ -1,9 +1,79 @@
-import { Avatar, Box, Container, Typography } from "@mui/material";
-import React from "react";
+import { CopyAllOutlined } from "@mui/icons-material";
+import {
+  Avatar,
+  Box,
+  Container,
+  IconButton,
+  Typography,
+  useTheme,
+} from "@mui/material";
+import { DataGrid } from "@mui/x-data-grid";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 const Profile = () => {
-  const { profile, role } = useSelector((state) => state.global);
+  const theme = useTheme();
+  const { userId, profile, role } = useSelector((state) => state.global);
+  let index;
+  let row = [];
+  const [referrals, setReferrals] = useState(null);
+  const [rowData, setRowData] = useState({
+    link: null,
+    isUsed: false,
+    _id: null,
+  });
+  const [isCopied, setIsCopied] = useState(false);
+
+  const columns = [
+    { field: "index", headerName: "Sr. No.", flex: 0.2 },
+    { field: "link", headerName: "Referral Link", flex: 1 },
+    { field: "_id", headerName: "Occupied By", flex: 1 },
+    {
+      field: "isUsed",
+      headerName: "Active",
+      flex: 1,
+    },
+    {
+      field: "copy",
+      headerName: "-----",
+      flex: 0.2,
+      renderCell: () => {
+        return (
+          <IconButton>
+            <CopyAllOutlined />
+          </IconButton>
+        );
+      },
+    },
+  ];
+
+  useEffect(() => {
+    navigator.clipboard.writeText(
+      `from=${userId}/to=${rowData._id}/ref=${rowData.link}`
+    );
+  }, [rowData]);
+
+  useEffect(() => {
+    const fetchReferrals = async () => {
+      const { data: res } = await axios.get(
+        `${import.meta.env.VITE_APP_BASE_URL}/user/${userId}/referrals`
+      );
+      if (res) {
+        index = 1;
+        res.forEach((element) => {
+          const { _id, link, isUsed } = element;
+          if (row.length < 5) {
+            row = [...row, { index, link, _id, isUsed, copy: null }];
+
+            index++;
+          }
+        });
+        setReferrals(row);
+      }
+    };
+    fetchReferrals();
+  }, []);
   return (
     <Container component={"main"}>
       <Box
@@ -26,7 +96,7 @@ const Profile = () => {
           padding={"0 1rem"}
           display="flex"
           flexDirection={"column"}
-          gap="1rem"
+          gap="0.5rem"
           justifyContent="center"
         >
           <Typography variant="h3" component={"h2"} textTransform="uppercase">
@@ -38,10 +108,26 @@ const Profile = () => {
           <Typography variant="h5" component={"h2"} textTransform="lowercase">
             {profile.email}
           </Typography>
-          <Typography variant="h5" component={"h2"}>
+          <Typography variant="h6" component={"h3"}>
             {profile.contact}
           </Typography>
         </Box>
+      </Box>
+      <Box mt={"2rem"} height="45vh">
+        <DataGrid
+          experimentalFeatures={{ newEditingApi: true }}
+          rows={referrals || []}
+          loading={!referrals}
+          getRowId={(referral) => referral._id}
+          columns={columns}
+          onSelectionModelChange={(ids) => {
+            const selectedIDs = new Set(ids);
+            const selectedRowData = referrals.filter((row) =>
+              selectedIDs.has(row._id.toString())
+            );
+            setRowData(selectedRowData[0]);
+          }}
+        />
       </Box>
     </Container>
   );

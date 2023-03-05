@@ -120,6 +120,20 @@ const handlePasswordReset = async (req, res) => {
   }
 };
 
+const getUserReferrals = async (req, res) => {
+  try {
+    const user = await User.findOne({ _id: req.params.id });
+    if (!user)
+      return res
+        .status(401)
+        .json("Invalid request. Please relogin to fix the issue.");
+
+    res.status(200).json(user.referralLinks);
+  } catch (error) {
+    res.status(500).json(error.message);
+  }
+};
+
 module.exports = {
   handleEmailVerification,
   getUser,
@@ -127,4 +141,5 @@ module.exports = {
   getUnapprovedUsers,
   handlePasswordChangeOTPGeneration,
   handlePasswordReset,
+  getUserReferrals,
 };

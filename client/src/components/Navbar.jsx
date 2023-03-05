@@ -25,7 +25,6 @@ import FlexBetween from "./FlexBetween";
 import { Link, useNavigate } from "react-router-dom";
 
 const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
-  console.log(user);
   const dispatch = useDispatch();
   const theme = useTheme();
   const navigate = useNavigate();
@@ -40,8 +39,8 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
   };
 
   const handleLogout = () => {
-    dispatch(setLogout());
     localStorage.clear();
+    dispatch(setLogout());
     navigate("/login");
   };
 
@@ -89,6 +88,7 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
                 "&:hover ": {
                   transform: "scale(1.02)",
                 },
+                color: theme.palette.secondary.main,
               }}
             >
               Richdollar
@@ -96,16 +96,13 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
           </Link>
         )}
         {/* Right end of Navbar */}
-        <FlexBetween gap={"1.5rem"}>
+        <FlexBetween gap="0.5rem">
           <IconButton onClick={() => dispatch(setMode())}>
             {theme.palette.mode === "dark" ? (
               <DarkModeOutlined sx={{ fontSize: "1.5rem" }} />
             ) : (
               <LightModeOutlined sx={{ fontSize: "1.5rem" }} />
             )}
-          </IconButton>
-          <IconButton>
-            <SettingsOutlined />
           </IconButton>
           <FlexBetween
             onClick={handleClick}
@@ -130,7 +127,7 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
               fontSize="0.85rem"
               sx={{ color: theme.palette.secondary[100] }}
             >
-              {user?.profile?.name.toUpperCase()}
+              {user?.profile?.name}
             </Typography>
             <ArrowDropDownOutlined
               sx={{
