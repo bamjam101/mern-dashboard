@@ -16,7 +16,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { setAdmin, setUser, setUsername, setUserRole } from "../state";
+import { setAdmin, setProfile, setUser, setUserRole } from "../state";
 import { getItemInLocalStorage, setItemInLocalStorage } from "../utlis";
 
 const Login = () => {
@@ -42,13 +42,20 @@ const Login = () => {
         const result = response.data;
         setItemInLocalStorage("USER_ID", result._id);
         dispatch(setUser(result._id));
-        dispatch(setUsername(result.name));
+        dispatch(
+          setProfile({
+            name: result.name,
+            contact: result.contact,
+            email: result.email,
+          })
+        );
         dispatch(setUserRole(result.role));
         // dispatch(setToken(result.token));
+        console.log(result.role);
         if (result?.role === "superadmin") {
-          dispatch(setAdmin());
+          dispatch(setAdmin(true));
         } else if (result?.role === "admin") {
-          dispatch(setAdmin());
+          dispatch(setAdmin(true));
         }
       }
       navigate("/dashboard");

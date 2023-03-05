@@ -16,6 +16,7 @@ import Network from "./pages/Network";
 import Verification from "./pages/Verification";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
+import Profile from "./pages/Profile";
 
 const ProtectedRoute = ({ children }) => {
   const user = useSelector((state) => state.global.userId);
@@ -52,7 +53,22 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-              <Route path="/network" element={<Network />} />
+              <Route
+                path="/network"
+                element={
+                  <ProtectedRoute>
+                    <Network />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/profile"
+                element={
+                  <ProtectedRoute>
+                    <Profile />
+                  </ProtectedRoute>
+                }
+              />
             </Route>
             <Route path="/signup" element={<SignUp />} />
             <Route path="/user/:id/verify/:token" element={<Verification />} />

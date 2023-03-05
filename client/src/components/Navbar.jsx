@@ -22,9 +22,10 @@ import {
   useTheme,
 } from "@mui/material";
 import FlexBetween from "./FlexBetween";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
+  console.log(user);
   const dispatch = useDispatch();
   const theme = useTheme();
   const navigate = useNavigate();
@@ -55,29 +56,45 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
     >
       <Toolbar sx={{ justifyContent: "space-between" }}>
         {/*Left end of Navbar*/}
-        <FlexBetween>
-          <IconButton onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
-            <MenuIcon />
-          </IconButton>
-          <FlexBetween
-            backgroundColor={theme.palette.background}
-            borderRadius="1rem"
-            gap="1rem"
-            p="0.1rem 1.5rem"
-          >
-            <InputBase
-              sx={{
-                border: `2px solid ${theme.palette.primary[100]}`,
-                padding: "0.2rem 0.5rem",
-                borderRadius: "1.5rem",
-              }}
-              placeholder="Search..."
-            />
-            <IconButton>
-              <Search sx={{ fontSize: "1.6rem" }} />
+        {user?.isAdmin ? (
+          <FlexBetween>
+            <IconButton onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
+              <MenuIcon />
             </IconButton>
+            <FlexBetween
+              backgroundColor={theme.palette.background}
+              borderRadius="1rem"
+              gap="1rem"
+              p="0.1rem 1.5rem"
+            >
+              <InputBase
+                sx={{
+                  border: `2px solid ${theme.palette.primary[100]}`,
+                  padding: "0.2rem 0.5rem",
+                  borderRadius: "1.5rem",
+                }}
+                placeholder="Search..."
+              />
+              <IconButton>
+                <Search sx={{ fontSize: "1.6rem" }} />
+              </IconButton>
+            </FlexBetween>
           </FlexBetween>
-        </FlexBetween>
+        ) : (
+          <Link style={{ textDecoration: "none", color: "inherit" }} to="/">
+            <Typography
+              variant="h4"
+              fontWeight={"bold"}
+              sx={{
+                "&:hover ": {
+                  transform: "scale(1.02)",
+                },
+              }}
+            >
+              Richdollar
+            </Typography>
+          </Link>
+        )}
         {/* Right end of Navbar */}
         <FlexBetween gap={"1.5rem"}>
           <IconButton onClick={() => dispatch(setMode())}>
@@ -113,7 +130,7 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
               fontSize="0.85rem"
               sx={{ color: theme.palette.secondary[100] }}
             >
-              {user?.username}
+              {user?.profile?.name.toUpperCase()}
             </Typography>
             <ArrowDropDownOutlined
               sx={{

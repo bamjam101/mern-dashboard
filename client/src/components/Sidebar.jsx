@@ -220,7 +220,7 @@ const Sidebar = ({
                 m={"0.2rem 0"}
                 sx={{ color: theme.palette.secondary[100] }}
               >
-                {user?.username}
+                {user?.profile?.name}
               </Typography>
               <SettingsOutlined
                 sx={{
