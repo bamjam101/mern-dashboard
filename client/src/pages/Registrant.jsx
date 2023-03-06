@@ -12,7 +12,7 @@ const Registrant = () => {
 
   async function handleEditSubmit() {
     if (updatingRow) {
-      const { _id, name, pan, aadhar, role } = updatingRow;
+      const { _id, name, pan, aadhar, isApproved, role } = updatingRow;
       const response = await axios.patch(
         `${import.meta.env.VITE_APP_BASE_URL}/auth/approve`,
         {
@@ -21,6 +21,7 @@ const Registrant = () => {
           role,
           pan,
           aadhar,
+          isApproved,
         }
       );
       console.log(response.data);
@@ -29,7 +30,6 @@ const Registrant = () => {
 
   useEffect(() => {
     handleEditSubmit();
-    console.log(updatingRow);
     setIsUpdated(false);
   }, [isUpdated]);
 

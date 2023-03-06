@@ -5,7 +5,6 @@ const User = require("../models/User");
 const Token = require("../models/Token");
 const sendEmail = require("../utlis");
 const referralCodes = require("referral-codes");
-const jwt = require("jsonwebtoken");
 
 const handleUserSignUp = async (req, res) => {
   try {
@@ -34,14 +33,24 @@ const handleUserSignUp = async (req, res) => {
           uid: mongoose.Types.ObjectId(array[1]),
           link: array[2],
         };
-        console.log(referralInfo.uid);
         const referredByUser = await User.findOne({
           _id: referralInfo.referredBy,
         });
-        if (!referredByUser) return res.status(400).json("Invalid Referral");
         console.log(referredByUser);
-        console.log("running");
-        if (referredByUser.referralLinks[0].isUsed)
+        if (!referredByUser) return res.status(400).json("Invalid Referral");
+
+        let referralMatches = false;
+        let index = 0;
+        referredByUser.referralLinks.forEach((referral) => {
+          const { link } = referral;
+          if (link === referralInfo.link) {
+            referralMatches = true;
+            referredByUser.referralLinks[index].isUsed = true;
+          }
+          index = index + 1;
+        });
+        console.log(referralMatches);
+        if (!referralMatches)
           return res
             .status(400)
             .json("Referral is either exhausted or invalid.");
@@ -71,6 +80,7 @@ const handleUserSignUp = async (req, res) => {
           ],
         });
         user = await newUser.save();
+        if (user) await referredByUser.save();
 
         const modelToken = await new Token({
           userId: user._id,
@@ -166,17 +176,6 @@ const handleUserLogin = async (req, res) => {
     }
     const user = await User.findOne({ email });
     if (user && (await bcrypt.compare(password, user.password))) {
-      // const jwtToken = jwt.sign(
-      //   { user_id: user._id, email },
-      //   process.env.TOKEN_KEY,
-      //   {
-      //     expiresIn: "1h",
-      //   }
-      // );
-
-      // // save user token
-      // user.token = jwtToken;
-
       const { password, ...others } = user._doc;
       res.status(200).json(others);
     } else {
