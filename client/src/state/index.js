@@ -3,11 +3,10 @@ import { getItemInLocalStorage, setItemInLocalStorage } from "../utlis";
 
 const initialState = {
   mode: getItemInLocalStorage("MODE") || "dark",
-  userId: getItemInLocalStorage("USER_ID") || "",
-  profile: getItemInLocalStorage("PROFILE") || {},
-  isAdmin: getItemInLocalStorage("IS_ADMIN") || false,
-  role: getItemInLocalStorage("ROLE") || "regular",
-  // token: getItemInLocalStorage("TOKEN") || "",
+  userId: "",
+  profile: {},
+  isAdmin: false,
+  role: "user",
 };
 
 export const globalSlice = createSlice({
@@ -20,19 +19,15 @@ export const globalSlice = createSlice({
     },
     setUser: (state, id) => {
       state.userId = id.payload;
-      setItemInLocalStorage("USER_ID", state.userId);
     },
     setAdmin: (state, isAdmin) => {
       state.isAdmin = isAdmin.payload;
-      setItemInLocalStorage("IS_ADMIN", state.isAdmin);
     },
     setProfile: (state, profile) => {
       state.profile = profile.payload;
-      setItemInLocalStorage("PROFILE", profile.payload);
     },
     setUserRole: (state, role) => {
       state.role = role.payload;
-      setItemInLocalStorage("ROLE", state.role);
     },
     setLogout: (state) => {
       state = initialState;
@@ -47,7 +42,6 @@ export const {
   setUserRole,
   setAdmin,
   setLogout,
-  // setToken,
 } = globalSlice.actions;
 
 export default globalSlice.reducer;

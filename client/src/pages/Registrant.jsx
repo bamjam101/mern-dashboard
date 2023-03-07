@@ -14,18 +14,14 @@ const Registrant = () => {
   async function handleEditSubmit() {
     if (updatingRow) {
       const { _id, name, pan, aadhar, isApproved, role } = updatingRow;
-      const response = await axios.patch(
-        `${import.meta.env.VITE_APP_BASE_URL}/auth/approve`,
-        {
-          _id,
-          name,
-          role,
-          pan,
-          aadhar,
-          isApproved,
-        }
-      );
-      console.log(response.data);
+      await axios.patch(`${import.meta.env.VITE_APP_BASE_URL}/auth/approve`, {
+        _id,
+        name,
+        role,
+        pan,
+        aadhar,
+        isApproved,
+      });
     }
   }
 
@@ -83,7 +79,7 @@ const Registrant = () => {
   useEffect(() => {
     const fetchRegistrants = async () => {
       const response = await axios.get(
-        `${import.meta.env.VITE_APP_BASE_URL}/user/registrants/all`,
+        `${import.meta.env.VITE_APP_BASE_URL}/user/registrants`,
         {
           headers: {
             Authorization: `Bearer ${getItemInLocalStorage("TOKEN")}`,

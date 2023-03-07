@@ -11,6 +11,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { getItemInLocalStorage } from "../utlis";
 
 const Dashboard = () => {
   const { userId, profile, role, isAdmin } = useSelector(
@@ -55,7 +56,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchReferrals = async () => {
       const { data: res } = await axios.get(
-        `${import.meta.env.VITE_APP_BASE_URL}/user/${userId}/referrals`,
+        `${import.meta.env.VITE_APP_BASE_URL}/user/referrals/me`,
         {
           headers: {
             Authorization: `Bearer ${getItemInLocalStorage("TOKEN")}`,

@@ -4,7 +4,6 @@ import {
   DarkModeOutlined,
   Menu as MenuIcon,
   Search,
-  SettingsOutlined,
   ArrowDropDownOutlined,
   PersonOutlined,
 } from "@mui/icons-material";

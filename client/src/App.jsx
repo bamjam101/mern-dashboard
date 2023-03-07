@@ -16,9 +16,10 @@ import Network from "./pages/Network";
 import Verification from "./pages/Verification";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
+import { getItemInLocalStorage } from "./utlis";
 
 const ProtectedRoute = ({ children }) => {
-  const user = useSelector((state) => state.global.userId);
+  const user = getItemInLocalStorage("TOKEN");
   if (!user) {
     return <Navigate to="/login" />;
   }

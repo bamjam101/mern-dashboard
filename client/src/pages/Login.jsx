@@ -43,21 +43,21 @@ const Login = () => {
         console.log(result);
         setItemInLocalStorage("TOKEN", token);
         setItemInLocalStorage("USER_ID", result._id);
-        dispatch(setUser(result._id));
-        dispatch(
-          setProfile({
-            name: result.name,
-            contact: result.contact,
-            email: result.email,
-            isApproved: result.isApproved,
-          })
-        );
-        dispatch(setUserRole(result.role));
-        if (result?.role === "superadmin") {
-          dispatch(setAdmin(true));
-        } else if (result?.role === "admin") {
-          dispatch(setAdmin(true));
-        }
+        // dispatch(setUser(result._id));
+        // dispatch(
+        //   setProfile({
+        //     name: result.name,
+        //     contact: result.contact,
+        //     email: result.email,
+        //     isApproved: result.isApproved,
+        //   })
+        // );
+        // dispatch(setUserRole(result.role));
+        // if (result?.role === "superadmin") {
+        //   dispatch(setAdmin(true));
+        // } else if (result?.role === "admin") {
+        //   dispatch(setAdmin(true));
+        // }
       }
       navigate("/dashboard");
     } catch (err) {

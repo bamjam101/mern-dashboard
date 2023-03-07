@@ -131,6 +131,23 @@ const handlePasswordReset = async (req, res) => {
   }
 };
 
+const getMyReferrals = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user)
+      return res
+        .status(401)
+        .json("Invalid request. Please relogin to fix the issue.");
+    if (user.isApproved) {
+      res.status(200).json(user.referralLinks);
+    } else {
+      res.status(200).json("Your Referrals Will Be Unlocked After KYC.");
+    }
+  } catch (error) {
+    res.status(500).json(error.message);
+  }
+};
+
 const getUserReferrals = async (req, res) => {
   try {
     const user = await User.findOne({ _id: req.params.id });
@@ -156,5 +173,6 @@ module.exports = {
   getUnapprovedUsers,
   handlePasswordChangeOTPGeneration,
   handlePasswordReset,
+  getMyReferrals,
   getUserReferrals,
 };
