@@ -34,10 +34,6 @@ export const globalSlice = createSlice({
       state.role = role.payload;
       setItemInLocalStorage("ROLE", state.role);
     },
-    // setToken: (state, token) => {
-    //   state.token = token.payload;
-    //   setItemInLocalStorage("TOKEN", state.token);
-    // },
     setLogout: (state) => {
       state = initialState;
     },

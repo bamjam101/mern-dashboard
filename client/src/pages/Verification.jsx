@@ -15,7 +15,11 @@ const Verification = () => {
         const url = `${import.meta.env.VITE_APP_BASE_URL}/user/${
           params.id
         }/verify/${params.token}`;
-        const res = await axios.get(url);
+        const res = await axios.get(url, {
+          headers: {
+            Authorization: `Bearer ${getItemInLocalStorage("TOKEN")}`,
+          },
+        });
         setValidUrl(true);
       } catch (error) {
         setResponse("Email has been verified.");

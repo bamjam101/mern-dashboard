@@ -39,7 +39,9 @@ const Login = () => {
         newUser
       );
       if (response.data) {
-        const result = response.data;
+        const { user: result, token } = response.data;
+        console.log(result);
+        setItemInLocalStorage("TOKEN", token);
         setItemInLocalStorage("USER_ID", result._id);
         dispatch(setUser(result._id));
         dispatch(
@@ -47,10 +49,10 @@ const Login = () => {
             name: result.name,
             contact: result.contact,
             email: result.email,
+            isApproved: result.isApproved,
           })
         );
         dispatch(setUserRole(result.role));
-        // dispatch(setToken(result.token));
         if (result?.role === "superadmin") {
           dispatch(setAdmin(true));
         } else if (result?.role === "admin") {

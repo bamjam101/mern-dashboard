@@ -5,6 +5,7 @@ const User = require("../models/User");
 const Token = require("../models/Token");
 const sendEmail = require("../utlis");
 const referralCodes = require("referral-codes");
+const jwt = require("jsonwebtoken");
 
 const handleUserSignUp = async (req, res) => {
   try {
@@ -176,8 +177,15 @@ const handleUserLogin = async (req, res) => {
     }
     const user = await User.findOne({ email });
     if (user && (await bcrypt.compare(password, user.password))) {
+      if (!user.isEmailVerified)
+        return res.status(401).json("Please Verify Your Account First.");
+
+      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+        expiresIn: process.env.JWT_EXPIRY,
+      });
+
       const { password, ...others } = user._doc;
-      res.status(200).json(others);
+      res.status(200).json({ user: others, token });
     } else {
       res.status(400).json("Wrong credentials!");
     }

@@ -34,6 +34,17 @@ const getUnapprovedUsers = async (req, res) => {
   }
 };
 
+const getMe = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+
+    res.status(200).json(user);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json(err);
+  }
+};
+
 const getUser = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
@@ -138,8 +149,9 @@ const getUserReferrals = async (req, res) => {
 };
 
 module.exports = {
-  handleEmailVerification,
+  getMe,
   getUser,
+  handleEmailVerification,
   getAllUsers,
   getUnapprovedUsers,
   handlePasswordChangeOTPGeneration,

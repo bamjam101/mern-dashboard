@@ -3,6 +3,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
+import { getItemInLocalStorage } from "../utlis";
 
 const Registrant = () => {
   const [data, setData] = useState([]);
@@ -82,7 +83,12 @@ const Registrant = () => {
   useEffect(() => {
     const fetchRegistrants = async () => {
       const response = await axios.get(
-        `${import.meta.env.VITE_APP_BASE_URL}/user/registrants/all`
+        `${import.meta.env.VITE_APP_BASE_URL}/user/registrants/all`,
+        {
+          headers: {
+            Authorization: `Bearer ${getItemInLocalStorage("TOKEN")}`,
+          },
+        }
       );
       const result = response.data;
       if (typeof result === "string") {
