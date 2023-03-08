@@ -39,7 +39,6 @@ const Login = () => {
       );
       if (response.data) {
         const { user: result, token } = response.data;
-        console.log(result);
         setItemInLocalStorage("TOKEN", token);
       }
       navigate("/dashboard");

@@ -1,20 +1,37 @@
 const User = require("../models/User");
-const Token = require("../models/Token");
-const crypto = require("crypto");
-const bcrypt = require("bcrypt");
-const sendEmail = require("../utlis");
 
 const getAllUsers = async (req, res) => {
   try {
-    const user = await User.findMany();
-    if (user) {
-      const { password, ...others } = user._doc;
-      res.status(200).json(others);
-    } else {
-      res.status(200).json("No users to show.");
-    }
+    if (
+      req.user.role !== "superadmin" &&
+      req.user.role !== "admin" &&
+      req.user.role !== "partialAdmin"
+    )
+      return res.status(401).json("Not authorized to make such request.");
+    const users = await User.find().select("-password");
+    if (!users) return res.status(201).json("No user found.");
+    res.status(200).json(users);
   } catch (err) {
     res.status(500).json(err);
+  }
+};
+
+const deleteUser = async (req, res) => {
+  try {
+    if (
+      req.user.role !== "superadmin" &&
+      req.user.role !== "admin" &&
+      req.user.role !== "partialAdmin"
+    )
+      return res.status(401).json("Not authorized to make such request.");
+    const user = await User.findById(req.params.id);
+    if (!user) return res.status(404).json("No such user found.");
+    if (user.role === "user" || user.role === "partialAdmin") {
+      await user.delete();
+    } else return res.status(400).json("Cannot process request.");
+  } catch (error) {
+    console.log(error);
+    res.status(500).json(500);
   }
 };
 
@@ -43,124 +60,9 @@ const getUser = async (req, res) => {
   }
 };
 
-const handleEmailVerification = async (req, res) => {
-  try {
-    const user = await User.findOne({ _id: req.params.id });
-    if (!user) return res.status(400).json("Invalid Link");
-    const token = await Token.findOne({
-      userId: user._id,
-      token: req.params.token,
-    });
-    if (!token)
-      return res
-        .status(400)
-        .json("Email has already been verified. Move to Login.");
-    await User.updateOne(
-      {
-        _id: user._id,
-      },
-      {
-        isEmailVerified: true,
-      }
-    );
-    await Token.deleteMany({ userId: user._id });
-    res.status(200).json("Email Verified");
-  } catch (err) {
-    res.status(200).json(err);
-  }
-};
-
-const handlePasswordChangeOTPGeneration = async (req, res) => {
-  const { error } = req.body;
-  if (error) return res.status(400).json("Error occurred in application.");
-
-  const user = await User.findOne({ email: req.body.email });
-  if (!user)
-    return res.status(404).json("No user exist with given credentials!");
-
-  const token = await new Token({
-    userId: user._id,
-    token: crypto.randomBytes(32).toString("hex"),
-  }).save();
-
-  const url = `${process.env.APP_BASE_URL}/user/${token.userId}/reset/${token.token}`;
-  await sendEmail(user.email, "Reset Your Account Password", url);
-  res.status(200).json("Email to reset your password has been sent.");
-};
-
-const handlePasswordReset = async (req, res) => {
-  try {
-    const user = await User.findOne({ _id: req.params.id });
-    if (!user) return res.status(400).json("Invalid Link");
-    const token = await Token.findOne({
-      userId: user._id,
-      token: req.params.token,
-    });
-    const salt = await bcrypt.genSalt(8);
-    const hashedPass = await bcrypt.hash(req.body.password, salt);
-    if (!token)
-      return res.status(400).json("Kindly check your link, it is incorrect.");
-    await User.updateOne(
-      {
-        _id: user._id,
-      },
-      {
-        password: hashedPass,
-      }
-    );
-    await Token.deleteMany({ userId: user._id });
-    res.status(200).json("Password has been changed.");
-  } catch (err) {
-    res.status(200).json(err);
-  }
-};
-
-const getMyReferrals = async (req, res) => {
-  try {
-    const user = await User.findById(req.user.id);
-    if (!user)
-      return res
-        .status(401)
-        .json("Invalid request. Please relogin to fix the issue.");
-    if (user.isApproved) {
-      res.status(200).json(user.referralLinks);
-    } else {
-      res
-        .status(201)
-        .json({
-          message: "Your Referrals Will Be Unlocked After KYC.",
-          data: null,
-        });
-    }
-  } catch (error) {
-    res.status(500).json(error.message);
-  }
-};
-
-const getUserReferrals = async (req, res) => {
-  try {
-    const user = await User.findOne({ _id: req.params.id });
-    if (!user)
-      return res
-        .status(401)
-        .json("Invalid request. Please relogin to fix the issue.");
-    if (user.isApproved) {
-      res.status(200).json(user.referralLinks);
-    } else {
-      res.status(200).json("Your Referrals Will Be Unlocked After KYC.");
-    }
-  } catch (error) {
-    res.status(500).json(error.message);
-  }
-};
-
 module.exports = {
   getMe,
   getUser,
-  handleEmailVerification,
+  deleteUser,
   getAllUsers,
-  handlePasswordChangeOTPGeneration,
-  handlePasswordReset,
-  getMyReferrals,
-  getUserReferrals,
 };

@@ -51,18 +51,18 @@ const Network = () => {
     }
   }, []);
   return (
-    <Container component={"main"}>
+    <Box m="1.5rem 2.5rem">
       {!isAdmin ? (
-        <Header title="Your Network" subtitle="" />
+        <Header title="YOUR NETWORK" subtitle="" />
       ) : (
-        <Header title="Networks" subtitle="List Of Networks" />
+        <Header title="NETWORKS" subtitle="List Of Networks..." />
       )}
       {!isAdmin ? (
         <Box></Box>
       ) : (
         <Table data={data} columns={columns} isEditable={false} />
       )}
-    </Container>
+    </Box>
   );
 };
 

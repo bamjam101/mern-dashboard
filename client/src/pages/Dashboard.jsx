@@ -56,7 +56,7 @@ const Dashboard = () => {
 
   const fetchReferrals = async () => {
     const { data: res } = await axios.get(
-      `${import.meta.env.VITE_APP_BASE_URL}/user/referrals/me`,
+      `${import.meta.env.VITE_APP_BASE_URL}/referral/me`,
       {
         headers: {
           Authorization: `Bearer ${getItemInLocalStorage("TOKEN")}`,

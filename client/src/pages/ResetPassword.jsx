@@ -24,17 +24,17 @@ const ResetPassword = () => {
   const handleResetPassword = async (event) => {
     event.preventDefault();
     try {
-      const url = `${import.meta.env.VITE_APP_BASE_URL}/user/${
+      const url = `${import.meta.env.VITE_APP_BASE_URL}/recovery/${
         params.id
       }/reset-password/${params.token}`;
       const res = await axios.post(url, {
         password: password,
       });
-      if (res.data) {
+      if (res?.data) {
         setIsRequestSent(true);
       }
     } catch (error) {
-      setResponse("Email has already been verified.");
+      setResponse("Password has been changed.");
     }
   };
 

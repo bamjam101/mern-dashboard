@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import React, { useState } from "react";
+import ResponseText from "../components/ResponseText";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
@@ -21,7 +22,7 @@ const ForgotPassword = () => {
     event.preventDefault();
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_APP_BASE_URL}/user/forgot-password`,
+        `${import.meta.env.VITE_APP_BASE_URL}/recovery/forgot-password`,
         {
           email: email,
         }
@@ -103,26 +104,7 @@ const ForgotPassword = () => {
             </Grid>
           ) : null}
         </form>
-        <Box
-          width={"100%"}
-          padding="2rem 0"
-          display={"flex"}
-          justifyContent="center"
-          alignItems={"center"}
-        >
-          {response ? (
-            <Typography
-              paragraph
-              color="lightgreen"
-              padding={"0.5rem 1rem"}
-              border="2px dotted lightgreen"
-              textAlign={"center"}
-              sx={{ borderRadius: "8px" }}
-            >
-              {response}
-            </Typography>
-          ) : null}
-        </Box>
+        <ResponseText response={response} />
       </Box>
     </Container>
   );

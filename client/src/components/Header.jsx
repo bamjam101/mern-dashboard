@@ -8,9 +8,7 @@ const Header = ({ title, subtitle }) => {
       <Typography variant="h5" component={"h2"} fontWeight="bold">
         {title.toUpperCase()}
       </Typography>
-      <Typography variant="h6" component={"h3"}>
-        {subtitle.toUpperCase()}
-      </Typography>
+      <Typography paragraph>{subtitle.toUpperCase()}</Typography>
     </Box>
   );
 };

@@ -62,6 +62,8 @@ const handleUserSignUp = async (req, res) => {
           email,
           contact,
           password: hashedPass,
+          isEmailVerified: true,
+          isApproved: true,
           referredBy: referralInfo.referredBy,
           referralLinks: [
             {
@@ -90,7 +92,7 @@ const handleUserSignUp = async (req, res) => {
         }).save();
 
         const url = `${process.env.APP_BASE_URL}/user/${modelToken.userId}/verify/${modelToken.token}`;
-        await sendEmail(user.email, "Verify Your Gmail For Richdollar", url);
+        // await sendEmail(user.email, "Verify Your Gmail For Richdollar", url);
         res
           .status(200)
           .json(
@@ -101,6 +103,8 @@ const handleUserSignUp = async (req, res) => {
           name,
           email,
           contact,
+          isEmailVerified: true,
+          isApproved: true,
           password: hashedPass,
           referralLinks: [
             {
@@ -128,7 +132,7 @@ const handleUserSignUp = async (req, res) => {
         }).save();
 
         const url = `${process.env.APP_BASE_URL}/user/${modelToken.userId}/verify/${modelToken.token}`;
-        await sendEmail(user.email, "Verify Your Gmail For Richdollar", url);
+        // await sendEmail(user.email, "Verify Your Gmail For Richdollar", url);
         res
           .status(200)
           .json(
@@ -180,7 +184,35 @@ const handleUserLogin = async (req, res) => {
   }
 };
 
+const handleEmailVerification = async (req, res) => {
+  try {
+    const user = await User.findOne({ _id: req.params.id });
+    if (!user) return res.status(400).json("Invalid Link");
+    const token = await Token.findOne({
+      userId: user._id,
+      token: req.params.token,
+    });
+    if (!token)
+      return res
+        .status(400)
+        .json("Email has already been verified. Move to Login.");
+    await User.updateOne(
+      {
+        _id: user._id,
+      },
+      {
+        isEmailVerified: true,
+      }
+    );
+    await Token.deleteMany({ userId: user._id });
+    res.status(200).json("Email Verified");
+  } catch (err) {
+    res.status(200).json(err);
+  }
+};
+
 module.exports = {
   handleUserSignUp,
   handleUserLogin,
+  handleEmailVerification,
 };

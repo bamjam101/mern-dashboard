@@ -2,6 +2,8 @@ const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/users");
 const networkRoutes = require("./routes/networks");
 const registrantRoutes = require("./routes/registrants");
+const recoveryRoutes = require("./routes/recovery");
+const referralRoutes = require("./routes/referrals");
 
 const dotenv = require("dotenv");
 const express = require("express");
@@ -28,10 +30,12 @@ app.use(cors());
 app.use("/public", express.static(path.join(__dirname, "public")));
 
 // Routes
-app.use("/user", userRoutes);
 app.use("/auth", authRoutes);
+app.use("/user", userRoutes);
+app.use("/referral", referralRoutes);
 app.use("/network", networkRoutes);
 app.use("/registrant", registrantRoutes);
+app.use("/recovery", recoveryRoutes);
 
 // Mongoose setup
 const PORT = process.env.Port || 5001;

@@ -3,11 +3,7 @@ const {
   getMe,
   getUser,
   getAllUsers,
-  handleEmailVerification,
-  handlePasswordChangeOTPGeneration,
-  handlePasswordReset,
-  getMyReferrals,
-  getUserReferrals,
+  deleteUser,
 } = require("../controllers/users");
 
 const protect = require("../middlewares/jwtAuth");
@@ -15,15 +11,8 @@ const protect = require("../middlewares/jwtAuth");
 const router = express.Router();
 
 router.get("/me", protect, getMe);
-router.get("/:id", protect, getUser);
 router.get("/all", protect, getAllUsers);
-
-router.get("/:id/verify/:token", handleEmailVerification);
-
-router.post("/forgot-password", handlePasswordChangeOTPGeneration);
-router.post("/:id/reset-password/:token", handlePasswordReset);
-
-router.get("/referrals/me", protect, getMyReferrals);
-router.get("/referrals/:id", getUserReferrals);
+router.get("/:id", protect, getUser);
+router.delete("/:id", protect, deleteUser);
 
 module.exports = router;

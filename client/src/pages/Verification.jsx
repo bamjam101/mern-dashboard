@@ -14,7 +14,7 @@ const Verification = () => {
   useEffect(() => {
     const verifyEmailUrl = async () => {
       try {
-        const url = `${import.meta.env.VITE_APP_BASE_URL}/user/${
+        const url = `${import.meta.env.VITE_APP_BASE_URL}/auth/${
           params.id
         }/verify/${params.token}`;
         const res = await axios.get(url);
