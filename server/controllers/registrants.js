@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const Wallet = require("../models/Wallet");
 
 const getUnapprovedUsers = async (req, res) => {
   try {

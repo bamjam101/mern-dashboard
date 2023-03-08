@@ -1,5 +1,6 @@
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/users");
+const networkRoutes = require("./routes/networks");
 const registrantRoutes = require("./routes/registrants");
 
 const dotenv = require("dotenv");
@@ -29,6 +30,7 @@ app.use("/public", express.static(path.join(__dirname, "public")));
 // Routes
 app.use("/user", userRoutes);
 app.use("/auth", authRoutes);
+app.use("/network", networkRoutes);
 app.use("/registrant", registrantRoutes);
 
 // Mongoose setup
