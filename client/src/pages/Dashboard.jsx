@@ -14,6 +14,7 @@ import { useSelector } from "react-redux";
 import { getItemInLocalStorage } from "../utlis";
 
 const Dashboard = () => {
+  const [response, setResponse] = useState("");
   const { userId, profile, role, isAdmin } = useSelector(
     (state) => state.global
   );
@@ -53,29 +54,30 @@ const Dashboard = () => {
     navigator.clipboard.writeText(`${userId}/${rowData._id}/${rowData.link}`);
   }, [rowData]);
 
-  useEffect(() => {
-    const fetchReferrals = async () => {
-      const { data: res } = await axios.get(
-        `${import.meta.env.VITE_APP_BASE_URL}/user/referrals/me`,
-        {
-          headers: {
-            Authorization: `Bearer ${getItemInLocalStorage("TOKEN")}`,
-          },
-        }
-      );
-      if (res) {
-        index = 1;
-        res.forEach((element) => {
-          const { _id, link, isUsed } = element;
-          if (row.length < 5) {
-            row = [...row, { index, link, _id, isUsed, copy: null }];
-
-            index++;
-          }
-        });
-        setReferrals(row);
+  const fetchReferrals = async () => {
+    const { data: res } = await axios.get(
+      `${import.meta.env.VITE_APP_BASE_URL}/user/referrals/me`,
+      {
+        headers: {
+          Authorization: `Bearer ${getItemInLocalStorage("TOKEN")}`,
+        },
       }
-    };
+    );
+    setResponse(res?.message);
+    if (res?.length) {
+      index = 1;
+      res?.forEach((element) => {
+        const { _id, link, isUsed } = element;
+        if (row.length < 5) {
+          row = [...row, { index, link, _id, isUsed, copy: null }];
+
+          index++;
+        }
+      });
+      setReferrals(row);
+    }
+  };
+  useEffect(() => {
     fetchReferrals();
   }, []);
   return (
@@ -133,6 +135,26 @@ const Dashboard = () => {
               setRowData(selectedRowData[0]);
             }}
           />
+          <Box
+            width={"100%"}
+            padding="2rem 0"
+            display={"flex"}
+            justifyContent="center"
+            alignItems={"center"}
+          >
+            {response ? (
+              <Typography
+                paragraph
+                color="tomato"
+                padding={"0.5rem 1rem"}
+                border="2px dotted tomato"
+                textAlign={"center"}
+                sx={{ borderRadius: "8px" }}
+              >
+                {response}
+              </Typography>
+            ) : null}
+          </Box>
         </Box>
       )}
     </Container>

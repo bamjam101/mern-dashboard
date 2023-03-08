@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import axios from "axios";
 import success from "/success.png";
 import { Container, Typography, Button, Box } from "@mui/material";
+import ResponseText from "../components/ResponseText";
 
 const Verification = () => {
   const [validUrl, setValidUrl] = useState(true);
@@ -56,26 +57,7 @@ const Verification = () => {
           </Link>
         </Typography>
       </Box>
-      <Box
-        width={"100%"}
-        padding="2rem 0"
-        display={"flex"}
-        justifyContent="center"
-        alignItems={"center"}
-      >
-        {response ? (
-          <Typography
-            paragraph
-            color="lightgreen"
-            padding={"0.5rem 1rem"}
-            border="2px dotted lightgreen"
-            textAlign={"center"}
-            sx={{ borderRadius: "8px" }}
-          >
-            {response}
-          </Typography>
-        ) : null}
-      </Box>
+      <ResponseText response={response} />
     </Container>
   );
 };

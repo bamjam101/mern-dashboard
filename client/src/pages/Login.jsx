@@ -21,8 +21,7 @@ import { getItemInLocalStorage, setItemInLocalStorage } from "../utlis";
 
 const Login = () => {
   const theme = useTheme();
-  const userId = getItemInLocalStorage("USER_ID");
-  const dispatch = useDispatch();
+  const userId = getItemInLocalStorage("TOKEN");
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -42,22 +41,6 @@ const Login = () => {
         const { user: result, token } = response.data;
         console.log(result);
         setItemInLocalStorage("TOKEN", token);
-        setItemInLocalStorage("USER_ID", result._id);
-        // dispatch(setUser(result._id));
-        // dispatch(
-        //   setProfile({
-        //     name: result.name,
-        //     contact: result.contact,
-        //     email: result.email,
-        //     isApproved: result.isApproved,
-        //   })
-        // );
-        // dispatch(setUserRole(result.role));
-        // if (result?.role === "superadmin") {
-        //   dispatch(setAdmin(true));
-        // } else if (result?.role === "admin") {
-        //   dispatch(setAdmin(true));
-        // }
       }
       navigate("/dashboard");
     } catch (err) {

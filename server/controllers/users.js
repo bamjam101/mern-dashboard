@@ -125,7 +125,12 @@ const getMyReferrals = async (req, res) => {
     if (user.isApproved) {
       res.status(200).json(user.referralLinks);
     } else {
-      res.status(200).json("Your Referrals Will Be Unlocked After KYC.");
+      res
+        .status(201)
+        .json({
+          message: "Your Referrals Will Be Unlocked After KYC.",
+          data: null,
+        });
     }
   } catch (error) {
     res.status(500).json(error.message);

@@ -12,6 +12,7 @@ import {
   Avatar,
 } from "@mui/material";
 import { LockOutlined } from "@mui/icons-material";
+import ResponseText from "../components/ResponseText";
 
 const ResetPassword = () => {
   const [isRequestSent, setIsRequestSent] = useState(false);
@@ -109,26 +110,7 @@ const ResetPassword = () => {
         ) : null}
       </Box>
 
-      <Box
-        width={"100%"}
-        padding="2rem 0"
-        display={"flex"}
-        justifyContent="center"
-        alignItems={"center"}
-      >
-        {response ? (
-          <Typography
-            paragraph
-            color="lightgreen"
-            padding={"0.5rem 1rem"}
-            border="2px dotted lightgreen"
-            textAlign={"center"}
-            sx={{ borderRadius: "8px" }}
-          >
-            {response}
-          </Typography>
-        ) : null}
-      </Box>
+      <ResponseText response={response} />
     </Container>
   );
 };
