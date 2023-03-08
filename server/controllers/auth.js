@@ -6,6 +6,7 @@ const Token = require("../models/Token");
 const sendEmail = require("../utlis");
 const referralCodes = require("referral-codes");
 const jwt = require("jsonwebtoken");
+const Wallet = require("../models/Wallet");
 
 const handleUserSignUp = async (req, res) => {
   try {
@@ -153,21 +154,6 @@ const handleUserSignUp = async (req, res) => {
   }
 };
 
-const handleUserApproval = async (req, res) => {
-  try {
-    const user = await User.findByIdAndUpdate(
-      req.body._id,
-      { ...req.body, isApproved: true },
-      {
-        new: true,
-      }
-    );
-    res.status(200).json(user);
-  } catch (err) {
-    res.status(500).json(err);
-  }
-};
-
 const handleUserLogin = async (req, res) => {
   try {
     const { email, password, error } = req.body;
@@ -195,7 +181,6 @@ const handleUserLogin = async (req, res) => {
 };
 
 module.exports = {
-  handleUserApproval,
   handleUserSignUp,
   handleUserLogin,
 };

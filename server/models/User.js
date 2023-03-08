@@ -65,7 +65,7 @@ const UserSchema = new mongoose.Schema(
       },
     ],
   },
-  { timestamps: true }
+  { timestamps: true, toJSON: { virtuals: true } }
 );
 
 UserSchema.path("referralLinks").validate(function (value) {

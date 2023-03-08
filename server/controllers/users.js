@@ -18,22 +18,6 @@ const getAllUsers = async (req, res) => {
   }
 };
 
-const getUnapprovedUsers = async (req, res) => {
-  try {
-    const registrants = await User.find({
-      isApproved: false,
-      isEmailVerified: true,
-    }).select("-password");
-    if (registrants?.length < 1) {
-      res.status(200).json("No registrants to display.");
-    } else {
-      res.status(200).json(registrants);
-    }
-  } catch (err) {
-    res.status(500).json(err);
-  }
-};
-
 const getMe = async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
@@ -170,7 +154,6 @@ module.exports = {
   getUser,
   handleEmailVerification,
   getAllUsers,
-  getUnapprovedUsers,
   handlePasswordChangeOTPGeneration,
   handlePasswordReset,
   getMyReferrals,

@@ -14,19 +14,23 @@ const Registrant = () => {
   async function handleEditSubmit() {
     if (updatingRow) {
       const { _id, name, pan, aadhar, isApproved, role } = updatingRow;
-      await axios.patch(`${import.meta.env.VITE_APP_BASE_URL}/auth/approve`, {
-        _id,
-        name,
-        role,
-        pan,
-        aadhar,
-        isApproved,
-      });
+      await axios.patch(
+        `${import.meta.env.VITE_APP_BASE_URL}/registrant/${_id}`,
+        {
+          _id,
+          name,
+          role,
+          pan,
+          aadhar,
+          isApproved,
+        }
+      );
     }
   }
 
   useEffect(() => {
     handleEditSubmit();
+    fetchRegistrants();
     setIsUpdated(false);
   }, [isUpdated]);
 
@@ -76,23 +80,23 @@ const Registrant = () => {
     },
   ];
 
-  useEffect(() => {
-    const fetchRegistrants = async () => {
-      const response = await axios.get(
-        `${import.meta.env.VITE_APP_BASE_URL}/user/registrants`,
-        {
-          headers: {
-            Authorization: `Bearer ${getItemInLocalStorage("TOKEN")}`,
-          },
-        }
-      );
-      const result = response.data;
-      if (typeof result === "string") {
-        setData([]);
-      } else {
-        setData(result);
+  const fetchRegistrants = async () => {
+    const response = await axios.get(
+      `${import.meta.env.VITE_APP_BASE_URL}/registrant`,
+      {
+        headers: {
+          Authorization: `Bearer ${getItemInLocalStorage("TOKEN")}`,
+        },
       }
-    };
+    );
+    const result = response.data;
+    if (typeof result === "string") {
+      setData([]);
+    } else {
+      setData(result);
+    }
+  };
+  useEffect(() => {
     fetchRegistrants();
   }, []);
   return (

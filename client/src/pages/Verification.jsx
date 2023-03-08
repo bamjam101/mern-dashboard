@@ -5,6 +5,7 @@ import success from "/success.png";
 import { Container, Typography, Button, Box } from "@mui/material";
 
 const Verification = () => {
+  const [validUrl, setValidUrl] = useState(true);
   const [response, setResponse] = useState("");
 
   const params = useParams();
@@ -15,12 +16,13 @@ const Verification = () => {
         const url = `${import.meta.env.VITE_APP_BASE_URL}/user/${
           params.id
         }/verify/${params.token}`;
-        const res = await axios.get(url, {
-          headers: {
-            Authorization: `Bearer ${getItemInLocalStorage("TOKEN")}`,
-          },
-        });
-        setValidUrl(true);
+        const res = await axios.get(url);
+        if (res.data) {
+          setValidUrl(true);
+        } else {
+          setValidUrl(false);
+          setResponse("Email has already been verified.");
+        }
       } catch (error) {
         setResponse("Email has been verified.");
       }
@@ -43,7 +45,11 @@ const Verification = () => {
     >
       <Box display={"flex"} gap="1rem" flexDirection={"column"}>
         <img src={success} alt="success_img" />
-        <Typography variant="h4">Email verified successfully</Typography>
+        {validUrl ? (
+          <Typography variant="h4">Email verified successfully</Typography>
+        ) : (
+          <Typography variant="h4">Verification code had been used</Typography>
+        )}
         <Typography paragraph textAlign={"center"}>
           <Link style={{ color: "gold" }} to={"/login"}>
             Login

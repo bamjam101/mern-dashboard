@@ -1,5 +1,6 @@
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/users");
+const registrantRoutes = require("./routes/registrants");
 
 const dotenv = require("dotenv");
 const express = require("express");
@@ -28,6 +29,7 @@ app.use("/public", express.static(path.join(__dirname, "public")));
 // Routes
 app.use("/user", userRoutes);
 app.use("/auth", authRoutes);
+app.use("/registrant", registrantRoutes);
 
 // Mongoose setup
 const PORT = process.env.Port || 5001;
