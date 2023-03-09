@@ -10,7 +10,8 @@ const getAllUsers = async (req, res) => {
       return res.status(401).json("Not authorized to make such request.");
     const users = await User.find().select("-password");
     if (!users) return res.status(201).json("No user found.");
-    res.status(200).json(users);
+
+    return res.status(200).json(users);
   } catch (err) {
     res.status(500).json(err);
   }

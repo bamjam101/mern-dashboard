@@ -1,10 +1,11 @@
-import { Typography, Box, useTheme } from "@mui/material";
+import { Typography, Box, useTheme, IconButton } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
 import Table from "../components/Table";
 import { getItemInLocalStorage } from "../utlis";
+import { SaveOutlined } from "@mui/icons-material";
 
 const Registrant = () => {
   const [data, setData] = useState([]);
@@ -55,7 +56,7 @@ const Registrant = () => {
       renderCell: (params) => {
         const { row } = params;
         return (
-          <button
+          <IconButton
             type="button"
             style={{
               width: "100%",
@@ -74,8 +75,8 @@ const Registrant = () => {
               setIsUpdated(true);
             }}
           >
-            Verify
-          </button>
+            <SaveOutlined />
+          </IconButton>
         );
       },
     },

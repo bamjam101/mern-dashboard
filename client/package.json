@@ -17,6 +17,7 @@
     "@mui/x-data-grid": "^5.17.25",
     "@reduxjs/toolkit": "^1.9.3",
     "axios": "^1.3.4",
+    "framer-motion": "^10.2.3",
     "react": "^18.2.0",
     "react-datepicker": "^4.10.0",
     "react-dom": "^18.2.0",
