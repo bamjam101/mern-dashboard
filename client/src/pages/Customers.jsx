@@ -1,4 +1,4 @@
-import { Typography, Box, useTheme, IconButton } from "@mui/material";
+import { Typography, Box, useTheme, IconButton, Button } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
 import { AnimatePresence } from "framer-motion";
@@ -6,11 +6,17 @@ import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
 import Table from "../components/Table";
 import { getItemInLocalStorage } from "../utlis";
-import { DeleteOutlineOutlined, EditOutlined } from "@mui/icons-material";
+import {
+  AddCircleOutline,
+  AddOutlined,
+  DeleteOutlineOutlined,
+  EditOutlined,
+} from "@mui/icons-material";
 import Modal from "../components/Modal";
 
 const Customers = () => {
   const [data, setData] = useState([]);
+  const [isNewUser, setIsNewUser] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [isDeleteMode, setIsDeleteMode] = useState(false);
   const theme = useTheme();
@@ -23,6 +29,21 @@ const Customers = () => {
   const open = () => {
     setModalOpen(true);
   };
+
+  async function createNewUser() {
+    if (updatingRow) {
+      console.log(updatingRow);
+      await axios.post(
+        `${import.meta.env.VITE_APP_BASE_URL}/user/new`,
+        updatingRow,
+        {
+          headers: {
+            Authorization: `Bearer ${getItemInLocalStorage("TOKEN")}`,
+          },
+        }
+      );
+    }
+  }
 
   async function handleEditSubmit() {
     if (updatingRow) {
@@ -76,9 +97,13 @@ const Customers = () => {
     if (isDeleteMode) {
       handleUserDelete();
     }
+    if (isNewUser) {
+      createNewUser();
+    }
     fetchCustomers();
     setIsUpdated(false);
     setIsDeleteMode(false);
+    setIsNewUser(false);
     setIsEditMode(false);
   }, [isUpdated]);
 
@@ -157,8 +182,34 @@ const Customers = () => {
     },
   ];
   return (
-    <Box m="1.5rem 2.5rem">
+    <Box m="1.5rem 2.5rem" position={"relative"}>
       <Header title="CUSTOMERS" subtitle="List Of Customers..." />
+      <Box
+        display={"flex"}
+        justifyContent="end"
+        alignItems={"center"}
+        position="absolute"
+        right={"0"}
+        top={"0"}
+      >
+        <Button
+          onClick={() => {
+            open();
+            setIsNewUser(true);
+          }}
+          sx={{
+            color: theme.palette.secondary[200],
+            background: theme.palette.background.alt,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: "0.5rem",
+          }}
+        >
+          <AddCircleOutline />{" "}
+          <Typography fontSize={"0.8rem"}>Add User</Typography>
+        </Button>
+      </Box>
       <Table columns={columns} data={data} isEditable={true} />
 
       <footer>
@@ -166,9 +217,10 @@ const Customers = () => {
           {modalOpen && (
             <Modal
               data={updatingRow}
+              setData={setUpdatingRow}
               setUpdateMode={setIsUpdated}
               handleClose={close}
-              mode={isDeleteMode ? "DELETE" : isEditMode ? "Edit" : null}
+              mode={isDeleteMode ? "DELETE" : isEditMode ? "EDIT" : "FORM"}
             />
           )}
         </AnimatePresence>
