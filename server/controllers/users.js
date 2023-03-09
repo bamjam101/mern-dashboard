@@ -2,34 +2,39 @@ const User = require("../models/User");
 const Token = require("../models/Token");
 const referralCodes = require("referral-codes");
 const bcrypt = require("bcrypt");
+const Wallet = require("../models/Wallet");
 
 const createUser = async (req, res) => {
   try {
     if (req.user.role === "user")
       return res.status(401).json("Not authorized to make such request.");
-    const { name, contact, role, email, password, referral, error } = req.body;
+    const { name, contact, role, email, pan, aadhar, error } = req.body;
 
     if (error) return res.status(400).json("Application error encountered.");
-    if (!(email && password && name && contact)) {
+    if (!(email && name && contact && role && pan && aadhar)) {
       res.status(400).send("All inputs are required");
     }
+
     let user = await User.findOne({ email });
-    if (user) return res.status(409).res("This Email Is Already In Use!");
+    if (user) return res.status(409).json("This Email Is Already In Use!");
     const salt = await bcrypt.genSalt(8);
-    const hashedPass = await bcrypt.hash(password, salt);
+    const hashedPass = await bcrypt.hash("test111", salt);
     const referrals = referralCodes.generate({
       prefix: "richdollar-",
       length: 10,
       count: 5,
     });
+
     const newUser = new User({
       name,
       email,
       contact,
-      isEmailVerified: false,
+      role,
+      pan,
+      aadhar,
+      isEmailVerified: true,
       isApproved: true,
       password: hashedPass,
-      role: role,
       referralLinks: [
         {
           link: referrals[0],
@@ -50,16 +55,10 @@ const createUser = async (req, res) => {
     });
     user = await newUser.save();
 
-    const modelToken = await new Token({
+    const wallet = new Wallet({
       userId: user._id,
-      token: crypto.randomBytes(32).toString("hex"),
-    }).save();
-
-    const url = `${process.env.APP_BASE_URL}/user/${modelToken.userId}/verify/${modelToken.token}`;
-    await sendEmail(user.email, "Verify Your Gmail For Richdollar", url);
-    res
-      .status(200)
-      .json("Email registered. Please verify your email to proceed to login.");
+    });
+    await wallet.save();
   } catch (error) {
     console.log(error);
     res.status(500).json(error);
@@ -74,7 +73,7 @@ const getAllUsers = async (req, res) => {
       req.user.role !== "partialAdmin"
     )
       return res.status(401).json("Not authorized to make such request.");
-    const users = await User.find().select("-password");
+    const users = await User.find({ role: "user" }).select("-password");
     if (!users) return res.status(201).json("No user found.");
 
     return res.status(200).json(users);

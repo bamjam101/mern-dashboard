@@ -6,7 +6,6 @@ const Token = require("../models/Token");
 const sendEmail = require("../utlis");
 const referralCodes = require("referral-codes");
 const jwt = require("jsonwebtoken");
-const Wallet = require("../models/Wallet");
 
 const handleUserSignUp = async (req, res) => {
   try {
@@ -38,7 +37,6 @@ const handleUserSignUp = async (req, res) => {
         const referredByUser = await User.findOne({
           _id: referralInfo.referredBy,
         });
-        console.log(referredByUser);
         if (!referredByUser) return res.status(400).json("Invalid Referral");
 
         let referralMatches = false;
@@ -83,6 +81,7 @@ const handleUserSignUp = async (req, res) => {
             },
           ],
         });
+        console.log(newUser);
         user = await newUser.save();
         if (user) await referredByUser.save();
 
@@ -132,7 +131,7 @@ const handleUserSignUp = async (req, res) => {
         }).save();
 
         const url = `${process.env.APP_BASE_URL}/user/${modelToken.userId}/verify/${modelToken.token}`;
-        // await sendEmail(user.email, "Verify Your Gmail For Richdollar", url);
+        await sendEmail(user.email, "Verify Your Gmail For Richdollar", url);
         res
           .status(200)
           .json(

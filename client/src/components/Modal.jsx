@@ -38,6 +38,7 @@ const Modal = ({ data, setData, mode, setUpdateMode, handleClose }) => {
     name: "",
     contact: "",
     email: "",
+    password: "",
     referredBy: "",
     role: "",
     pan: "",

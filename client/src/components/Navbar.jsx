@@ -11,6 +11,7 @@ import { useDispatch } from "react-redux";
 import { setLogout, setMode } from "../state";
 import {
   AppBar,
+  Box,
   Button,
   IconButton,
   InputBase,
@@ -94,6 +95,19 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
             </Typography>
           </Link>
         )}
+        {!user?.isAdmin ? (
+          <Box>
+            <Link
+              to="/network"
+              style={{
+                color: "inherit",
+                textDecoration: "none",
+              }}
+            >
+              Network
+            </Link>
+          </Box>
+        ) : null}
         {/* Right end of Navbar */}
         <FlexBetween gap="0.5rem">
           <IconButton onClick={() => dispatch(setMode())}>

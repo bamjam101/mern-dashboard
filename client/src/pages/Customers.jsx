@@ -73,7 +73,7 @@ const Customers = () => {
     }
   }
 
-  const fetchCustomers = async () => {
+  async function fetchCustomers() {
     const response = await axios.get(
       `${import.meta.env.VITE_APP_BASE_URL}/user/all`,
       {
@@ -88,7 +88,7 @@ const Customers = () => {
     } else {
       setData(result);
     }
-  };
+  }
 
   useEffect(() => {
     if (isEditMode) {

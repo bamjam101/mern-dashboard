@@ -13,10 +13,10 @@ const WalletSchema = mongoose.Schema({
   wallet: {
     type: Number,
   },
+  active: {
+    type: Boolean,
+    default: true,
+  },
 });
 
 module.exports = mongoose.model("Wallet", WalletSchema);
-
-WalletSchema.path("wallet").set(function () {
-  this.wallet = this.investment;
-});
