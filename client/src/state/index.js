@@ -7,6 +7,14 @@ const initialState = {
   profile: {},
   isAdmin: false,
   role: "user",
+  levels: {
+    zero: [],
+    one: [],
+    two: [],
+    three: [],
+    four: [],
+    five: [],
+  },
 };
 
 export const globalSlice = createSlice({
@@ -29,6 +37,9 @@ export const globalSlice = createSlice({
     setUserRole: (state, role) => {
       state.role = role.payload;
     },
+    setLevels: (state, levels) => {
+      state.levels = levels.payload;
+    },
     setLogout: (state) => {
       state = {
         mode: getItemInLocalStorage("MODE") || "dark",
@@ -47,6 +58,7 @@ export const {
   setProfile,
   setUserRole,
   setAdmin,
+  setLevels,
   setLogout,
 } = globalSlice.actions;
 

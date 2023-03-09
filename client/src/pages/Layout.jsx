@@ -63,6 +63,9 @@ const Layout = () => {
           isSidebarOpen={isSidebarOpen}
           setIsSidebarOpen={setIsSidebarOpen}
         />
+        {state.isAdmin ? null : (
+          <Box sx={{ height: "8vh", width: "100%" }}></Box>
+        )}
         <Outlet />
       </Box>
     </Box>

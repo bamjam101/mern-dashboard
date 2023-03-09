@@ -47,7 +47,7 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
   return (
     <AppBar
       sx={{
-        position: "static",
+        position: user.isAdmin ? "static" : "fixed",
         background: "none",
         boxShadow: "none",
         width: "100%",

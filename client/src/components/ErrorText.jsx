@@ -13,9 +13,9 @@ const ErrorText = ({ error }) => {
       {error ? (
         <Typography
           paragraph
-          color="lightgreen"
+          color="tomato"
           padding={"0.5rem 1rem"}
-          border="2px dotted lightgreen"
+          border="2px dotted tomato"
           textAlign={"center"}
           sx={{ borderRadius: "8px" }}
         >

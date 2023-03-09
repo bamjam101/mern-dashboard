@@ -1,16 +1,19 @@
-import { Box, Container, useTheme } from "@mui/material";
-import { useSelector } from "react-redux";
+import { Box } from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
 import React, { useEffect, useState } from "react";
 import Table from "../components/Table";
 import Header from "../components/Header";
 import axios from "axios";
 import { getItemInLocalStorage } from "../utlis";
 import ErrorText from "../components/ErrorText";
+import Tree from "../components/Tree";
+import { setLevels } from "../state";
 
 const Network = () => {
-  const theme = useTheme();
-  const [error, setError] = useState("false");
+  const [isTreeReady, setIsTreeReady] = useState(false);
+  const [error, setError] = useState("");
   const [data, setData] = useState([]);
+  const dispatch = useDispatch();
   const isAdmin = useSelector((state) => state.global.isAdmin);
 
   const columns = [
@@ -34,7 +37,7 @@ const Network = () => {
 
   const getMyNetwork = async () => {
     try {
-      const response = await axios.get(
+      const { data: response } = await axios.get(
         `${import.meta.env.VITE_APP_BASE_URL}/network/me`,
         {
           headers: {
@@ -42,15 +45,25 @@ const Network = () => {
           },
         }
       );
-      console.log(response.data);
-      console.log(response.data.message);
+      setData(response.data);
     } catch (error) {
       setError(error.message);
     }
-
-    // setData(data);
-    // console.log(message);
   };
+
+  useEffect(() => {
+    dispatch(
+      setLevels({
+        zero: data[0],
+        one: data[1],
+        two: data[2],
+        three: data[3],
+        four: data[4],
+        five: data[5],
+      })
+    );
+    setIsTreeReady(true);
+  }, [data]);
 
   useEffect(() => {
     if (isAdmin) {
@@ -60,19 +73,20 @@ const Network = () => {
     }
   }, []);
   return (
-    <Box m="1.5rem 2.5rem">
+    <Box m="1.5rem 2.5rem" position={"relative"}>
       {!isAdmin ? (
         <Header title="YOUR NETWORK" subtitle="" />
       ) : (
         <Header title="NETWORKS" subtitle="List Of Networks..." />
       )}
       {!isAdmin ? (
-        <Box></Box>
+        <Box overflow={"hidden"} position={"absolute"} left="2%" bottom={"10%"}>
+          {isTreeReady ? <Tree /> : null}
+        </Box>
       ) : (
         <Table data={data} columns={columns} isEditable={false} />
       )}
-
-      <ErrorText error={error} />
+      {error ? <ErrorText error={error} /> : null}
     </Box>
   );
 };
