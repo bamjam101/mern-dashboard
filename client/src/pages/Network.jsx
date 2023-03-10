@@ -1,30 +1,28 @@
-import { Box } from "@mui/material";
+import { Box, IconButton } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import React, { useEffect, useState } from "react";
-import Table from "../components/Table";
 import Header from "../components/Header";
 import axios from "axios";
 import { getItemInLocalStorage } from "../utlis";
 import ErrorText from "../components/ErrorText";
 import Tree from "../components/Tree";
 import { setLevels } from "../state";
+import { useNavigate, useParams } from "react-router-dom";
+import { CloseOutlined } from "@mui/icons-material";
 
 const Network = () => {
+  const navigate = useNavigate();
   const [isTreeReady, setIsTreeReady] = useState(false);
+  const { isAdmin } = useSelector((state) => state.global);
   const [error, setError] = useState("");
   const [data, setData] = useState([]);
   const dispatch = useDispatch();
-  const isAdmin = useSelector((state) => state.global.isAdmin);
 
-  const columns = [
-    { field: "networkId", headerName: "Network ID", flex: 0.3 },
-    { field: "networkOwner", headerName: "Network Leader", flex: 0.5 },
-    { field: "networkStrength", headerName: "Network Strength", flex: 0.2 },
-  ];
+  const params = useParams();
 
-  const getAllNetworks = async () => {
+  const getUserNetwork = async () => {
     const { data: response } = await axios.get(
-      `${import.meta.env.VITE_APP_BASE_URL}/network/all`,
+      `${import.meta.env.VITE_APP_BASE_URL}/network/${params.id}`,
       {
         headers: {
           Authorization: `Bearer ${getItemInLocalStorage("TOKEN")}`,
@@ -32,7 +30,7 @@ const Network = () => {
       }
     );
 
-    setData(response);
+    setData(response.data);
   };
 
   const getMyNetwork = async () => {
@@ -67,25 +65,33 @@ const Network = () => {
 
   useEffect(() => {
     if (isAdmin) {
-      getAllNetworks();
+      getUserNetwork();
     } else {
       getMyNetwork();
     }
   }, []);
   return (
-    <Box m="1.5rem 2.5rem" position={"relative"}>
-      {!isAdmin ? (
-        <Header title="YOUR NETWORK" subtitle="" />
-      ) : (
-        <Header title="NETWORKS" subtitle="List Of Networks..." />
-      )}
-      {!isAdmin ? (
-        <Box overflow={"hidden"} position={"absolute"} left="2%" bottom={"10%"}>
-          {isTreeReady ? <Tree /> : null}
-        </Box>
-      ) : (
-        <Table data={data} columns={columns} isEditable={false} />
-      )}
+    <Box m="1.5rem 2.5rem">
+      <Box position="fixed" width={"100%"}>
+        {!isAdmin ? (
+          <Header title="YOUR NETWORK" subtitle={""} />
+        ) : (
+          <Header title="User NETWORK" subtitle={""} />
+        )}
+        <IconButton
+          sx={{
+            position: "absolute",
+            right: "5%",
+            top: "5%",
+          }}
+          onClick={() => navigate(-1)}
+        >
+          <CloseOutlined />
+        </IconButton>
+      </Box>
+      <Box overflow={"hidden"} position={"absolute"} left="0%" bottom={"0%"}>
+        {isTreeReady ? <Tree /> : null}
+      </Box>
       {error ? <ErrorText error={error} /> : null}
     </Box>
   );

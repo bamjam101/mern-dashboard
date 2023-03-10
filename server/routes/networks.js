@@ -9,8 +9,6 @@ const router = express.Router();
 const protect = require("../middlewares/jwtAuth");
 
 router.get("/me", protect, getMyNetwork);
-router.get("/all", protect, getAllNetwork);
-
 router.get("/:id", protect, getUserNetwork);
 
 module.exports = router;

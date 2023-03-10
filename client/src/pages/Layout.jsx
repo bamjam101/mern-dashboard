@@ -6,7 +6,13 @@ import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import { getItemInLocalStorage } from "../utlis";
 import axios from "axios";
-import { setAdmin, setProfile, setUser, setUserRole } from "../state";
+import {
+  setAdmin,
+  setLoading,
+  setProfile,
+  setUser,
+  setUserRole,
+} from "../state";
 
 const Layout = () => {
   const dispatch = useDispatch();
@@ -38,6 +44,7 @@ const Layout = () => {
     } else if (result?.role === "admin") {
       dispatch(setAdmin(true));
     }
+    dispatch(setLoading(false));
   }
   const state = useSelector((state) => state.global);
   const isNonMobile = useMediaQuery("(min-width: 600px)");

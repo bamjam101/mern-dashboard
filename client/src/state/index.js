@@ -15,6 +15,7 @@ const initialState = {
     four: [],
     five: [],
   },
+  isLoading: true,
 };
 
 export const globalSlice = createSlice({
@@ -40,6 +41,9 @@ export const globalSlice = createSlice({
     setLevels: (state, levels) => {
       state.levels = levels.payload;
     },
+    setLoading: (state, boolean) => {
+      state.isLoading = boolean.payload;
+    },
     setLogout: (state) => {
       state = {
         mode: getItemInLocalStorage("MODE") || "dark",
@@ -59,6 +63,7 @@ export const {
   setUserRole,
   setAdmin,
   setLevels,
+  setLoading,
   setLogout,
 } = globalSlice.actions;
 

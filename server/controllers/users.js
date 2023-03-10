@@ -114,13 +114,12 @@ const getMe = async (req, res) => {
 
 const getUser = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
-    if (user) {
-      const { password, ...others } = user._doc;
-      res.status(200).json(others);
-    } else {
-      res.status(200).json("No user of such sort.");
-    }
+    if (req.user.role === "user")
+      return res.status(401).json("Not authorized to make such request.");
+    const user = await User.findById(req.params.id).select("-password");
+    if (!user) return res.status(404).json("No such user exists.");
+
+    res.status(200).json(user);
   } catch (err) {
     res.status(500).json(err);
   }

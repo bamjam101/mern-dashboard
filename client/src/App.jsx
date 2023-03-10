@@ -13,6 +13,7 @@ import SignUp from "./pages/SignUp";
 import Dashboard from "./pages/Dashboard";
 import Registrant from "./pages/Registrant";
 import Customers from "./pages/Customers";
+import UserProfile from "./pages/UserProfile";
 import Network from "./pages/Network";
 import Verification from "./pages/Verification";
 import ForgotPassword from "./pages/ForgotPassword";
@@ -55,7 +56,8 @@ function App() {
                 }
               />
               <Route
-                path="/customers"
+                exact
+                path="/users"
                 element={
                   <ProtectedRoute>
                     <Customers />
@@ -63,10 +65,36 @@ function App() {
                 }
               />
               <Route
+                exact
                 path="/network"
                 element={
                   <ProtectedRoute>
                     <Network />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/network/:id"
+                element={
+                  <ProtectedRoute>
+                    <Network />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                exact
+                path="/user"
+                element={
+                  <ProtectedRoute>
+                    <UserProfile />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/user/:id"
+                element={
+                  <ProtectedRoute>
+                    <UserProfile />
                   </ProtectedRoute>
                 }
               />

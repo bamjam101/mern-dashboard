@@ -2,13 +2,13 @@ import { Typography, Box, useTheme, IconButton, Button } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
 import { AnimatePresence } from "framer-motion";
+import { Link } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
 import Table from "../components/Table";
 import { getItemInLocalStorage } from "../utlis";
 import {
   AddCircleOutline,
-  AddOutlined,
   DeleteOutlineOutlined,
   EditOutlined,
 } from "@mui/icons-material";
@@ -112,7 +112,24 @@ const Customers = () => {
   }, []);
 
   const columns = [
-    { field: "_id", headerName: "ID", flex: 0.5 },
+    {
+      field: "_id",
+      headerName: "ID",
+      flex: 0.5,
+      renderCell: (params) => {
+        return (
+          <Link
+            style={{
+              color: theme.palette.secondary[400],
+              textDecoration: "none",
+            }}
+            to={`/user/${params.row._id}`}
+          >
+            {params.row._id}
+          </Link>
+        );
+      },
+    },
     { field: "name", headerName: "Name", flex: 0.8 },
     {
       field: "contact",

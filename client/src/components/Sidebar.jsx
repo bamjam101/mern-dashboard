@@ -16,17 +16,15 @@ import {
 } from "@mui/material";
 import {
   AdminPanelSettingsOutlined,
-  CalendarMonthOutlined,
   ChevronLeft,
   ChevronRightOutlined,
+  CloseOutlined,
+  DataObjectOutlined,
   Groups2Outlined,
   HomeOutlined,
-  PersonOffOutlined,
   PersonOutlined,
-  PieChartOutlined,
-  PointOfSaleOutlined,
-  PublicOutlined,
   ReceiptLongOutlined,
+  RequestPageOutlined,
   SettingsOutlined,
   ShoppingCartOutlined,
   TodayOutlined,
@@ -44,32 +42,24 @@ const navItems = [
     icon: null,
   },
   {
-    text: "Network",
-    icon: <ShoppingCartOutlined />,
-  },
-  {
     text: "Registrants",
     icon: <ReceiptLongOutlined />,
   },
   {
-    text: "Customers",
+    text: "Users",
     icon: <Groups2Outlined />,
   },
   {
-    text: "Sales",
+    text: "Applications & Logs",
     icon: null,
   },
   {
-    text: "Overview",
-    icon: <PointOfSaleOutlined />,
+    text: "Request",
+    icon: <RequestPageOutlined />,
   },
   {
-    text: "Daily",
-    icon: <TodayOutlined />,
-  },
-  {
-    text: "Monthly",
-    icon: <PieChartOutlined />,
+    text: "Logs",
+    icon: <DataObjectOutlined />,
   },
   {
     text: "Management",
@@ -96,9 +86,15 @@ const Sidebar = ({
   const [active, setActive] = useState("");
   const navigate = useNavigate();
   const theme = useTheme();
+  const [isSidebarToggleVisible, setIsSidebarToggelVisible] = useState(false);
 
   useEffect(() => {
     setActive(pathname.substring(1));
+    if (pathname.startsWith("/network")) {
+      setIsSidebarToggelVisible(true);
+    } else {
+      setIsSidebarToggelVisible(false);
+    }
   }, [pathname]);
   return (
     <Box component="nav">
@@ -115,7 +111,7 @@ const Sidebar = ({
               backgroundColor: theme.palette.background.alt,
               boxSizing: "border-box",
               borderWidth: isNonMobile ? 0 : "2px",
-              widht: drawerWidth,
+              width: drawerWidth,
             },
           }}
         >
@@ -141,7 +137,12 @@ const Sidebar = ({
               </Box>
               {!isNonMobile && (
                 <IconButton onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
-                  <ChevronLeft />
+                  <CloseOutlined />
+                </IconButton>
+              )}
+              {isSidebarToggleVisible && (
+                <IconButton onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
+                  <CloseOutlined />
                 </IconButton>
               )}
             </FlexBetween>
