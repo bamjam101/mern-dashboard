@@ -16,15 +16,18 @@ import {
 import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import { setProfile } from "../state";
 import { getItemInLocalStorage } from "../utlis";
 
 const UserProfile = () => {
   const theme = useTheme();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { profile } = useSelector((state) => state.global);
   const { isAdmin, isLoading } = useSelector((state) => state.global);
-  const [profile, setProfile] = useState({});
+  const [userProfile, setUserProfile] = useState({});
   const [wallet, setWallet] = useState({});
   const params = useParams();
   let index;
@@ -74,7 +77,7 @@ const UserProfile = () => {
         },
       }
     );
-    setProfile(res);
+    setUserProfile(res);
     if (res?.referralLinks?.length) {
       index = 1;
       res?.referralLinks?.forEach((element) => {
@@ -98,7 +101,7 @@ const UserProfile = () => {
         },
       }
     );
-    setProfile(res);
+    setUserProfile(res);
     if (res?.referralLinks?.length) {
       index = 1;
       res?.referralLinks?.forEach((element) => {
@@ -123,7 +126,6 @@ const UserProfile = () => {
       }
     );
     setWallet(res);
-    console.log(wallet);
   };
 
   const fetchMyWallet = async () => {
@@ -135,25 +137,27 @@ const UserProfile = () => {
         },
       }
     );
-    console.log(data);
     setWallet(data);
-    console.log(wallet);
   };
   useEffect(() => {
     if (isAdmin) {
       fetchUserProfile();
       fetchUserWallet();
-    } else {
+    } else if (!isLoading) {
       fetchMyProfile();
       fetchMyWallet();
     }
   }, [isLoading]);
+
+  useEffect(() => {
+    dispatch(setProfile({ ...profile, wallet: wallet.balance }));
+  }, [wallet]);
   return (
     <Container component={"main"} width="100%">
       <Box
         width={"100%"}
         display="grid"
-        gridTemplateColumns={"0.2fr 0.5fr 0.3fr"}
+        gridTemplateColumns={"0.5fr 1fr 1fr"}
         padding="2rem 0"
         gap={"2rem"}
       >
@@ -174,16 +178,16 @@ const UserProfile = () => {
           justifyContent="center"
         >
           <Typography variant="h3" component={"h2"} textTransform="uppercase">
-            {profile?.name}
+            {userProfile?.name}
             <Typography paragraph color={"gold"}>
-              {profile?.role}
+              {userProfile?.role}
             </Typography>
           </Typography>
           <Typography variant="h5" component={"h2"} textTransform="lowercase">
-            {profile?.email}
+            {userProfile?.email}
           </Typography>
           <Typography variant="h6" component={"h3"}>
-            {profile?.contact}
+            {userProfile?.contact}
           </Typography>
         </Box>
         <Box>

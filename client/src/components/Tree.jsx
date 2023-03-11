@@ -1,8 +1,9 @@
 import React from "react";
-import { Avatar, List, ListItem, Typography } from "@mui/material";
+import { Avatar, List, ListItem, Typography, useTheme } from "@mui/material";
 import { useSelector } from "react-redux";
 
 const Tree = () => {
+  const theme = useTheme();
   const levels = useSelector((state) => state.global.levels);
   return (
     <List width={"100%"} sx={{ display: "flex" }}>
@@ -17,6 +18,8 @@ const Tree = () => {
               alignItems: "center",
               flexDirection: "column",
               gap: "0.4rem",
+              borderRadius: "1rem",
+              backgroundColor: theme.palette.primary[700],
             }}
           >
             <Avatar
@@ -33,7 +36,7 @@ const Tree = () => {
               {node?.name}
             </Typography>
 
-            <List width={"100%"} sx={{ display: "flex" }}>
+            <List width={"100%"} sx={{ display: "flex", gap: "0.5rem" }}>
               {levels?.one?.map((node) => {
                 return (
                   <ListItem
@@ -45,6 +48,8 @@ const Tree = () => {
                       alignItems: "center",
                       flexDirection: "column",
                       gap: "0.4rem",
+                      borderRadius: "1rem",
+                      backgroundColor: theme.palette.primary[600],
                     }}
                   >
                     <Avatar
@@ -61,7 +66,10 @@ const Tree = () => {
                       {node?.name}
                     </Typography>
 
-                    <List width={"100%"} sx={{ display: "flex" }}>
+                    <List
+                      width={"100%"}
+                      sx={{ display: "flex", gap: "0.5rem" }}
+                    >
                       {levels?.two?.map((node) => {
                         return (
                           <ListItem
@@ -73,6 +81,8 @@ const Tree = () => {
                               alignItems: "center",
                               flexDirection: "column",
                               gap: "0.4rem",
+                              borderRadius: "1rem",
+                              backgroundColor: theme.palette.primary[500],
                             }}
                           >
                             <Avatar
@@ -88,7 +98,10 @@ const Tree = () => {
                             >
                               {node?.name}
                             </Typography>
-                            <List width={"100%"} sx={{ display: "flex" }}>
+                            <List
+                              width={"100%"}
+                              sx={{ display: "flex", gap: "0.5rem" }}
+                            >
                               {levels?.three?.map((node) => {
                                 return (
                                   <ListItem
@@ -100,6 +113,9 @@ const Tree = () => {
                                       alignItems: "center",
                                       flexDirection: "column",
                                       gap: "0.4rem",
+                                      borderRadius: "1rem",
+                                      backgroundColor:
+                                        theme.palette.primary[400],
                                     }}
                                   >
                                     <Avatar
@@ -117,7 +133,7 @@ const Tree = () => {
                                     </Typography>
                                     <List
                                       width={"100%"}
-                                      sx={{ display: "flex" }}
+                                      sx={{ display: "flex", gap: "0.5rem" }}
                                     >
                                       {levels?.four?.map((node) => {
                                         return (
@@ -130,6 +146,9 @@ const Tree = () => {
                                               alignItems: "center",
                                               flexDirection: "column",
                                               gap: "0.4rem",
+                                              borderRadius: "1rem",
+                                              backgroundColor:
+                                                theme.palette.primary[300],
                                             }}
                                           >
                                             <Avatar
@@ -150,7 +169,10 @@ const Tree = () => {
                                             </Typography>
                                             <List
                                               width={"100%"}
-                                              sx={{ display: "flex" }}
+                                              sx={{
+                                                display: "flex",
+                                                gap: "0.5rem",
+                                              }}
                                             >
                                               {levels?.five?.map((node) => {
                                                 return (
@@ -163,6 +185,10 @@ const Tree = () => {
                                                       alignItems: "center",
                                                       flexDirection: "column",
                                                       gap: "0.4rem",
+                                                      borderRadius: "1rem",
+                                                      backgroundColor:
+                                                        theme.palette
+                                                          .primary[200],
                                                     }}
                                                   >
                                                     <Avatar

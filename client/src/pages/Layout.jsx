@@ -35,6 +35,7 @@ const Layout = () => {
         name: result.name,
         contact: result.contact,
         email: result.email,
+        wallet: 0,
         isApproved: result.isApproved,
       })
     );

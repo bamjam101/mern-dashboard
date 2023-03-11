@@ -92,6 +92,7 @@ const Sidebar = ({
     setActive(pathname.substring(1));
     if (pathname.startsWith("/network")) {
       setIsSidebarToggelVisible(true);
+      setIsSidebarOpen(false);
     } else {
       setIsSidebarToggelVisible(false);
     }

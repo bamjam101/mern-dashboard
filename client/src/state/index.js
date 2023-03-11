@@ -49,6 +49,7 @@ export const globalSlice = createSlice({
         mode: getItemInLocalStorage("MODE") || "dark",
         userId: "",
         profile: {},
+        wallet: 0,
         isAdmin: false,
         role: "user",
       };
