@@ -9,7 +9,10 @@ const postWithdrawalRequest = async (req, res) => {
     const wallet = await Wallet.findOne({ userId: req.user.id });
     if (!wallet && wallet?.active)
       return res.status(400).json("Wallet is inactive");
-    const pending = await Request.findOne({ requestedBy: user._id });
+    const pending = await Request.findOne({
+      requestedBy: user._id,
+      status: "pending",
+    });
     if (pending)
       return res.status(400).json({
         message: "Cannot make another request, Wait for last one to process.",
@@ -30,9 +33,60 @@ const postWithdrawalRequest = async (req, res) => {
   }
 };
 
-const getAllWithdrawalRequests = async (req, res) => {};
+const getAllWithdrawalRequests = async (req, res) => {
+  try {
+    if (req.user.role === "user")
+      return res.status(401).json("Not authorized to make such request.");
+    const requests = await Request.find({ status: "pending" });
+
+    if (!requests) return res.status(201).json("No requests to display.");
+
+    res.status(200).json(requests);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json(error);
+  }
+};
+
+const withdrawalApproval = async (req, res) => {
+  try {
+    if (req.user.role === "user")
+      return res.status(401).json("Not authorized to make such request.");
+    const user = await User.findById(req.params.id);
+    if (!user) return res.status(400).json("Invalid Request");
+    const wallet = await Wallet.findOne({ userId: user._id });
+    if (!wallet && wallet?.active)
+      return res.status(400).json("Wallet is inactive");
+    const pending = await Request.findOne({ requestedBy: user._id });
+
+    const { transactionAmount, status, error } = req.body;
+    if (error) return res.status(400).json("App error encountered");
+
+    const newBalance = wallet.balance - parseInt(transactionAmount);
+    if (newBalance < 0) {
+      pending.status = "rejected";
+      wallet.transaction = [
+        ...wallet.transaction,
+        { amount: transactionAmount, status: "rejected" },
+      ];
+    } else {
+      wallet.balance = newBalance;
+      pending.status = status;
+      wallet.transaction = [
+        ...wallet.transaction,
+        { amount: transactionAmount, status: "approved" },
+      ];
+    }
+    await pending.save();
+    await wallet.save();
+  } catch (error) {
+    console.log(error);
+    res.status(500).json(error);
+  }
+};
 
 module.exports = {
   postWithdrawalRequest,
   getAllWithdrawalRequests,
+  withdrawalApproval,
 };

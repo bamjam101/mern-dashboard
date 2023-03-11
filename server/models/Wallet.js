@@ -16,17 +16,13 @@ const WalletSchema = mongoose.Schema({
         amount: {
           type: Number,
         },
-        approved: {
-          type: Boolean,
-          default: false,
-        },
         date: {
           type: Date,
           default: Date.now(),
         },
-        rejected: {
-          type: Boolean,
-          default: false,
+        status: {
+          type: String,
+          enum: ["approved", "rejected"],
         },
       },
     ],

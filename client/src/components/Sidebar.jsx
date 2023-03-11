@@ -54,7 +54,7 @@ const navItems = [
     icon: null,
   },
   {
-    text: "Request",
+    text: "Requests",
     icon: <RequestPageOutlined />,
   },
   {
@@ -68,10 +68,6 @@ const navItems = [
   {
     text: "Admin",
     icon: <AdminPanelSettingsOutlined />,
-  },
-  {
-    text: "Performance",
-    icon: <TrendingUpOutlined />,
   },
 ];
 

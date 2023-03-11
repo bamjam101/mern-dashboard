@@ -12,6 +12,11 @@ const handlePasswordChangeOTPGeneration = async (req, res) => {
   if (!user)
     return res.status(404).json("No user exist with given credentials!");
 
+  const existingToken = await Token.findOne({ userId: user._id });
+  if (existingToken)
+    return res
+      .status(400)
+      .json("Cannot generate another request for recovery.");
   const token = await new Token({
     userId: user._id,
     token: crypto.randomBytes(32).toString("hex"),

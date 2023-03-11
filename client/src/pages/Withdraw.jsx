@@ -31,24 +31,24 @@ const Withdraw = () => {
 
   const putWithdrawalRequest = async (event) => {
     event.preventDefault();
-    const value = parseInt(amount);
-    if (profile.wallet - value < 0) {
-      console.log(profile.wallet - value);
-      if (!isModalShown) {
-        handleOpen();
-      }
-      setIsInsufficient(true);
-      setAmount("");
-    } else if (profile.wallet - value < 200) {
-      setIsInsufficient(false);
-
-      if (!isModalShown) {
-        handleOpen();
-      }
-      setIsModalShown(true);
-    }
     try {
-      if (isModalShown) {
+      let value = parseInt(amount);
+      if (profile.wallet - value < 0) {
+        if (!isModalShown) {
+          handleOpen();
+        }
+        setIsInsufficient(true);
+        setIsModalShown(false);
+        setAmount("");
+      } else if (profile.wallet - value < 200) {
+        setIsInsufficient(false);
+
+        if (!isModalShown) {
+          handleOpen();
+        }
+        setIsModalShown(true);
+      }
+      if (isModalShown && profile.wallet - value > 0) {
         await axios.post(
           `${import.meta.env.VITE_APP_BASE_URL}/withdraw`,
           { amount: value },
