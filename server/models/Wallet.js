@@ -5,13 +5,31 @@ const WalletSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
-  investment: {
+  balance: {
     type: Number,
-    default: 200,
     min: 200,
+    default: 200,
   },
-  wallet: {
-    type: Number,
+  transaction: {
+    type: [
+      {
+        amount: {
+          type: Number,
+        },
+        approved: {
+          type: Boolean,
+          default: false,
+        },
+        date: {
+          type: Date,
+          default: Date.now(),
+        },
+        rejected: {
+          type: Boolean,
+          default: false,
+        },
+      },
+    ],
   },
   active: {
     type: Boolean,

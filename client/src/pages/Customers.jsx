@@ -43,6 +43,7 @@ const Customers = () => {
         }
       );
     }
+    fetchCustomers();
   }
 
   async function handleEditSubmit() {
@@ -93,14 +94,15 @@ const Customers = () => {
   useEffect(() => {
     if (isEditMode) {
       handleEditSubmit();
+      fetchCustomers();
     }
     if (isDeleteMode) {
       handleUserDelete();
+      fetchCustomers();
     }
     if (isNewUser) {
       createNewUser();
     }
-    fetchCustomers();
     setIsUpdated(false);
     setIsDeleteMode(false);
     setIsNewUser(false);
@@ -224,7 +226,9 @@ const Customers = () => {
           }}
         >
           <AddCircleOutline />{" "}
-          <Typography fontSize={"0.8rem"}>Add User</Typography>
+          <Typography fontSize={"0.8rem"} onClick={() => setIsNewUser(true)}>
+            Add User
+          </Typography>
         </Button>
       </Box>
       <Table columns={columns} data={data} isEditable={true} />
@@ -235,7 +239,12 @@ const Customers = () => {
             <Modal
               data={updatingRow}
               setData={setUpdatingRow}
-              setUpdateMode={setIsUpdated}
+              setMode={{
+                setIsDeleteMode,
+                setIsEditMode,
+                setIsNewUser,
+                setIsUpdated,
+              }}
               handleClose={close}
               mode={isDeleteMode ? "DELETE" : isEditMode ? "EDIT" : "FORM"}
             />

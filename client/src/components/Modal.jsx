@@ -32,14 +32,20 @@ const dropInAnimate = {
   },
 };
 
-const Modal = ({ data, setData, mode, setUpdateMode, handleClose }) => {
+const Modal = ({ data, setData, mode, setMode, handleClose }) => {
   const theme = useTheme();
+  const {
+    setIsUpdated: setUpdateMode,
+    setIsDeleteMode,
+    setIsEditMode,
+    setIsNewUser,
+  } = setMode;
   const [formValues, setFormValues] = useState({
     name: "",
     contact: "",
     email: "",
     password: "",
-    referredBy: "",
+    referral: "",
     role: "",
     pan: "",
     aadhar: "",
@@ -66,7 +72,12 @@ const Modal = ({ data, setData, mode, setUpdateMode, handleClose }) => {
         overflow: "hidden",
         zIndex: "1000",
       }}
-      onClick={handleClose}
+      onClick={() => {
+        setIsDeleteMode(false);
+        setIsEditMode(false);
+        setIsNewUser(false);
+        handleClose();
+      }}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -266,10 +277,10 @@ const Modal = ({ data, setData, mode, setUpdateMode, handleClose }) => {
                   name="referredBy"
                   id="referredBy"
                   type="text"
-                  value={formValues.referredBy}
+                  value={formValues.referral}
                   label="Referred By"
                   onChange={(e) =>
-                    setFormValues({ ...formValues, referredBy: e.target.value })
+                    setFormValues({ ...formValues, referral: e.target.value })
                   }
                   fullWidth
                 ></TextField>
@@ -297,7 +308,12 @@ const Modal = ({ data, setData, mode, setUpdateMode, handleClose }) => {
         <motion.button
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
-          onClick={handleClose}
+          onClick={() => {
+            setIsDeleteMode(false);
+            setIsEditMode(false);
+            setIsNewUser(false);
+            handleClose();
+          }}
           style={{
             position: "absolute",
             top: "5%",

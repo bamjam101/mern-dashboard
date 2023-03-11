@@ -47,12 +47,16 @@ const UserSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ["superadmin", "admin", "partialAdmin", "user"],
+      enum: ["superadmin", "admin", "user"],
       default: "user",
     },
     referredBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
+    },
+    isActive: {
+      type: Boolean,
+      default: true,
     },
     referralLinks: [
       {
@@ -65,14 +69,7 @@ const UserSchema = new mongoose.Schema(
       },
     ],
   },
-  { timestamps: true, toJSON: { virtuals: true } }
+  { timestamps: true }
 );
-
-UserSchema.path("referralLinks").validate(function (value) {
-  console.log(value.length);
-  if (value.length > 5) {
-    throw new Error("Only 5 Referral Are Allowed At Once!");
-  }
-});
 
 module.exports = mongoose.model("User", UserSchema);

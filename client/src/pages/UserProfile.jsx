@@ -17,13 +17,15 @@ import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { getItemInLocalStorage } from "../utlis";
 
 const UserProfile = () => {
   const theme = useTheme();
-  const { isAdmin } = useSelector((state) => state.global);
+  const navigate = useNavigate();
+  const { isAdmin, isLoading } = useSelector((state) => state.global);
   const [profile, setProfile] = useState({});
+  const [wallet, setWallet] = useState({});
   const params = useParams();
   let index;
   let row = [];
@@ -63,7 +65,7 @@ const UserProfile = () => {
     );
   }, [rowData]);
 
-  const fetchUserReferrals = async () => {
+  const fetchUserProfile = async () => {
     const { data: res } = await axios.get(
       `${import.meta.env.VITE_APP_BASE_URL}/user/${params.id}`,
       {
@@ -87,7 +89,7 @@ const UserProfile = () => {
     }
   };
 
-  const fetchMyReferrals = async () => {
+  const fetchMyProfile = async () => {
     const { data: res } = await axios.get(
       `${import.meta.env.VITE_APP_BASE_URL}/user/me`,
       {
@@ -110,13 +112,42 @@ const UserProfile = () => {
       setReferrals(row);
     }
   };
+
+  const fetchUserWallet = async () => {
+    const { data: res } = await axios.get(
+      `${import.meta.env.VITE_APP_BASE_URL}/wallet/${params.id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${getItemInLocalStorage("TOKEN")}`,
+        },
+      }
+    );
+    setWallet(res);
+    console.log(wallet);
+  };
+
+  const fetchMyWallet = async () => {
+    const { data } = await axios.get(
+      `${import.meta.env.VITE_APP_BASE_URL}/wallet/me`,
+      {
+        headers: {
+          Authorization: `Bearer ${getItemInLocalStorage("TOKEN")}`,
+        },
+      }
+    );
+    console.log(data);
+    setWallet(data);
+    console.log(wallet);
+  };
   useEffect(() => {
     if (isAdmin) {
-      fetchUserReferrals();
+      fetchUserProfile();
+      fetchUserWallet();
     } else {
-      fetchMyReferrals();
+      fetchMyProfile();
+      fetchMyWallet();
     }
-  }, []);
+  }, [isLoading]);
   return (
     <Container component={"main"} width="100%">
       <Box
@@ -163,14 +194,27 @@ const UserProfile = () => {
               padding: "1rem 1.2rem",
               width: "100%",
               flex: "1",
+              position: "relative",
             }}
           >
+            <Box
+              sx={{
+                position: "absolute",
+                width: "0.5rem",
+                height: "0.5rem",
+                top: "5%",
+                right: "5%",
+                borderRadius: "45%",
+                backgroundColor: wallet?.active ? "lightgreen" : "tomato",
+              }}
+              title="Card Status"
+            ></Box>
             <Typography paragraph fontWeight={"bold"} color={"gold"}>
               Wallet
             </Typography>
             <Typography variant="h6">Balance</Typography>
             <Typography variant="h4" fontWeight="bold" padding="0.4rem">
-              ~RD 200
+              ~RD {wallet?.balance?.toString()}
             </Typography>
             <Box
               sx={{
@@ -188,6 +232,7 @@ const UserProfile = () => {
                     color: theme.palette.secondary[500],
                     opacity: "0.8",
                   }}
+                  onClick={() => navigate("/withdraw")}
                 >
                   <MoneyOutlined /> Withdraw
                 </Button>

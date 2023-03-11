@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const User = require("../models/User");
 const Token = require("../models/Token");
 const referralCodes = require("referral-codes");
@@ -8,10 +9,11 @@ const createUser = async (req, res) => {
   try {
     if (req.user.role === "user")
       return res.status(401).json("Not authorized to make such request.");
-    const { name, contact, role, email, pan, aadhar, error } = req.body;
+    const { name, contact, role, email, pan, referral, aadhar, error } =
+      req.body;
 
     if (error) return res.status(400).json("Application error encountered.");
-    if (!(email && name && contact && role && pan && aadhar)) {
+    if (!(email && name && contact && role && pan && aadhar && referral)) {
       res.status(400).send("All inputs are required");
     }
 
@@ -25,40 +27,106 @@ const createUser = async (req, res) => {
       count: 5,
     });
 
-    const newUser = new User({
-      name,
-      email,
-      contact,
-      role,
-      pan,
-      aadhar,
-      isEmailVerified: true,
-      isApproved: true,
-      password: hashedPass,
-      referralLinks: [
-        {
-          link: referrals[0],
-        },
-        {
-          link: referrals[1],
-        },
-        {
-          link: referrals[2],
-        },
-        {
-          link: referrals[3],
-        },
-        {
-          link: referrals[4],
-        },
-      ],
-    });
-    user = await newUser.save();
+    if (referral !== "") {
+      const array = referral.split("/");
+      const referralInfo = {
+        referredBy: array[0],
+        uid: mongoose.Types.ObjectId(array[1]),
+        link: array[2],
+      };
+      const referredByUser = await User.findOne({
+        _id: referralInfo.referredBy,
+      });
+      if (!referredByUser) return res.status(400).json("Invalid Referral");
 
-    const wallet = new Wallet({
-      userId: user._id,
-    });
-    await wallet.save();
+      let referralMatches = false;
+      let index = 0;
+      referredByUser.referralLinks.forEach((referral) => {
+        const { link } = referral;
+        if (link === referralInfo.link) {
+          referralMatches = true;
+          referredByUser.referralLinks[index].isUsed = true;
+        }
+        index = index + 1;
+      });
+      console.log(referralMatches);
+      if (!referralMatches)
+        return res.status(400).json("Referral is either exhausted or invalid.");
+      const newUser = new User({
+        _id: referralInfo.uid,
+        name,
+        email,
+        contact,
+        pan,
+        aadhar,
+        password: hashedPass,
+        isEmailVerified: true,
+        isApproved: true,
+        referredBy: referralInfo.referredBy,
+        referralLinks: [
+          {
+            link: referrals[0],
+          },
+          {
+            link: referrals[1],
+          },
+          {
+            link: referrals[2],
+          },
+          {
+            link: referrals[3],
+          },
+          {
+            link: referrals[4],
+          },
+        ],
+      });
+      user = await newUser.save();
+      if (!user)
+        return res
+          .status(500)
+          .json("Internal Server Error. User Creation Failed.");
+      await referredByUser.save();
+      const wallet = new Wallet({
+        userId: user._id,
+      });
+      await wallet.save();
+    } else {
+      const newUser = new User({
+        name,
+        email,
+        contact,
+        role,
+        pan,
+        aadhar,
+        isEmailVerified: true,
+        isApproved: true,
+        password: hashedPass,
+        referralLinks: [
+          {
+            link: referrals[0],
+          },
+          {
+            link: referrals[1],
+          },
+          {
+            link: referrals[2],
+          },
+          {
+            link: referrals[3],
+          },
+          {
+            link: referrals[4],
+          },
+        ],
+      });
+      user = await newUser.save();
+
+      const wallet = new Wallet({
+        userId: user._id,
+      });
+      await wallet.save();
+    }
   } catch (error) {
     console.log(error);
     res.status(500).json(error);
@@ -92,7 +160,12 @@ const deleteUser = async (req, res) => {
       return res.status(401).json("Not authorized to make such request.");
     const user = await User.findById(req.params.id);
     if (!user) return res.status(404).json("No such user found.");
-    if (user.role === "user" || user.role === "partialAdmin") {
+    if (user.role === "user") {
+      const wallet = await Wallet.findOne({ userId: user._id });
+      if (!wallet) return res.status(404).json("User wallet not found.");
+      user.isActive = false;
+      wallet.active = false;
+      await wallet.delete();
       await user.delete();
     } else return res.status(400).json("Cannot process request.");
   } catch (error) {

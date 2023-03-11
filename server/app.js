@@ -4,6 +4,8 @@ const networkRoutes = require("./routes/networks");
 const registrantRoutes = require("./routes/registrants");
 const recoveryRoutes = require("./routes/recovery");
 const referralRoutes = require("./routes/referrals");
+const withdrawRoutes = require("./routes/withdraw");
+const walletRoutes = require("./routes/wallet");
 
 const dotenv = require("dotenv");
 const express = require("express");
@@ -14,8 +16,11 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const path = require("path");
 
-// Configuration for the server
+// importing automating function
+const prop = require("./cron");
 
+// Configuration for the server
+mongoose.set("strictQuery", true);
 dotenv.config();
 const app = express();
 app.use(express.json());
@@ -25,6 +30,9 @@ app.use(morgan("common"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
+
+// Automated processing of incentives
+prop.task.start();
 
 //static folder
 app.use("/public", express.static(path.join(__dirname, "public")));
@@ -36,6 +44,8 @@ app.use("/referral", referralRoutes);
 app.use("/network", networkRoutes);
 app.use("/registrant", registrantRoutes);
 app.use("/recovery", recoveryRoutes);
+app.use("/withdraw", withdrawRoutes);
+app.use("/wallet", walletRoutes);
 
 // Mongoose setup
 const PORT = process.env.Port || 5001;

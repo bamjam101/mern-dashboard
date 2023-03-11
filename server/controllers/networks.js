@@ -1,4 +1,3 @@
-const Network = require("../models/Network");
 const User = require("../models/User");
 
 const getMyNetwork = async (req, res) => {

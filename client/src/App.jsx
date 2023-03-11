@@ -19,6 +19,7 @@ import Verification from "./pages/Verification";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import { getItemInLocalStorage } from "./utlis";
+import Withdraw from "./pages/Withdraw";
 
 const ProtectedRoute = ({ children }) => {
   const user = getItemInLocalStorage("TOKEN");
@@ -95,6 +96,15 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <UserProfile />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                exact
+                path="/withdraw"
+                element={
+                  <ProtectedRoute>
+                    <Withdraw />
                   </ProtectedRoute>
                 }
               />
