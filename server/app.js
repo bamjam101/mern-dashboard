@@ -6,6 +6,7 @@ const recoveryRoutes = require("./routes/recovery");
 const referralRoutes = require("./routes/referrals");
 const withdrawRoutes = require("./routes/withdraw");
 const walletRoutes = require("./routes/wallet");
+const statsRoutes = require("./routes/stats");
 
 const dotenv = require("dotenv");
 const express = require("express");
@@ -46,6 +47,7 @@ app.use("/registrant", registrantRoutes);
 app.use("/recovery", recoveryRoutes);
 app.use("/withdraw", withdrawRoutes);
 app.use("/wallet", walletRoutes);
+app.use("/stat", statsRoutes);
 
 // Mongoose setup
 const PORT = process.env.Port || 5001;

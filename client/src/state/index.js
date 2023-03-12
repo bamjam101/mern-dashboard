@@ -7,6 +7,13 @@ const initialState = {
   profile: {},
   isAdmin: false,
   role: "user",
+  stats: {
+    investments: {},
+    users: {},
+    requests: {},
+    registrants: {},
+  },
+  isLoading: true,
   levels: {
     zero: [],
     one: [],
@@ -15,7 +22,6 @@ const initialState = {
     four: [],
     five: [],
   },
-  isLoading: true,
 };
 
 export const globalSlice = createSlice({
@@ -44,6 +50,9 @@ export const globalSlice = createSlice({
     setLoading: (state, boolean) => {
       state.isLoading = boolean.payload;
     },
+    setStats: (state, stats) => {
+      state.stats = stats.payload;
+    },
     setLogout: (state) => {
       state = {
         mode: getItemInLocalStorage("MODE") || "dark",
@@ -65,6 +74,7 @@ export const {
   setAdmin,
   setLevels,
   setLoading,
+  setStats,
   setLogout,
 } = globalSlice.actions;
 

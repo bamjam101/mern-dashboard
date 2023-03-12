@@ -17,13 +17,14 @@ import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { setProfile } from "../state";
 import { getItemInLocalStorage } from "../utlis";
 
 const UserProfile = () => {
   const theme = useTheme();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   const dispatch = useDispatch();
   const { profile } = useSelector((state) => state.global);
   const { isAdmin, isLoading } = useSelector((state) => state.global);
@@ -152,6 +153,12 @@ const UserProfile = () => {
   useEffect(() => {
     dispatch(setProfile({ ...profile, wallet: wallet.balance }));
   }, [wallet]);
+
+  useEffect(() => {
+    if (pathname === "/user") {
+      navigate("/dashboard");
+    }
+  }, [pathname]);
   return (
     <Container component={"main"} width="100%">
       <Box

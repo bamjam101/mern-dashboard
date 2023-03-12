@@ -165,8 +165,8 @@ const deleteUser = async (req, res) => {
       if (!wallet) return res.status(404).json("User wallet not found.");
       user.isActive = false;
       wallet.active = false;
-      await wallet.delete();
-      await user.delete();
+      await wallet.save();
+      await user.save();
     } else return res.status(400).json("Cannot process request.");
   } catch (error) {
     console.log(error);

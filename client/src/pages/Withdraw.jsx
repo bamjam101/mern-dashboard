@@ -34,12 +34,9 @@ const Withdraw = () => {
     try {
       let value = parseInt(amount);
       if (profile.wallet - value < 0) {
-        if (!isModalShown) {
-          handleOpen();
-        }
+        handleOpen();
         setIsInsufficient(true);
         setIsModalShown(false);
-        setAmount("");
       } else if (profile.wallet - value < 200) {
         setIsInsufficient(false);
 

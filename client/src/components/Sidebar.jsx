@@ -50,7 +50,7 @@ const navItems = [
     icon: <Groups2Outlined />,
   },
   {
-    text: "Applications & Logs",
+    text: "Approval & History",
     icon: null,
   },
   {
@@ -58,7 +58,7 @@ const navItems = [
     icon: <RequestPageOutlined />,
   },
   {
-    text: "Logs",
+    text: "Transactions",
     icon: <DataObjectOutlined />,
   },
   {

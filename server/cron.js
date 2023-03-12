@@ -11,9 +11,7 @@ const automateIncentives = async () => {
         const queue = [];
         let currentLevel = 0;
         const networkOwner = users[user];
-        console.log("parent node - " + networkOwner._id);
         const wallet = await Wallet.findOne({ userId: networkOwner._id });
-        console.log("current balance - " + wallet.balance);
         let newBalance = wallet.balance;
 
         queue.push(networkOwner._id);
@@ -21,7 +19,6 @@ const automateIncentives = async () => {
           const size = queue.length;
           for (let i = 0; i < size; i++) {
             const userId = queue.shift();
-            console.log("node - " + userId);
             const newUser = await User.findById(userId);
             const newUserWallet = await Wallet.findOne({ userId });
             if (newUserWallet && newUserWallet.balance >= 200) {
@@ -44,8 +41,7 @@ const automateIncentives = async () => {
           currentLevel++;
         }
         wallet.balance = newBalance;
-        console.log("new balance - " + wallet.balance);
-        // await wallet.save();
+        await wallet.save();
       }
     }
   } catch (error) {
