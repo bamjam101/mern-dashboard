@@ -19,6 +19,7 @@ import {
   MenuItem,
   Toolbar,
   Typography,
+  useMediaQuery,
   useTheme,
 } from "@mui/material";
 import FlexBetween from "./FlexBetween";
@@ -29,6 +30,7 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
   const dispatch = useDispatch();
   const theme = useTheme();
   const navigate = useNavigate();
+  const isNonMediumDevice = useMediaQuery("(max-width: 900px)");
   const [isNavbarHidden, setIsNavbarHidden] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const isOpen = Boolean(anchorEl);
@@ -71,24 +73,6 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
               <IconButton onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
                 <MenuIcon />
               </IconButton>
-              <FlexBetween
-                backgroundColor={theme.palette.background}
-                borderRadius="1rem"
-                gap="1rem"
-                p="0.1rem 1.5rem"
-              >
-                <InputBase
-                  sx={{
-                    border: `2px solid ${theme.palette.primary[100]}`,
-                    padding: "0.2rem 0.5rem",
-                    borderRadius: "1.5rem",
-                  }}
-                  placeholder="Search..."
-                />
-                <IconButton>
-                  <Search sx={{ fontSize: "1.6rem" }} />
-                </IconButton>
-              </FlexBetween>
             </FlexBetween>
           ) : (
             <Link style={{ textDecoration: "none", color: "inherit" }} to="/">
@@ -136,7 +120,10 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
               <Typography
                 fontWeight={"bold"}
                 fontSize="0.85rem"
-                sx={{ color: theme.palette.secondary[100] }}
+                sx={{
+                  color: theme.palette.secondary[100],
+                  display: isNonMediumDevice ? "none" : "block",
+                }}
               >
                 {user?.profile?.name}
               </Typography>

@@ -85,7 +85,6 @@ const getTransactions = async (req, res) => {
     let transactions = [];
     if (users.length) {
       for (let user = 0; user < users.length; user++) {
-        console.log(users[user].name);
         const wallet = await Wallet.findOne({ userId: users[user]._id });
         wallet.transaction?.forEach((transaction) => {
           const { amount, date, status } = transaction;
@@ -103,7 +102,6 @@ const getTransactions = async (req, res) => {
         });
       }
     }
-    console.log(transactions);
     res.status(200).json(transactions);
   } catch (error) {
     console.log(error);
