@@ -25,7 +25,6 @@ const getInvestmentStats = async (req, res) => {
       return res.status(401).json("Not authorized to make such request.");
     const allUsers = await User.find();
     const inActiveWallets = await Wallet.find({ active: false });
-    console.log(inActiveWallets.length);
 
     const investment = allUsers.length * 200;
 
@@ -42,7 +41,6 @@ const getInvestmentStats = async (req, res) => {
       investmentRemaining,
     };
 
-    console.log(invStats);
     return res.status(200).json(invStats);
   } catch (error) {
     res.status(500).json(error);

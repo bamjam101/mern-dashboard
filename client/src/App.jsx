@@ -22,6 +22,7 @@ import { getItemInLocalStorage } from "./utlis";
 import Withdraw from "./pages/Withdraw";
 import Requests from "./pages/Requests";
 import Transactions from "./pages/Transactions";
+import Home from "./pages/Home";
 
 const ProtectedRoute = ({ children }) => {
   const user = getItemInLocalStorage("TOKEN");
@@ -129,6 +130,7 @@ function App() {
                 }
               />
             </Route>
+            <Route path="/home" element={<Home />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/user/:id/verify/:token" element={<Verification />} />
             <Route path="/login" element={<Login />} />
