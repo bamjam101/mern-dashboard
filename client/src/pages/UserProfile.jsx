@@ -24,16 +24,15 @@ import { getItemInLocalStorage } from "../utlis";
 const UserProfile = () => {
   const theme = useTheme();
   const navigate = useNavigate();
-  const { pathname } = useLocation();
   const dispatch = useDispatch();
   const { profile } = useSelector((state) => state.global);
-  const { isAdmin, isLoading } = useSelector((state) => state.global);
+  const { userId, isAdmin, isLoading } = useSelector((state) => state.global);
   const [userProfile, setUserProfile] = useState({});
   const [wallet, setWallet] = useState({});
   const params = useParams();
   let index;
   let row = [];
-  const [referrals, setReferrals] = useState(null);
+  const [referrals, setReferrals] = useState([]);
   const [rowData, setRowData] = useState({
     link: null,
     isUsed: false,
@@ -53,9 +52,10 @@ const UserProfile = () => {
       field: "copy",
       headerName: "-----",
       flex: 0.2,
-      renderCell: () => {
+      renderCell: (params) => {
+        const { row } = params;
         return (
-          <IconButton>
+          <IconButton onClick={() => setRowData(row)}>
             <CopyAllOutlined />
           </IconButton>
         );
@@ -65,7 +65,7 @@ const UserProfile = () => {
 
   useEffect(() => {
     navigator.clipboard.writeText(
-      `${params.id}/${rowData._id}/${rowData.link}`
+      `${isAdmin ? params.id : userId}/${rowData._id}/${rowData.link}`
     );
   }, [rowData]);
 
@@ -89,7 +89,9 @@ const UserProfile = () => {
           index++;
         }
       });
-      setReferrals(row);
+      if (profile?.isApproved) {
+        setReferrals(row);
+      }
     }
   };
 
@@ -113,7 +115,9 @@ const UserProfile = () => {
           index++;
         }
       });
-      setReferrals(row);
+      if (profile?.isApproved) {
+        setReferrals(row);
+      }
     }
   };
 
@@ -151,14 +155,9 @@ const UserProfile = () => {
   }, [isLoading]);
 
   useEffect(() => {
-    dispatch(setProfile({ ...profile, wallet: wallet.balance }));
+    dispatch(setProfile({ ...profile, wallet: wallet?.balance }));
   }, [wallet]);
 
-  useEffect(() => {
-    if (pathname === "/user") {
-      navigate("/dashboard");
-    }
-  }, [pathname]);
   return (
     <Container component={"main"} width="100%">
       <Box
@@ -197,117 +196,132 @@ const UserProfile = () => {
             {userProfile?.contact}
           </Typography>
         </Box>
-        <Box>
-          <Box
-            sx={{
-              backgroundColor: theme.palette.background.alt,
-              borderRadius: "16px",
-              padding: "1rem 1.2rem",
-              width: "100%",
-              flex: "1",
-              position: "relative",
-            }}
-          >
+        {profile?.isApproved && (
+          <Box>
             <Box
               sx={{
-                position: "absolute",
-                width: "0.5rem",
-                height: "0.5rem",
-                top: "5%",
-                right: "5%",
-                borderRadius: "45%",
-                backgroundColor: wallet?.active ? "lightgreen" : "tomato",
-              }}
-              title="Card Status"
-            ></Box>
-            <Typography paragraph fontWeight={"bold"} color={"gold"}>
-              Wallet
-            </Typography>
-            <Typography variant="h6">Balance</Typography>
-            <Typography variant="h4" fontWeight="bold" padding="0.4rem">
-              ~RD {wallet?.balance?.toString()}
-            </Typography>
-            <Box
-              sx={{
-                display: "flex",
-                gap: "1rem",
-                marginTop: "1rem",
+                backgroundColor: theme.palette.background.alt,
+                borderRadius: "16px",
+                padding: "1rem 1.2rem",
+                width: "100%",
+                flex: "1",
+                position: "relative",
               }}
             >
-              {!isAdmin && (
+              <Box
+                sx={{
+                  position: "absolute",
+                  top: "5%",
+                  right: "5%",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  gap: "0.5rem",
+                }}
+              >
+                <Box
+                  sx={{
+                    width: "0.5rem",
+                    height: "0.5rem",
+
+                    borderRadius: "45%",
+                    backgroundColor: wallet?.active ? "lightgreen" : "tomato",
+                  }}
+                  title="Card Status"
+                ></Box>
+                <Typography sx={{ m: 0, p: 0 }}>
+                  {wallet?.active ? "Active" : "Inactive"}
+                </Typography>
+              </Box>
+              <Typography paragraph fontWeight={"bold"} color={"gold"}>
+                Wallet
+              </Typography>
+              <Typography variant="h6">Balance</Typography>
+              <Typography variant="h4" fontWeight="bold" padding="0.4rem">
+                ~RD {wallet?.balance?.toString()}
+              </Typography>
+              <Box
+                sx={{
+                  display: "flex",
+                  gap: "1rem",
+                  marginTop: "1rem",
+                }}
+              >
+                {!isAdmin && (
+                  <Button
+                    variant="default"
+                    sx={{
+                      fontWeight: "bold",
+                      backgroundColor: theme.palette.primary[600],
+                      color: theme.palette.secondary[500],
+                      opacity: "0.8",
+                    }}
+                    onClick={() => navigate("/withdraw")}
+                  >
+                    <MoneyOutlined /> Withdraw
+                  </Button>
+                )}
                 <Button
-                  variant="default"
                   sx={{
                     fontWeight: "bold",
-                    backgroundColor: theme.palette.primary[600],
-                    color: theme.palette.secondary[500],
+                    backgroundColor: theme.palette.primary[500],
+                    color: theme.palette.primary[100],
                     opacity: "0.8",
                   }}
-                  onClick={() => navigate("/withdraw")}
                 >
-                  <MoneyOutlined /> Withdraw
+                  <WalletOutlined /> Details
                 </Button>
-              )}
-              <Button
-                sx={{
-                  fontWeight: "bold",
-                  backgroundColor: theme.palette.primary[500],
-                  color: theme.palette.primary[100],
-                  opacity: "0.8",
-                }}
-              >
-                <WalletOutlined /> Details
-              </Button>
+              </Box>
             </Box>
+            {isAdmin ? (
+              <Link
+                to={`/network/${params.id}`}
+                style={{
+                  color: "inherit",
+                  textDecoration: "none",
+                }}
+              >
+                <Button
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    color: "gold",
+                    gap: "0.5rem",
+                    width: "100%",
+                    marginTop: "0.5rem",
+                  }}
+                >
+                  <JoinInnerOutlined />
+                  User Network
+                </Button>
+              </Link>
+            ) : (
+              <Link
+                to="/network"
+                style={{
+                  color: "inherit",
+                  textDecoration: "none",
+                }}
+              >
+                <Button
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    color: "gold",
+                    gap: "0.5rem",
+                    width: "100%",
+                    marginTop: "0.5rem",
+                  }}
+                >
+                  <JoinInnerOutlined />
+                  Network
+                </Button>
+              </Link>
+            )}
           </Box>
-          {isAdmin ? (
-            <Link
-              to={`/network/${params.id}`}
-              style={{
-                color: "inherit",
-                textDecoration: "none",
-              }}
-            >
-              <Button
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  color: "gold",
-                  gap: "0.5rem",
-                  width: "100%",
-                  marginTop: "0.5rem",
-                }}
-              >
-                <JoinInnerOutlined />
-                User Network
-              </Button>
-            </Link>
-          ) : (
-            <Link
-              to="/network"
-              style={{
-                color: "inherit",
-                textDecoration: "none",
-              }}
-            >
-              <Button
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  color: "gold",
-                  gap: "0.5rem",
-                  width: "100%",
-                  marginTop: "0.5rem",
-                }}
-              >
-                <JoinInnerOutlined />
-                Network
-              </Button>
-            </Link>
-          )}
-        </Box>
+        )}
       </Box>
       <Box mt={"2rem"} height="42.5vh">
         <DataGrid
@@ -316,13 +330,13 @@ const UserProfile = () => {
           loading={!referrals}
           getRowId={(referral) => referral._id}
           columns={columns}
-          onSelectionModelChange={(ids) => {
-            const selectedIDs = new Set(ids);
-            const selectedRowData = referrals.filter((row) =>
-              selectedIDs.has(row._id.toString())
-            );
-            setRowData(selectedRowData[0]);
-          }}
+          // onSelectionModelChange={(ids) => {
+          //   const selectedIDs = new Set(ids);
+          //   const selectedRowData = referrals.filter((row) =>
+          //     selectedIDs.has(row._id.toString())
+          //   );
+          //   setRowData(selectedRowData[0]);
+          // }}
         />
       </Box>
     </Container>

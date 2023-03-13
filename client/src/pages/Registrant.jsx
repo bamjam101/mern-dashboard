@@ -59,15 +59,14 @@ const Registrant = () => {
           <IconButton
             type="button"
             style={{
-              width: "100%",
-              height: "100%",
-              outline: "none",
-              border: "none",
               backgroundColor: theme.palette.background.alt,
               color: theme.palette.primary[100],
               fontWeight: "bold",
               zIndex: "1000",
               cursor: "pointer",
+              "&:hover ": {
+                transform: "scale(1.02)",
+              },
             }}
             onClick={() => {
               const { isApproved, ...others } = row;

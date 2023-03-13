@@ -119,6 +119,13 @@ const Sidebar = ({
                   style={{ textDecoration: "none", color: "inherit" }}
                   to="/"
                 >
+                  <Box width="100%">
+                    <img
+                      src="/rd-logo.png"
+                      style={{ objectFit: "contain", width: "4rem" }}
+                      alt="richdollar-logo"
+                    />
+                  </Box>
                   <Typography
                     variant="h4"
                     fontWeight={"bold"}

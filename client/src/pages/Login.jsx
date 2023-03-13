@@ -38,10 +38,10 @@ const Login = () => {
         newUser
       );
       if (response.data) {
-        const { user: result, token } = response.data;
+        const { token } = response.data;
         setItemInLocalStorage("TOKEN", token);
+        navigate("/dashboard");
       }
-      navigate("/dashboard");
     } catch (err) {
       console.log(err);
     }

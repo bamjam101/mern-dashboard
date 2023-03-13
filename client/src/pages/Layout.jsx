@@ -55,7 +55,12 @@ const Layout = () => {
     fetchUser();
   }, []);
   return (
-    <Box width="100%" height="100%" display={isNonMobile ? "flex" : "block"}>
+    <Box
+      width="100%"
+      height="100%"
+      display={isNonMobile ? "flex" : "block"}
+      overflow="hidden"
+    >
       {state?.isAdmin ? (
         <Sidebar
           user={state || {}}

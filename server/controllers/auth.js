@@ -27,7 +27,7 @@ const handleUserSignUp = async (req, res) => {
         count: 5,
       });
 
-      if (referral) {
+      if (referral.length) {
         const array = referral.split("/");
         const referralInfo = {
           referredBy: array[0],
@@ -91,13 +91,14 @@ const handleUserSignUp = async (req, res) => {
         }).save();
 
         const url = `${process.env.APP_BASE_URL}/user/${modelToken.userId}/verify/${modelToken.token}`;
-        // await sendEmail(user.email, "Verify Your Gmail For Richdollar", url);
+        await sendEmail(user.email, "Verify Your Gmail For Richdollar", url);
         res
           .status(200)
           .json(
             "Email registered. Please verify your email to proceed to login."
           );
       } else {
+        console.log("running");
         const newUser = new User({
           name,
           email,

@@ -6,8 +6,8 @@ const getUserStats = async (req, res) => {
   try {
     if (req.user.role === "user")
       return res.status(401).json("Not authorized to make such request.");
-    const allUsers = await User.find();
-    const inActiveUsers = await User.find({ isActive: false });
+    const allUsers = await User.find({ role: "user", isApproved: true });
+    const inActiveUsers = await User.find({ role: "user", isActive: false });
     const userStats = {
       allUsers: allUsers.length,
       inActiveUsers: inActiveUsers.length,
@@ -23,7 +23,7 @@ const getInvestmentStats = async (req, res) => {
   try {
     if (req.user.role === "user")
       return res.status(401).json("Not authorized to make such request.");
-    const allUsers = await User.find();
+    const allUsers = await User.find({ role: "user", isApproved: true });
     const inActiveWallets = await Wallet.find({ active: false });
 
     const investment = allUsers.length * 200;

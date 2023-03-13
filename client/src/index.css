@@ -7,4 +7,14 @@ body,
     height: auto;
     width: 100%;
     font-family: "Inter", sans-serif;
+    scroll-behavior: smooth;
+}
+
+body a {
+    transition: transform 0.25s;
+    letter-spacing: 2px;
+}
+
+body a:hover {
+    transform: scale(1.05);
 }

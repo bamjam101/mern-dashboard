@@ -71,6 +71,7 @@ const Customers = () => {
           Authorization: `Bearer ${getItemInLocalStorage("TOKEN")}`,
         },
       });
+      fetchCustomers();
     }
   }
 

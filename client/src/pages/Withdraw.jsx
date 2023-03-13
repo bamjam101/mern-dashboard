@@ -1,4 +1,8 @@
-import { ExitToAppOutlined, LinkOutlined } from "@mui/icons-material";
+import {
+  CloseOutlined,
+  ExitToAppOutlined,
+  LinkOutlined,
+} from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -11,6 +15,7 @@ import {
   useTheme,
 } from "@mui/material";
 import axios from "axios";
+import FlexBetween from "../components/FlexBetween";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
@@ -79,9 +84,14 @@ const Withdraw = () => {
           my: "2rem",
         }}
       >
-        <Typography paragraph fontWeight={"bold"} color={"gold"}>
-          Wallet
-        </Typography>
+        <FlexBetween>
+          <Typography paragraph fontWeight={"bold"} color={"gold"}>
+            Wallet
+          </Typography>
+          <IconButton onClick={() => navigate(-1)}>
+            <CloseOutlined />
+          </IconButton>
+        </FlexBetween>
         <Typography variant="h6">Balance</Typography>
         <Typography variant="h4" fontWeight="bold" padding="0.4rem">
           ~RD {profile?.wallet?.toString()}

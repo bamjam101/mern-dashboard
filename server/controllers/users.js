@@ -141,7 +141,9 @@ const getAllUsers = async (req, res) => {
       req.user.role !== "partialAdmin"
     )
       return res.status(401).json("Not authorized to make such request.");
-    const users = await User.find({ role: "user" }).select("-password");
+    const users = await User.find({ role: "user", isApproved: true }).select(
+      "-password"
+    );
     if (!users) return res.status(201).json("No user found.");
 
     return res.status(200).json(users);

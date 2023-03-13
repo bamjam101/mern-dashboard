@@ -9,6 +9,7 @@ import Tree from "../components/Tree";
 import { setLevels } from "../state";
 import { useNavigate, useParams } from "react-router-dom";
 import { CloseOutlined } from "@mui/icons-material";
+import FlexBetween from "../components/FlexBetween";
 
 const Network = () => {
   const navigate = useNavigate();
@@ -71,25 +72,26 @@ const Network = () => {
     }
   }, []);
   return (
-    <Box m="1.5rem 2.5rem">
-      <Box position="fixed" width={"100%"}>
-        {!isAdmin ? (
-          <Header title="YOUR NETWORK" subtitle={""} />
-        ) : (
-          <Header title="User NETWORK" subtitle={""} />
-        )}
-        <IconButton
-          sx={{
-            position: "absolute",
-            right: "5%",
-            top: "5%",
-          }}
-          onClick={() => navigate(-1)}
-        >
-          <CloseOutlined />
-        </IconButton>
+    <Box>
+      <Box
+        width={"100%"}
+        p="0 2.5rem"
+        height={"10vh"}
+        display="grid"
+        placeItems="center"
+      >
+        <FlexBetween>
+          {!isAdmin ? (
+            <Header title="YOUR NETWORK" subtitle={""} />
+          ) : (
+            <Header title="User NETWORK" subtitle={""} />
+          )}
+          <IconButton onClick={() => navigate(-1)}>
+            <CloseOutlined />
+          </IconButton>
+        </FlexBetween>
       </Box>
-      <Box overflow={"hidden"} position={"absolute"} left="0%" bottom={"0%"}>
+      <Box overflow={"scroll"} width="100svw" height="90svh">
         {isTreeReady ? <Tree /> : null}
       </Box>
       {error ? <ErrorText error={error} /> : null}

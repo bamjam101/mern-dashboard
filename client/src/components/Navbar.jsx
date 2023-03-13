@@ -76,6 +76,13 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
             </FlexBetween>
           ) : (
             <Link style={{ textDecoration: "none", color: "inherit" }} to="/">
+              <Box width="100%">
+                <img
+                  src="/rd-logo.png"
+                  style={{ objectFit: "contain", width: "3.5rem" }}
+                  alt="richdollar-logo"
+                />
+              </Box>
               <Typography
                 variant="h4"
                 fontWeight={"bold"}
