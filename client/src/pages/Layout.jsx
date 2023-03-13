@@ -13,19 +13,25 @@ import {
   setUser,
   setUserRole,
 } from "../state";
+import ErrorText from "../components/ErrorText";
 
 const Layout = () => {
   const dispatch = useDispatch();
+  const [error, setError] = useState("");
   const fetchUser = async () => {
-    const { data: result } = await axios.get(
-      `${import.meta.env.VITE_APP_BASE_URL}/user/me`,
-      {
-        headers: {
-          Authorization: `Bearer ${getItemInLocalStorage("TOKEN")}`,
-        },
-      }
-    );
-    handleDispatch(result);
+    try {
+      const { data: result } = await axios.get(
+        `${import.meta.env.VITE_APP_BASE_URL}/user/me`,
+        {
+          headers: {
+            Authorization: `Bearer ${getItemInLocalStorage("TOKEN")}`,
+          },
+        }
+      );
+      handleDispatch(result);
+    } catch (error) {
+      setError(error.response.data);
+    }
   };
 
   function handleDispatch(result) {
@@ -80,6 +86,7 @@ const Layout = () => {
           <Box sx={{ height: "8vh", width: "100%" }}></Box>
         )}
         <Outlet />
+        {error && <ErrorText error={error} />}
       </Box>
     </Box>
   );

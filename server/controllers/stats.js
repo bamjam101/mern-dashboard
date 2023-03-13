@@ -78,7 +78,7 @@ const getTransactions = async (req, res) => {
   try {
     if (req.user.role === "user")
       return res.status(401).json("Not authorized to make such request.");
-    const users = await User.find({ role: "user" });
+    const users = await User.find({ role: "user", isApproved: true });
     if (!users) return res.status(200).json("No users to display.");
     let transactions = [];
     if (users.length) {
@@ -86,6 +86,7 @@ const getTransactions = async (req, res) => {
         const wallet = await Wallet.findOne({ userId: users[user]._id });
         wallet.transaction?.forEach((transaction) => {
           const { amount, date, status } = transaction;
+          console.log(users[user]._id);
           transactions = [
             ...transactions,
             {
@@ -97,13 +98,13 @@ const getTransactions = async (req, res) => {
               name: users[user].name,
             },
           ];
+          console.log(date, status);
         });
       }
     }
     res.status(200).json(transactions);
   } catch (error) {
-    console.log(error);
-    res.status(500).json(error);
+    res.status(500).json("Hi");
   }
 };
 

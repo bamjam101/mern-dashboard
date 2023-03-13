@@ -12,10 +12,12 @@ import {
   Avatar,
 } from "@mui/material";
 import { LockOutlined } from "@mui/icons-material";
+import ErrorText from "../components/ErrorText";
 import ResponseText from "../components/ResponseText";
 
 const ResetPassword = () => {
   const [isRequestSent, setIsRequestSent] = useState(false);
+  const [error, setError] = useState("");
   const [response, setResponse] = useState("");
   const [password, setPassword] = useState("");
 
@@ -33,8 +35,9 @@ const ResetPassword = () => {
       if (res?.data) {
         setIsRequestSent(true);
       }
+      setResponse("Updates Recorded.");
     } catch (error) {
-      setResponse("Password has been changed.");
+      setError(error.response.data);
     }
   };
 
@@ -109,8 +112,9 @@ const ResetPassword = () => {
           </Typography>
         ) : null}
       </Box>
+      {response && <ResponseText response={response} />}
 
-      <ResponseText response={response} />
+      {error && <ErrorText error={error} />}
     </Container>
   );
 };

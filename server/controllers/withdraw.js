@@ -14,13 +14,14 @@ const postWithdrawalRequest = async (req, res) => {
       status: "pending",
     });
     if (pending)
-      return res.status(400).json({
-        message: "Cannot make another request, Wait for last one to process.",
-      });
+      return res
+        .status(400)
+        .json("Cannot make another request, Wait for last one to process.");
 
     const { amount, error } = req.body;
     if (error) return res.status(400).json("App error encountered");
     const request = await Request.create({
+      transactionHolder: user.name,
       requestedBy: user._id,
       transactionAmount: parseInt(amount),
       dispatchTime: Date.now(),
@@ -55,8 +56,7 @@ const withdrawalApproval = async (req, res) => {
     const user = await User.findById(req.params.id);
     if (!user) return res.status(400).json("Invalid Request");
     const wallet = await Wallet.findOne({ userId: user._id });
-    if (!wallet && wallet?.active)
-      return res.status(400).json("Wallet is inactive");
+
     const pending = await Request.findOne({ requestedBy: user._id });
 
     const { transactionAmount, status, error } = req.body;
@@ -64,29 +64,37 @@ const withdrawalApproval = async (req, res) => {
 
     const newBalance = wallet.balance - parseInt(transactionAmount);
     if (newBalance < 0) {
-      pending.status = "rejected";
-      wallet.transaction = [
-        ...wallet.transaction,
-        { amount: transactionAmount, status: "rejected" },
-      ];
-    } else {
-      wallet.balance = newBalance;
       pending.status = status;
       wallet.transaction = [
         ...wallet.transaction,
-        { amount: transactionAmount, status: "approved" },
+        { amount: transactionAmount, status: status },
       ];
+      await pending.save();
+      await wallet.save();
+    } else {
+      wallet.balance = newBalance;
+      if (wallet.balance < 200) {
+        wallet.active = false;
+      }
+      pending.status = status;
+      wallet.transaction = [
+        ...wallet.transaction,
+        { amount: transactionAmount, status: status },
+      ];
+      await pending.save();
+      await wallet.save();
     }
-    await pending.save();
-    await wallet.save();
   } catch (error) {
     console.log(error);
     res.status(500).json(error);
   }
 };
 
+const withdrawalRejection = async (req, res) => {};
+
 module.exports = {
   postWithdrawalRequest,
   getAllWithdrawalRequests,
   withdrawalApproval,
+  withdrawalRejection,
 };

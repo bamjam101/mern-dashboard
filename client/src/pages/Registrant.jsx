@@ -6,27 +6,34 @@ import Header from "../components/Header";
 import Table from "../components/Table";
 import { getItemInLocalStorage } from "../utlis";
 import { SaveOutlined } from "@mui/icons-material";
+import ErrorText from "../components/ErrorText";
+import { Link } from "react-router-dom";
 
 const Registrant = () => {
   const [data, setData] = useState([]);
   const theme = useTheme();
+  const [error, setError] = useState("");
   const [isUpdated, setIsUpdated] = useState(false);
   const [updatingRow, setUpdatingRow] = useState(null);
 
   async function handleEditSubmit() {
-    if (updatingRow) {
-      const { _id, name, pan, aadhar, isApproved, role } = updatingRow;
-      await axios.patch(
-        `${import.meta.env.VITE_APP_BASE_URL}/registrant/${_id}`,
-        {
-          _id,
-          name,
-          role,
-          pan,
-          aadhar,
-          isApproved,
-        }
-      );
+    try {
+      if (updatingRow) {
+        const { _id, name, pan, aadhar, isApproved, role } = updatingRow;
+        await axios.patch(
+          `${import.meta.env.VITE_APP_BASE_URL}/registrant/${_id}`,
+          {
+            _id,
+            name,
+            role,
+            pan,
+            aadhar,
+            isApproved,
+          }
+        );
+      }
+    } catch (error) {
+      setError(error.response.data);
     }
   }
 
@@ -37,8 +44,25 @@ const Registrant = () => {
   }, [isUpdated]);
 
   const columns = [
-    { field: "_id", headerName: "ID", flex: 0.5 },
-    { field: "name", headerName: "Name", flex: 0.5 },
+    {
+      field: "name",
+      headerName: "Name",
+      flex: 1,
+      renderCell: (params) => {
+        const { row } = params;
+        return (
+          <Link
+            style={{
+              color: theme.palette.secondary[400],
+              textDecoration: "none",
+            }}
+            to={`/user/${row._id}`}
+          >
+            {row.name}
+          </Link>
+        );
+      },
+    },
     {
       field: "contact",
       headerName: "Contact",
@@ -103,7 +127,8 @@ const Registrant = () => {
   return (
     <Box m="1.5rem 2.5rem">
       <Header title="REGISTRANTS" subtitle="List Of Registrants..." />
-      <Table columns={columns} data={data} isEditable={true} />
+      <Table columns={columns} data={data} isEditable={true} height={"75vh"} />
+      {error && <ErrorText error={error} />}
     </Box>
   );
 };

@@ -35,6 +35,9 @@ const handleUserApproval = async (req, res) => {
       }
     );
     if (user) {
+      const existingWallet = await Wallet.findOne({ userId: user._id });
+      if (existingWallet)
+        return res.status(400).json("Can not define another wallet.");
       const wallet = new Wallet({
         userId: user._id,
       });

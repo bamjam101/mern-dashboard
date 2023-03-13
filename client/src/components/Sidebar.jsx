@@ -116,25 +116,24 @@ const Sidebar = ({
             <FlexBetween color={theme.palette.secondary.main}>
               <Box display="flex" alignItems="center" gap="0.5rem">
                 <Link
-                  style={{ textDecoration: "none", color: "inherit" }}
+                  style={{
+                    textDecoration: "none",
+                    color: "inherit",
+                    display: "flex",
+                    gap: "0.5rem",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
                   to="/"
                 >
-                  <Box width="100%">
+                  <Box width="100%" display={"grid"} placeItems="center">
                     <img
                       src="/rd-logo.png"
-                      style={{ objectFit: "contain", width: "4rem" }}
+                      style={{ objectFit: "contain", width: "2rem" }}
                       alt="richdollar-logo"
                     />
                   </Box>
-                  <Typography
-                    variant="h4"
-                    fontWeight={"bold"}
-                    sx={{
-                      "&:hover ": {
-                        transform: "scale(1.02)",
-                      },
-                    }}
-                  >
+                  <Typography variant="h4" fontWeight={"bold"} sx={{}}>
                     Richdollar
                   </Typography>
                 </Link>

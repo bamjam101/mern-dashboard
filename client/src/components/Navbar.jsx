@@ -75,11 +75,26 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
               </IconButton>
             </FlexBetween>
           ) : (
-            <Link style={{ textDecoration: "none", color: "inherit" }} to="/">
-              <Box width="100%">
+            <Link
+              style={{
+                textDecoration: "none",
+                color: "inherit",
+                display: "flex",
+                gap: "0.5rem",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+              to="/"
+            >
+              <Box
+                width="100%"
+                display={"flex"}
+                justifyContent="center"
+                alignItems={"center"}
+              >
                 <img
                   src="/rd-logo.png"
-                  style={{ objectFit: "contain", width: "3.5rem" }}
+                  style={{ objectFit: "contain", width: "2rem" }}
                   alt="richdollar-logo"
                 />
               </Box>
@@ -87,9 +102,6 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
                 variant="h4"
                 fontWeight={"bold"}
                 sx={{
-                  "&:hover ": {
-                    transform: "scale(1.02)",
-                  },
                   color: theme.palette.secondary.main,
                 }}
               >

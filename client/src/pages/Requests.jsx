@@ -11,36 +11,40 @@ import ErrorText from "../components/ErrorText";
 const Requests = () => {
   const theme = useTheme();
   const [error, setError] = useState("");
-  const [updatingRow, setUpdatingRow] = useState({});
   const [data, setData] = useState([]);
 
-  async function handleApproval() {
+  async function handleApproval(id) {
     try {
-      if (updatingRow) {
-        console.log(updatingRow);
-        await axios.patch(
-          `${import.meta.env.VITE_APP_BASE_URL}/withdraw/${
-            updatingRow.requestedBy
-          }`,
-          updatingRow,
-          {
-            headers: {
-              Authorization: `Bearer ${getItemInLocalStorage("TOKEN")}`,
-            },
-          }
-        );
-      }
+      await axios.patch(`${import.meta.env.VITE_APP_BASE_URL}/withdraw/${id}`, {
+        headers: {
+          Authorization: `Bearer ${getItemInLocalStorage("TOKEN")}`,
+        },
+      });
+      setTimeout(() => {
+        fetchWithdrawalRequests();
+      }, 1000);
     } catch (error) {
-      console.log(error);
-      setError(error?.response?.data?.message);
+      setError(error.response.data);
     }
   }
 
-  useEffect(() => {
-    if (updatingRow?.requestedBy) {
-      handleApproval();
+  async function handleRejection(id) {
+    try {
+      await axios.delete(
+        `${import.meta.env.VITE_APP_BASE_URL}/withdraw/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${getItemInLocalStorage("TOKEN")}`,
+          },
+        }
+      );
+      setTimeout(() => {
+        fetchWithdrawalRequests();
+      }, 1000);
+    } catch (error) {
+      setError(error.response.data);
     }
-  }, [updatingRow]);
+  }
 
   const columns = [
     {
@@ -56,7 +60,7 @@ const Requests = () => {
             }}
             to={`/user/${params.row.requestedBy}`}
           >
-            {params.row._id}
+            {params.row.transactionHolder}
           </Link>
         );
       },
@@ -91,9 +95,7 @@ const Requests = () => {
                 zIndex: "1000",
                 cursor: "pointer",
               }}
-              onClick={() => {
-                setUpdatingRow({ ...row, status: "approved" });
-              }}
+              onClick={() => handleApproval(row.requestedBy)}
             >
               <ApprovalOutlined />
             </IconButton>
@@ -108,9 +110,7 @@ const Requests = () => {
                 zIndex: "1000",
                 cursor: "pointer",
               }}
-              onClick={() => {
-                setUpdatingRow({ ...row, status: "rejected" });
-              }}
+              onClick={() => handleRejection(row.requestedBy)}
             >
               <CancelOutlined />
             </IconButton>
@@ -133,7 +133,7 @@ const Requests = () => {
       const result = response.data;
       setData(result);
     } catch (error) {
-      console.log(error.response.data.message);
+      setError(error.response.data);
     }
   };
   useEffect(() => {
@@ -142,7 +142,7 @@ const Requests = () => {
   return (
     <Box m="1.5rem 2.5rem">
       <Header title="Requests" subtitle="List Of Requests..." />
-      <Table columns={columns} data={data} isEditable={false} />
+      <Table columns={columns} data={data} isEditable={false} height={"75vh"} />
       {error && <ErrorText error={error} />}
     </Box>
   );

@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { getItemInLocalStorage } from "../utlis";
 import ResponseText from "../components/ResponseText";
+import ErrorText from "../components/ErrorText";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -27,20 +28,21 @@ const Register = () => {
   const [contact, setContact] = useState("");
   const [referral, setReferral] = useState("");
   const [response, setResponse] = useState("");
+  const [error, setError] = useState("");
 
   const handleUserSignUp = async (e) => {
     e.preventDefault();
-    if (password.length < 6) {
-      return new Error("Password too short!");
-    } else {
-      const newRegistrant = {
-        name,
-        contact,
-        email,
-        password,
-        referral,
-      };
-      try {
+    try {
+      if (password.length < 6) {
+        return new Error("Password too short!");
+      } else {
+        const newRegistrant = {
+          name,
+          contact,
+          email,
+          password,
+          referral,
+        };
         const response = await axios.post(
           `${import.meta.env.VITE_APP_BASE_URL}/auth/signup`,
           newRegistrant
@@ -51,9 +53,10 @@ const Register = () => {
         setEmail("");
         setPassword("");
         setReferral("");
-      } catch (err) {
-        console.log(err);
       }
+      // setResponse("User Sign Up Recorded");
+    } catch (error) {
+      setError(error.response.data.message);
     }
   };
 
@@ -167,7 +170,8 @@ const Register = () => {
             </Grid>
           </Grid>
         </form>
-        <ResponseText response={response} />
+        {response && <ResponseText response={response} />}
+        {error && <ErrorText error={error} />}
       </Box>
     </Container>
   );

@@ -13,10 +13,10 @@ const handleUserSignUp = async (req, res) => {
 
     if (error) return res.status(400).json("Application error encountered.");
     if (!(email && password && name && contact)) {
-      res.status(400).send("All inputs are required");
+      return res.status(400).send("All inputs are required");
     }
     let user = await User.findOne({ email });
-    if (user) return res.status(409).res("This Email Is Already In Use!");
+    if (user) return res.status(400).res("This Email Is Already In Use!");
     const salt = await bcrypt.genSalt(8);
     const hashedPass = await bcrypt.hash(password, salt);
     const existingUser = await User.find();
@@ -49,7 +49,6 @@ const handleUserSignUp = async (req, res) => {
           }
           index = index + 1;
         });
-        console.log(referralMatches);
         if (!referralMatches)
           return res
             .status(400)
@@ -61,7 +60,7 @@ const handleUserSignUp = async (req, res) => {
           contact,
           password: hashedPass,
           isEmailVerified: true,
-          isApproved: true,
+          isApproved: false,
           referredBy: referralInfo.referredBy,
           referralLinks: [
             {
@@ -81,7 +80,6 @@ const handleUserSignUp = async (req, res) => {
             },
           ],
         });
-        console.log(newUser);
         user = await newUser.save();
         if (user) await referredByUser.save();
 
@@ -98,13 +96,12 @@ const handleUserSignUp = async (req, res) => {
             "Email registered. Please verify your email to proceed to login."
           );
       } else {
-        console.log("running");
         const newUser = new User({
           name,
           email,
           contact,
           isEmailVerified: true,
-          isApproved: true,
+          isApproved: false,
           password: hashedPass,
           referralLinks: [
             {

@@ -7,66 +7,81 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getItemInLocalStorage } from "../utlis";
+import ErrorText from "../components/ErrorText";
 import FlexBetween from "../components/FlexBetween";
 
 const Dashboard = () => {
   const theme = useTheme();
   const navigate = useNavigate();
   const { isAdmin, isLoading } = useSelector((state) => state.global);
+  const [error, setError] = useState("");
   const [users, setUsers] = useState({});
   const [investments, setInvestments] = useState({});
   const [registrants, setRegistrants] = useState(0);
   const [requests, setRequests] = useState({});
 
   const getUserStats = async () => {
-    const { data } = await axios.get(
-      `${import.meta.env.VITE_APP_BASE_URL}/stat/users`,
-      {
-        headers: {
-          Authorization: `Bearer ${getItemInLocalStorage("TOKEN")}`,
-        },
-      }
-    );
-    setUsers(data);
+    try {
+      const { data } = await axios.get(
+        `${import.meta.env.VITE_APP_BASE_URL}/stat/users`,
+        {
+          headers: {
+            Authorization: `Bearer ${getItemInLocalStorage("TOKEN")}`,
+          },
+        }
+      );
+      setUsers(data);
+    } catch (error) {
+      setError(error.response.data);
+    }
   };
 
   const getInvestmentStats = async () => {
-    const { data } = await axios.get(
-      `${import.meta.env.VITE_APP_BASE_URL}/stat/investments`,
-      {
-        headers: {
-          Authorization: `Bearer ${getItemInLocalStorage("TOKEN")}`,
-        },
-      }
-    );
-    setInvestments(data);
+    try {
+      const { data } = await axios.get(
+        `${import.meta.env.VITE_APP_BASE_URL}/stat/investments`,
+        {
+          headers: {
+            Authorization: `Bearer ${getItemInLocalStorage("TOKEN")}`,
+          },
+        }
+      );
+      setInvestments(data);
+    } catch (error) {
+      setError(error.response.data);
+    }
   };
   const getWithdrawalStats = async () => {
-    const { data } = await axios.get(
-      `${import.meta.env.VITE_APP_BASE_URL}/stat/withdrawal-requests`,
-      {
-        headers: {
-          Authorization: `Bearer ${getItemInLocalStorage("TOKEN")}`,
-        },
-      }
-    );
-    setRequests(data);
+    try {
+      const { data } = await axios.get(
+        `${import.meta.env.VITE_APP_BASE_URL}/stat/withdrawal-requests`,
+        {
+          headers: {
+            Authorization: `Bearer ${getItemInLocalStorage("TOKEN")}`,
+          },
+        }
+      );
+      setRequests(data);
+    } catch (error) {
+      setError(error.response.data);
+    }
   };
   const getRegistrantStats = async () => {
-    const { data } = await axios.get(
-      `${import.meta.env.VITE_APP_BASE_URL}/stat/registrants`,
-      {
-        headers: {
-          Authorization: `Bearer ${getItemInLocalStorage("TOKEN")}`,
-        },
-      }
-    );
-    setRegistrants(data);
+    try {
+      const { data } = await axios.get(
+        `${import.meta.env.VITE_APP_BASE_URL}/stat/registrants`,
+        {
+          headers: {
+            Authorization: `Bearer ${getItemInLocalStorage("TOKEN")}`,
+          },
+        }
+      );
+      setRegistrants(data);
+    } catch (error) {
+      setError(error.response.data);
+    }
   };
   useEffect(() => {
-    if (!isAdmin && !isLoading) {
-      navigate("/user");
-    }
     getInvestmentStats();
     getUserStats();
     getWithdrawalStats();
@@ -238,6 +253,7 @@ const Dashboard = () => {
           </Box>
         </Box>
       </Box>
+      {error && <ErrorText error={error} />}
     </Box>
   );
 };

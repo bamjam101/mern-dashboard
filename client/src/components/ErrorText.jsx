@@ -1,5 +1,5 @@
 import { Box, Typography } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
 
 const ErrorText = ({ error }) => {
   return (
@@ -13,9 +13,9 @@ const ErrorText = ({ error }) => {
       {error ? (
         <Typography
           paragraph
-          color="tomato"
+          color={"tomato"}
           padding={"0.5rem 1rem"}
-          border="2px dotted tomato"
+          border={`2px dotted tomato`}
           textAlign={"center"}
           sx={{ borderRadius: "8px" }}
         >

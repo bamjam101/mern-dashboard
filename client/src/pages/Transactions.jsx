@@ -14,24 +14,24 @@ const Transactions = () => {
 
   const columns = [
     {
-      field: "_id",
-      headerName: "ID",
+      field: "name",
+      headerName: "Name",
       flex: 1,
       renderCell: (params) => {
+        const { row } = params;
         return (
           <Link
             style={{
               color: theme.palette.secondary[400],
               textDecoration: "none",
             }}
-            to={`/user/${params.row.requestedBy}`}
+            to={`/user/${row._id}`}
           >
-            {params.row._id}
+            {row.name}
           </Link>
         );
       },
     },
-    { field: "name", headerName: "Name", flex: 0.5 },
     { field: "balance", headerName: "Current Balance", flex: 0.5 },
     { field: "amount", headerName: "Transaction Amount", flex: 0.5 },
     { field: "date", headerName: "Transaction Date", flex: 0.5 },
@@ -51,7 +51,7 @@ const Transactions = () => {
       const result = response.data;
       setData(result);
     } catch (error) {
-      setError(error?.response?.data?.message);
+      setError(error.response.data);
     }
   };
   useEffect(() => {
@@ -60,7 +60,7 @@ const Transactions = () => {
   return (
     <Box m="1.5rem 2.5rem">
       <Header title="TRANSACTIONS" subtitle="List Of Transactions..." />
-      <Table columns={columns} data={data} isEditable={false} />
+      <Table columns={columns} data={data} isEditable={false} height={"75vh"} />
       {error && <ErrorText error={error} />}
     </Box>
   );

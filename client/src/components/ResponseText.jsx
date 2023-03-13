@@ -1,5 +1,5 @@
 import { Box, Typography } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
 
 const ResponseText = ({ response }) => {
   return (
@@ -13,9 +13,9 @@ const ResponseText = ({ response }) => {
       {response ? (
         <Typography
           paragraph
-          color="lightgreen"
+          color={"lightgreen"}
           padding={"0.5rem 1rem"}
-          border="2px dotted lightgreen"
+          border={`2px dotted lightgreen`}
           textAlign={"center"}
           sx={{ borderRadius: "8px" }}
         >

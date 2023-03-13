@@ -23,6 +23,7 @@ import imgDetail3 from "../assets/knowledge.svg";
 import FlexBetween from "../components/FlexBetween";
 import { getItemInLocalStorage } from "../utlis";
 import GlowBox from "../components/GlowBox";
+import { useSelector } from "react-redux";
 
 const floating = keyframes`
     0% { transform: translate(0,  0px) scale(1); }
@@ -44,8 +45,10 @@ const textVariant = {
 const Home = () => {
   const navigate = useNavigate();
   const theme = useTheme();
+  const { isAdmin } = useSelector((state) => state.global);
   const [isFixed, setIsFixed] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [redirectText, setRedirectText] = useState("");
   const token = getItemInLocalStorage("TOKEN");
   const isNonMediumDevice = useMediaQuery("(max-width: 900px)");
 
@@ -103,7 +106,7 @@ const Home = () => {
     fontSize: "1.1rem",
     textAlign: "justify",
     lineHeight: "1.5",
-    color: theme.palette.primary[400],
+    color: theme.palette.primary[200],
     marginTop: "1.5rem",
   });
 
@@ -118,6 +121,11 @@ const Home = () => {
   useEffect(() => {
     if (token) {
       setIsLoggedIn(true);
+      if (isAdmin) {
+        setRedirectText("/");
+      } else {
+        setRedirectText("/user");
+      }
     }
     window.addEventListener("scroll", onWindowScroll);
     return () => window.removeEventListener("scroll", onWindowScroll);
@@ -259,7 +267,7 @@ const Home = () => {
             Easy transactions and 24/7 customer support, We feel responsible for
             your happiness
           </Typography>
-          {!isLoggedIn && (
+          {!isLoggedIn ? (
             <Box>
               <Typography
                 variant="p"
@@ -273,27 +281,63 @@ const Home = () => {
               </Typography>
               <Button
                 variant="contained"
+                type="submit"
+                size="medium"
                 sx={{
-                  mr: 2,
-                  px: 6,
-                  py: 1,
                   fontSize: "0.9rem",
-                  fontWeight: "bold",
                   textTransform: "capitalize",
+                  py: 2,
+                  px: 4,
+                  mt: 3,
+                  mb: 2,
                   borderRadius: 0,
-                  borderColor: theme.palette.primary[800],
-                  backgroundColor: theme.palette.primary[800],
-                  "&&:hover": {
-                    backgroundColor: theme.palette.secondary[600],
-                    color: theme.palette.primary[800],
-                  },
-                  "&&:focus": {
-                    backgroundColor: theme.palette.primary[800],
+                  backgroundColor: theme.palette.secondary[500],
+                  color: theme.palette.primary[800],
+                  fontWeight: "bold",
+                  "&:hover": {
+                    backgroundColor: "white",
                   },
                 }}
                 onClick={() => navigate("/signup")}
               >
                 Sign Up
+              </Button>
+            </Box>
+          ) : (
+            <Box>
+              <Typography
+                variant="p"
+                component="p"
+                sx={{
+                  py: 3,
+                  lineHeight: 1.6,
+                  fontSize: "1.2rem",
+                }}
+              >
+                Welcome Customer!
+              </Typography>
+              <Button
+                variant="contained"
+                type="submit"
+                size="medium"
+                sx={{
+                  fontSize: "0.9rem",
+                  textTransform: "capitalize",
+                  py: 2,
+                  px: 4,
+                  mt: 3,
+                  mb: 2,
+                  borderRadius: 0,
+                  backgroundColor: theme.palette.secondary[500],
+                  color: theme.palette.primary[800],
+                  fontWeight: "bold",
+                  "&:hover": {
+                    backgroundColor: "white",
+                  },
+                }}
+                onClick={() => navigate(redirectText)}
+              >
+                Go to profile
               </Button>
             </Box>
           )}
@@ -503,9 +547,11 @@ const Home = () => {
                   mt: 3,
                   mb: 2,
                   borderRadius: 0,
-                  backgroundColor: "#14192d",
+                  backgroundColor: theme.palette.secondary[500],
+                  color: theme.palette.primary[800],
+                  fontWeight: "bold",
                   "&:hover": {
-                    backgroundColor: "#1e2a5a",
+                    backgroundColor: "white",
                   },
                 }}
               >

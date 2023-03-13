@@ -1,6 +1,6 @@
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { Routes, useNavigate } from "react-router-dom";
 import { Navigate } from "react-router-dom";
@@ -35,6 +35,15 @@ const ProtectedRoute = ({ children }) => {
 function App() {
   const mode = useSelector((state) => state.global.mode);
   const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
+  const { isLoading, isAdmin } = useSelector((state) => state.global);
+  const [routeVisibility, setRouteVisibility] = useState(false);
+  useEffect(() => {
+    if (!isLoading) {
+      if (isAdmin) {
+        setRouteVisibility(true);
+      }
+    }
+  }, [isLoading]);
   return (
     <div className="app">
       <BrowserRouter>
@@ -42,7 +51,9 @@ function App() {
           <CssBaseline />
           <Routes>
             <Route element={<Layout />}>
-              <Route path="/" element={<Navigate to="/dashboard" />} />
+              {setRouteVisibility && (
+                <Route path="/" element={<Navigate to="/dashboard" />} />
+              )}
               <Route
                 path="/dashboard"
                 element={

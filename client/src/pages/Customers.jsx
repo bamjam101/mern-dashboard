@@ -13,9 +13,11 @@ import {
   EditOutlined,
 } from "@mui/icons-material";
 import Modal from "../components/Modal";
+import ErrorText from "../components/ErrorText";
 
 const Customers = () => {
   const [data, setData] = useState([]);
+  const [error, setError] = useState("");
   const [isNewUser, setIsNewUser] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [isDeleteMode, setIsDeleteMode] = useState(false);
@@ -31,75 +33,83 @@ const Customers = () => {
   };
 
   async function createNewUser() {
-    if (updatingRow) {
-      console.log(updatingRow);
-      await axios.post(
-        `${import.meta.env.VITE_APP_BASE_URL}/user/new`,
-        updatingRow,
+    try {
+      if (updatingRow) {
+        console.log(updatingRow);
+        await axios.post(
+          `${import.meta.env.VITE_APP_BASE_URL}/user/new`,
+          updatingRow,
+          {
+            headers: {
+              Authorization: `Bearer ${getItemInLocalStorage("TOKEN")}`,
+            },
+          }
+        );
+      }
+      fetchCustomers();
+    } catch (error) {
+      setError(error.response.data);
+    }
+  }
+
+  async function handleEditSubmit() {
+    try {
+      if (updatingRow) {
+        const { _id, name, pan, aadhar, isApproved, role } = updatingRow;
+        await axios.patch(
+          `${import.meta.env.VITE_APP_BASE_URL}/registrant/${_id}`,
+          {
+            _id,
+            name,
+            role,
+            pan,
+            aadhar,
+            isApproved,
+          }
+        );
+      }
+    } catch (error) {
+      setError(error.response.data);
+    }
+  }
+
+  async function handleUserDelete() {
+    try {
+      if (updatingRow) {
+        const { _id } = updatingRow;
+        await axios.delete(`${import.meta.env.VITE_APP_BASE_URL}/user/${_id}`, {
+          headers: {
+            Authorization: `Bearer ${getItemInLocalStorage("TOKEN")}`,
+          },
+        });
+      }
+    } catch (error) {
+      setError(error.response.data);
+    }
+  }
+
+  async function fetchCustomers() {
+    try {
+      const { data } = await axios.get(
+        `${import.meta.env.VITE_APP_BASE_URL}/user/all`,
         {
           headers: {
             Authorization: `Bearer ${getItemInLocalStorage("TOKEN")}`,
           },
         }
       );
-    }
-    fetchCustomers();
-  }
-
-  async function handleEditSubmit() {
-    if (updatingRow) {
-      const { _id, name, pan, aadhar, isApproved, role } = updatingRow;
-      await axios.patch(
-        `${import.meta.env.VITE_APP_BASE_URL}/registrant/${_id}`,
-        {
-          _id,
-          name,
-          role,
-          pan,
-          aadhar,
-          isApproved,
-        }
-      );
-    }
-  }
-
-  async function handleUserDelete() {
-    if (updatingRow) {
-      const { _id } = updatingRow;
-      await axios.delete(`${import.meta.env.VITE_APP_BASE_URL}/user/${_id}`, {
-        headers: {
-          Authorization: `Bearer ${getItemInLocalStorage("TOKEN")}`,
-        },
-      });
-      fetchCustomers();
-    }
-  }
-
-  async function fetchCustomers() {
-    const response = await axios.get(
-      `${import.meta.env.VITE_APP_BASE_URL}/user/all`,
-      {
-        headers: {
-          Authorization: `Bearer ${getItemInLocalStorage("TOKEN")}`,
-        },
-      }
-    );
-    const result = response.data;
-    if (typeof result === "string") {
-      setData([]);
-    } else {
-      setData(result);
+      setData(data);
+    } catch (error) {
+      setError(error.response.data);
     }
   }
 
   useEffect(() => {
     if (isEditMode) {
       handleEditSubmit();
-      fetchCustomers();
     }
     if (isDeleteMode) {
       handleUserDelete();
-      fetchCustomers();
     }
     if (isNewUser) {
       createNewUser();
@@ -108,6 +118,9 @@ const Customers = () => {
     setIsDeleteMode(false);
     setIsNewUser(false);
     setIsEditMode(false);
+    setTimeout(() => {
+      fetchCustomers();
+    }, 1000);
   }, [isUpdated]);
 
   useEffect(() => {
@@ -116,24 +129,24 @@ const Customers = () => {
 
   const columns = [
     {
-      field: "_id",
-      headerName: "ID",
-      flex: 0.5,
+      field: "name",
+      headerName: "Name",
+      flex: 1,
       renderCell: (params) => {
+        const { row } = params;
         return (
           <Link
             style={{
               color: theme.palette.secondary[400],
               textDecoration: "none",
             }}
-            to={`/user/${params.row._id}`}
+            to={`/user/${row._id}`}
           >
-            {params.row._id}
+            {row.name}
           </Link>
         );
       },
     },
-    { field: "name", headerName: "Name", flex: 0.8 },
     {
       field: "contact",
       headerName: "Contact",
@@ -232,8 +245,8 @@ const Customers = () => {
           </Typography>
         </Button>
       </Box>
-      <Table columns={columns} data={data} isEditable={true} />
-
+      <Table columns={columns} data={data} isEditable={true} height={"75vh"} />
+      {error && <ErrorText error={error} />}
       <footer>
         <AnimatePresence initial={false} mode="wait">
           {modalOpen && (

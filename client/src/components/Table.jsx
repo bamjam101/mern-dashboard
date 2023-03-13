@@ -2,12 +2,12 @@ import React from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import { Box, useTheme } from "@mui/material";
 
-const Table = ({ data, columns, isEditable }) => {
+const Table = ({ data, columns, isEditable, height }) => {
   const theme = useTheme();
   return (
     <Box
       mt={"2rem"}
-      height="75vh"
+      height={height}
       sx={{
         "& .MuiDataGrid-root": {
           border: "none",

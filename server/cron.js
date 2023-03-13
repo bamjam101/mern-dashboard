@@ -11,6 +11,8 @@ const automateIncentives = async () => {
         const queue = [];
         let currentLevel = 0;
         const networkOwner = users[user];
+        if (networkOwner.referralLinks.some((link) => link.isUsed === false))
+          continue;
         const wallet = await Wallet.findOne({ userId: networkOwner._id });
         let newBalance = wallet.balance;
 
@@ -23,13 +25,12 @@ const automateIncentives = async () => {
             const newUserWallet = await Wallet.findOne({ userId });
             if (newUserWallet && newUserWallet.balance >= 200) {
               let interestRate;
-              if (currentLevel === 1 || currentLevel === 0) {
+              if (currentLevel === 1) {
                 interestRate = 10 / 100;
               } else {
                 interestRate = 5 / 100;
               }
               const incentive = 200 * interestRate;
-              console.log("incentive - " + incentive);
               newBalance = newBalance + incentive;
             }
             newUser.referralLinks.forEach((referrals) => {

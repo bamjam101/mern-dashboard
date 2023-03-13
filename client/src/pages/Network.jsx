@@ -22,16 +22,20 @@ const Network = () => {
   const params = useParams();
 
   const getUserNetwork = async () => {
-    const { data: response } = await axios.get(
-      `${import.meta.env.VITE_APP_BASE_URL}/network/${params.id}`,
-      {
-        headers: {
-          Authorization: `Bearer ${getItemInLocalStorage("TOKEN")}`,
-        },
-      }
-    );
+    try {
+      const { data: response } = await axios.get(
+        `${import.meta.env.VITE_APP_BASE_URL}/network/${params.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${getItemInLocalStorage("TOKEN")}`,
+          },
+        }
+      );
 
-    setData(response.data);
+      setData(response.data);
+    } catch (error) {
+      setError(error.response.data);
+    }
   };
 
   const getMyNetwork = async () => {
@@ -46,7 +50,7 @@ const Network = () => {
       );
       setData(response.data);
     } catch (error) {
-      setError(error.message);
+      setError(error.response.data);
     }
   };
 
@@ -91,7 +95,7 @@ const Network = () => {
           </IconButton>
         </FlexBetween>
       </Box>
-      <Box overflow={"scroll"} width="100svw" height="90svh">
+      <Box overflowX={"scroll"} width="100svw" height="90svh">
         {isTreeReady ? <Tree /> : null}
       </Box>
       {error ? <ErrorText error={error} /> : null}

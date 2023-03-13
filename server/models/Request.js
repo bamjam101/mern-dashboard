@@ -5,6 +5,9 @@ const RequestSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
+  transactionHolder: {
+    type: String,
+  },
   transactionAmount: {
     type: Number,
   },

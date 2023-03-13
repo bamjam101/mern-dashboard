@@ -38,11 +38,11 @@ const Withdraw = () => {
     event.preventDefault();
     try {
       let value = parseInt(amount);
-      if (profile.wallet - value < 0) {
+      if (profile.wallet - value <= 0) {
         handleOpen();
         setIsInsufficient(true);
         setIsModalShown(false);
-      } else if (profile.wallet - value < 200) {
+      } else if (profile.wallet - value <= 200) {
         setIsInsufficient(false);
 
         if (!isModalShown) {
@@ -60,10 +60,10 @@ const Withdraw = () => {
             },
           }
         );
-        setAmount("");
+        setAmount(0);
       }
     } catch (error) {
-      setError(error.response.data.message);
+      setError(error.response.data);
     }
   };
   useEffect(() => {
@@ -154,6 +154,7 @@ const Withdraw = () => {
               bgcolor: "background.paper",
               border: "2px solid #000",
               boxShadow: 24,
+              borderRadius: "0.5rem",
               p: 4,
             }}
           >
@@ -163,10 +164,14 @@ const Withdraw = () => {
               </Typography>
             ) : (
               <Box>
-                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                <Typography id="modal-modal-description">
                   Still want to continue? It will cease you account.
                 </Typography>
-                <Button variant="outlined" mt="0.5rem" onClick={handleClose}>
+                <Button
+                  variant="contained"
+                  sx={{ mt: 2 }}
+                  onClick={handleClose}
+                >
                   Continue
                 </Button>
               </Box>

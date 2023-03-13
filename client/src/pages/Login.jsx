@@ -18,10 +18,11 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { setAdmin, setProfile, setUser, setUserRole } from "../state";
 import { getItemInLocalStorage, setItemInLocalStorage } from "../utlis";
+import ErrorText from "../components/ErrorText";
 
 const Login = () => {
   const theme = useTheme();
-  const userId = getItemInLocalStorage("TOKEN");
+  const [error, setError] = useState("");
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -38,20 +39,20 @@ const Login = () => {
         newUser
       );
       if (response.data) {
-        const { token } = response.data;
+        const { token, user } = response.data;
         setItemInLocalStorage("TOKEN", token);
-        navigate("/dashboard");
+        if (user.role === "superadmin" || user.role === "admin") {
+          navigate("/");
+        } else {
+          navigate("/user");
+        }
       }
+      console.log(response);
     } catch (err) {
       console.log(err);
+      setError(err.response.data);
     }
   };
-
-  useEffect(() => {
-    if (userId) {
-      navigate("/dashboard");
-    }
-  }, []);
   return (
     <Container component={"main"} maxWidth="xs">
       <CssBaseline />
@@ -143,6 +144,7 @@ const Login = () => {
           </Grid>
         </Grid>
       </Box>
+      {error && <ErrorText error={error} />}
     </Container>
   );
 };

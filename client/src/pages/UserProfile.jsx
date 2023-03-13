@@ -20,13 +20,19 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { setProfile } from "../state";
 import { getItemInLocalStorage } from "../utlis";
+import ErrorText from "../components/ErrorText";
+import Table from "../components/Table";
+import ResponseText from "../components/ResponseText";
 
 const UserProfile = () => {
   const theme = useTheme();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { profile } = useSelector((state) => state.global);
-  const { userId, isAdmin, isLoading } = useSelector((state) => state.global);
+  const { userId, isAdmin, isLoading, profile } = useSelector(
+    (state) => state.global
+  );
+  const [error, setError] = useState("");
+  const [response, setResponse] = useState("");
   const [userProfile, setUserProfile] = useState({});
   const [wallet, setWallet] = useState({});
   const params = useParams();
@@ -70,79 +76,99 @@ const UserProfile = () => {
   }, [rowData]);
 
   const fetchUserProfile = async () => {
-    const { data: res } = await axios.get(
-      `${import.meta.env.VITE_APP_BASE_URL}/user/${params.id}`,
-      {
-        headers: {
-          Authorization: `Bearer ${getItemInLocalStorage("TOKEN")}`,
-        },
-      }
-    );
-    setUserProfile(res);
-    if (res?.referralLinks?.length) {
-      index = 1;
-      res?.referralLinks?.forEach((element) => {
-        const { _id, link, isUsed } = element;
-        if (row.length < 5) {
-          row = [...row, { index, link, _id, isUsed, copy: null }];
-
-          index++;
+    try {
+      const { data: res } = await axios.get(
+        `${import.meta.env.VITE_APP_BASE_URL}/user/${params.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${getItemInLocalStorage("TOKEN")}`,
+          },
         }
-      });
-      if (profile?.isApproved) {
-        setReferrals(row);
+      );
+      setUserProfile(res);
+      if (res?.referralLinks?.length) {
+        index = 1;
+        res?.referralLinks?.forEach((element) => {
+          const { _id, link, isUsed } = element;
+          if (row.length < 5) {
+            row = [...row, { index, link, _id, isUsed, copy: null }];
+
+            index++;
+          }
+        });
+        if (profile?.isApproved) {
+          setReferrals(row);
+        }
       }
+      setResponse("Success");
+    } catch (error) {
+      setError(error.response.data);
     }
   };
 
   const fetchMyProfile = async () => {
-    const { data: res } = await axios.get(
-      `${import.meta.env.VITE_APP_BASE_URL}/user/me`,
-      {
-        headers: {
-          Authorization: `Bearer ${getItemInLocalStorage("TOKEN")}`,
-        },
-      }
-    );
-    setUserProfile(res);
-    if (res?.referralLinks?.length) {
-      index = 1;
-      res?.referralLinks?.forEach((element) => {
-        const { _id, link, isUsed } = element;
-        if (row.length < 5) {
-          row = [...row, { index, link, _id, isUsed, copy: null }];
-
-          index++;
+    try {
+      const { data: res } = await axios.get(
+        `${import.meta.env.VITE_APP_BASE_URL}/user/me`,
+        {
+          headers: {
+            Authorization: `Bearer ${getItemInLocalStorage("TOKEN")}`,
+          },
         }
-      });
-      if (profile?.isApproved) {
-        setReferrals(row);
+      );
+      setUserProfile(res);
+      if (res?.referralLinks?.length) {
+        index = 1;
+        res?.referralLinks?.forEach((element) => {
+          const { _id, link, isUsed } = element;
+          if (row.length < 5) {
+            row = [...row, { index, link, _id, isUsed, copy: null }];
+
+            index++;
+          }
+        });
+        if (profile?.isApproved) {
+          setReferrals(row);
+        }
       }
+      setResponse("Success");
+    } catch (error) {
+      setError(error.response.data);
     }
   };
 
   const fetchUserWallet = async () => {
-    const { data: res } = await axios.get(
-      `${import.meta.env.VITE_APP_BASE_URL}/wallet/${params.id}`,
-      {
-        headers: {
-          Authorization: `Bearer ${getItemInLocalStorage("TOKEN")}`,
-        },
-      }
-    );
-    setWallet(res);
+    try {
+      const { data: res } = await axios.get(
+        `${import.meta.env.VITE_APP_BASE_URL}/wallet/${params.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${getItemInLocalStorage("TOKEN")}`,
+          },
+        }
+      );
+      setWallet(res);
+      setResponse("Success");
+    } catch (error) {
+      setError(error.response.data);
+    }
   };
 
   const fetchMyWallet = async () => {
-    const { data } = await axios.get(
-      `${import.meta.env.VITE_APP_BASE_URL}/wallet/me`,
-      {
-        headers: {
-          Authorization: `Bearer ${getItemInLocalStorage("TOKEN")}`,
-        },
-      }
-    );
-    setWallet(data);
+    try {
+      const { data } = await axios.get(
+        `${import.meta.env.VITE_APP_BASE_URL}/wallet/me`,
+        {
+          headers: {
+            Authorization: `Bearer ${getItemInLocalStorage("TOKEN")}`,
+          },
+        }
+      );
+      setWallet(data);
+      setResponse("Success");
+    } catch (error) {
+      setError(error.response.data);
+    }
   };
   useEffect(() => {
     if (isAdmin) {
@@ -150,7 +176,9 @@ const UserProfile = () => {
       fetchUserWallet();
     } else if (!isLoading) {
       fetchMyProfile();
-      fetchMyWallet();
+      if (profile.isApproved) {
+        fetchMyWallet();
+      }
     }
   }, [isLoading]);
 
@@ -196,7 +224,7 @@ const UserProfile = () => {
             {userProfile?.contact}
           </Typography>
         </Box>
-        {profile?.isApproved && (
+        {profile?.isApproved ? (
           <Box>
             <Box
               sx={{
@@ -229,7 +257,13 @@ const UserProfile = () => {
                   }}
                   title="Card Status"
                 ></Box>
-                <Typography sx={{ m: 0, p: 0 }}>
+                <Typography
+                  sx={{
+                    m: 0,
+                    p: 0,
+                    color: wallet?.active ? "lightgreen" : "tomato",
+                  }}
+                >
                   {wallet?.active ? "Active" : "Inactive"}
                 </Typography>
               </Box>
@@ -321,24 +355,25 @@ const UserProfile = () => {
               </Link>
             )}
           </Box>
+        ) : (
+          <ErrorText
+            error={
+              "Your profile is still under survery, kindly wait for approval to proceed with your account management."
+            }
+          />
         )}
       </Box>
       <Box mt={"2rem"} height="42.5vh">
-        <DataGrid
-          experimentalFeatures={{ newEditingApi: true }}
-          rows={referrals || []}
-          loading={!referrals}
-          getRowId={(referral) => referral._id}
+        <Table
           columns={columns}
-          // onSelectionModelChange={(ids) => {
-          //   const selectedIDs = new Set(ids);
-          //   const selectedRowData = referrals.filter((row) =>
-          //     selectedIDs.has(row._id.toString())
-          //   );
-          //   setRowData(selectedRowData[0]);
-          // }}
+          data={referrals}
+          isEditable={false}
+          height={"42.5vh"}
         />
       </Box>
+      {response && <ResponseText response={response} />}
+
+      {error && <ErrorText error={error} />}
     </Container>
   );
 };

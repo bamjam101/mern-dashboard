@@ -13,7 +13,7 @@ const createUser = async (req, res) => {
       req.body;
 
     if (error) return res.status(400).json("Application error encountered.");
-    if (!(email && name && contact && role && pan && aadhar && referral)) {
+    if (!(email && name && contact && role && pan && aadhar)) {
       res.status(400).send("All inputs are required");
     }
 
@@ -49,7 +49,6 @@ const createUser = async (req, res) => {
         }
         index = index + 1;
       });
-      console.log(referralMatches);
       if (!referralMatches)
         return res.status(400).json("Referral is either exhausted or invalid.");
       const newUser = new User({
@@ -167,8 +166,8 @@ const deleteUser = async (req, res) => {
       if (!wallet) return res.status(404).json("User wallet not found.");
       user.isActive = false;
       wallet.active = false;
-      await wallet.save();
-      await user.save();
+      await wallet.delete();
+      await user.delete();
     } else return res.status(400).json("Cannot process request.");
   } catch (error) {
     console.log(error);
@@ -178,7 +177,7 @@ const deleteUser = async (req, res) => {
 
 const getMe = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
+    const user = await User.findById(req.user.id).select("-password");
 
     res.status(200).json(user);
   } catch (err) {

@@ -11,11 +11,11 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import React, { useState } from "react";
-import ResponseText from "../components/ResponseText";
+import ErrorText from "../components/ErrorText";
 
 const ForgotPassword = () => {
+  const [error, setError] = useState("");
   const [email, setEmail] = useState("");
-  const [response, setResponse] = useState("");
   const [isResent, setIsResent] = useState(false);
 
   const handleOTPGeneration = async (event) => {
@@ -27,11 +27,8 @@ const ForgotPassword = () => {
           email: email,
         }
       );
-      if (response?.data) {
-        setResponse(response.data);
-      }
     } catch (error) {
-      setResponse(error.message);
+      setError(error.response.data);
     }
   };
 
@@ -104,7 +101,7 @@ const ForgotPassword = () => {
             </Grid>
           ) : null}
         </form>
-        <ResponseText response={response} />
+        {error && <ErrorText error={error} />}
       </Box>
     </Container>
   );

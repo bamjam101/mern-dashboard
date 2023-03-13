@@ -45,14 +45,7 @@ export const globalSlice = createSlice({
       state.isLoading = boolean.payload;
     },
     setLogout: (state) => {
-      state = {
-        mode: getItemInLocalStorage("MODE") || "dark",
-        userId: "",
-        profile: {},
-        wallet: 0,
-        isAdmin: false,
-        role: "user",
-      };
+      state = initialState;
     },
   },
 });

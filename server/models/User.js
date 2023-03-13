@@ -28,11 +28,9 @@ const UserSchema = new mongoose.Schema(
     },
     pan: {
       type: String,
-      default: null,
     },
     aadhar: {
       type: String,
-      default: null,
     },
     token: {
       type: String,
