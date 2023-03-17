@@ -51,7 +51,7 @@ const getWithdrawalRequestStats = async (req, res) => {
   try {
     if (req.user.role === "user")
       return res.status(401).json("Not authorized to make such request.");
-    const requests = await Request.find({ status: "pending" });
+    const requests = await Request.find();
     const numberOfRequests = requests.length;
     res.status(200).json({ numberOfRequests });
   } catch (error) {
@@ -78,33 +78,12 @@ const getTransactions = async (req, res) => {
   try {
     if (req.user.role === "user")
       return res.status(401).json("Not authorized to make such request.");
-    const users = await User.find({ role: "user", isApproved: true });
-    if (!users) return res.status(200).json("No users to display.");
-    let transactions = [];
-    if (users.length) {
-      for (let user = 0; user < users.length; user++) {
-        const wallet = await Wallet.findOne({ userId: users[user]._id });
-        wallet.transaction?.forEach((transaction) => {
-          const { amount, date, status } = transaction;
-          console.log(users[user]._id);
-          transactions = [
-            ...transactions,
-            {
-              _id: users[user]._id,
-              balance: wallet.balance,
-              amount,
-              date,
-              status,
-              name: users[user].name,
-            },
-          ];
-          console.log(date, status);
-        });
-      }
-    }
+    const transactions = await Request.find({ status: { $ne: "pending" } });
+    console.log(transactions);
+    if (!transactions) return res.status(404).json("No transactions found.");
     res.status(200).json(transactions);
   } catch (error) {
-    res.status(500).json("Hi");
+    res.status(500).json(error);
   }
 };
 

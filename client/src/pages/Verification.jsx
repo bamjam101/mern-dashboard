@@ -19,10 +19,11 @@ const Verification = () => {
       }/verify/${params.token}`;
       const res = await axios.get(url);
       if (res) {
+        console.log(response);
         setResponse(res);
       }
     } catch (error) {
-      setError(error.response.data);
+      setError(error.response.data.message);
     }
   };
   useEffect(() => {

@@ -13,13 +13,17 @@ const Requests = () => {
   const [error, setError] = useState("");
   const [data, setData] = useState([]);
 
-  async function handleApproval(id) {
+  async function handleApproval(row) {
     try {
-      await axios.patch(`${import.meta.env.VITE_APP_BASE_URL}/withdraw/${id}`, {
-        headers: {
-          Authorization: `Bearer ${getItemInLocalStorage("TOKEN")}`,
-        },
-      });
+      const { requestedBy } = row;
+      await axios.delete(
+        `${import.meta.env.VITE_APP_BASE_URL}/withdraw/approve/${requestedBy}`,
+        {
+          headers: {
+            Authorization: `Bearer ${getItemInLocalStorage("TOKEN")}`,
+          },
+        }
+      );
       setTimeout(() => {
         fetchWithdrawalRequests();
       }, 1000);
@@ -28,10 +32,11 @@ const Requests = () => {
     }
   }
 
-  async function handleRejection(id) {
+  async function handleRejection(row) {
     try {
+      const { requestedBy } = row;
       await axios.delete(
-        `${import.meta.env.VITE_APP_BASE_URL}/withdraw/${id}`,
+        `${import.meta.env.VITE_APP_BASE_URL}/withdraw/reject/${requestedBy}`,
         {
           headers: {
             Authorization: `Bearer ${getItemInLocalStorage("TOKEN")}`,
@@ -74,7 +79,7 @@ const Requests = () => {
     {
       field: "status",
       headerName: "Action",
-      flex: 0.5,
+      flex: 1,
       renderCell: (params) => {
         const { row } = params;
         return (
@@ -82,6 +87,7 @@ const Requests = () => {
             display={"flex"}
             alignItems="center"
             justifyContent={"center"}
+            width="100%"
             gap="0.5rem"
           >
             <IconButton
@@ -95,7 +101,7 @@ const Requests = () => {
                 zIndex: "1000",
                 cursor: "pointer",
               }}
-              onClick={() => handleApproval(row.requestedBy)}
+              onClick={() => handleApproval(row)}
             >
               <ApprovalOutlined />
             </IconButton>
@@ -110,7 +116,7 @@ const Requests = () => {
                 zIndex: "1000",
                 cursor: "pointer",
               }}
-              onClick={() => handleRejection(row.requestedBy)}
+              onClick={() => handleRejection(row)}
             >
               <CancelOutlined />
             </IconButton>

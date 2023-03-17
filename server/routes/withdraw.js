@@ -9,8 +9,8 @@ const protect = require("../middlewares/jwtAuth");
 const router = express.Router();
 
 router.get("/all", protect, getAllWithdrawalRequests);
-router.patch("/:id", protect, withdrawalApproval);
+router.delete("/approve/:id", protect, withdrawalApproval);
 router.post("/", protect, postWithdrawalRequest);
-router.delete("/:id", protect, withdrawalRejection);
+router.delete("/reject/:id", protect, withdrawalRejection);
 
 module.exports = router;

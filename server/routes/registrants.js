@@ -8,6 +8,6 @@ const protect = require("../middlewares/jwtAuth");
 const router = express.Router();
 
 router.get("/", protect, getUnapprovedUsers);
-router.patch("/:id", handleUserApproval);
+router.patch("/:id", protect, handleUserApproval);
 
 module.exports = router;

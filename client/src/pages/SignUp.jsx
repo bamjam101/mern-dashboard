@@ -15,7 +15,11 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { getItemInLocalStorage } from "../utlis";
+import {
+  contactValidation,
+  getItemInLocalStorage,
+  passwordValidation,
+} from "../utlis";
 import ResponseText from "../components/ResponseText";
 import ErrorText from "../components/ErrorText";
 
@@ -33,9 +37,9 @@ const Register = () => {
   const handleUserSignUp = async (e) => {
     e.preventDefault();
     try {
-      if (password.length < 6) {
-        return new Error("Password too short!");
-      } else {
+      const validContact = contactValidation(contact);
+      const validPassword = passwordValidation(password);
+      if (validContact && validPassword) {
         const newRegistrant = {
           name,
           contact,
@@ -53,8 +57,15 @@ const Register = () => {
         setEmail("");
         setPassword("");
         setReferral("");
+
+        setResponse("Sign up details sent successfully.");
+      } else {
+        if (validContact) {
+          setError("Password to weak!");
+        } else {
+          setError("Contact number is not valid 10 digit number.");
+        }
       }
-      // setResponse("User Sign Up Recorded");
     } catch (error) {
       setError(error.response.data.message);
     }
@@ -99,6 +110,7 @@ const Register = () => {
               name="name"
               id="name"
               type="text"
+              placeholder="Enter Full Name"
               autoFocus
               value={name}
               label="Full Name"
@@ -111,6 +123,7 @@ const Register = () => {
               id="contact"
               type="text"
               value={contact}
+              placeholder="Enter 10 digit mobile number"
               label="Contact"
               fullWidth
               onChange={(e) => setContact(e.target.value)}
@@ -121,6 +134,7 @@ const Register = () => {
               id="email"
               type="email"
               label="Email"
+              placeholder="Enter a valid email address"
               fullWidth
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -130,6 +144,7 @@ const Register = () => {
               name="password"
               id="password"
               type="password"
+              placeholder="Enter a strong password"
               sx={{
                 padding: "0",
                 margin: "0",

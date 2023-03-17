@@ -12,9 +12,33 @@ body,
 
 body a {
     transition: transform 0.25s;
-    letter-spacing: 2px;
+    letter-spacing: 1px;
 }
 
 body a:hover {
     transform: scale(1.01);
+}
+
+body::-webkit-scrollbar {
+    width: 0.75em;
+    outline: none;
+}
+
+body::-webkit-scrollbar-track {
+    background: #070812;
+}
+
+body::-webkit-scrollbar-thumb {
+    background: #4d547d;
+    border-radius: 100vw;
+}
+
+body::-webkit-scrollbar-thumb:hover {
+    background: #4d547d;
+}
+
+@media screen and (prefers-reduced-motion: reduce) {
+    * {
+        scroll-behavior: auto;
+    }
 }

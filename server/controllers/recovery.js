@@ -23,7 +23,7 @@ const handlePasswordChangeOTPGeneration = async (req, res) => {
   }).save();
 
   const url = `${process.env.APP_BASE_URL}/user/${token.userId}/reset/${token.token}`;
-  await sendEmail(user.email, "Reset Your Account Password", url);
+  await sendEmail(user.email, "Reset Your Account Password", url, "recovery");
   res.status(200).json("Email to reset your password has been sent.");
 };
 
@@ -48,6 +48,8 @@ const handlePasswordReset = async (req, res) => {
       }
     );
     await Token.deleteMany({ userId: user._id });
+    const url = `${process.env.APP_BASE_URL}/login`;
+    await sendEmail(user.email, "Password has been updated.", url, "updated");
     res.status(200).json("Password has been changed.");
   } catch (err) {
     res.status(200).json(err);

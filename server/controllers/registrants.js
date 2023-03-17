@@ -1,5 +1,6 @@
 const User = require("../models/User");
 const Wallet = require("../models/Wallet");
+const sendEmail = require("../utlis");
 
 const getUnapprovedUsers = async (req, res) => {
   try {
@@ -27,6 +28,10 @@ const getUnapprovedUsers = async (req, res) => {
 
 const handleUserApproval = async (req, res) => {
   try {
+    console.log("this is handle user approval");
+    console.log(req.user);
+    if (req.user.role === "user")
+      return res.status(401).json("Not authorized to make such request.");
     const user = await User.findByIdAndUpdate(
       req.params.id,
       { ...req.body, isApproved: true },
@@ -34,18 +39,22 @@ const handleUserApproval = async (req, res) => {
         new: true,
       }
     );
-    if (user) {
-      const existingWallet = await Wallet.findOne({ userId: user._id });
-      if (existingWallet)
-        return res.status(400).json("Can not define another wallet.");
-      const wallet = new Wallet({
-        userId: user._id,
-      });
-      await wallet.save();
-      return res.status(200).json("Profile has been updated.");
-    } else {
-      return res.status(400).json("Failed to update profile.");
-    }
+    if (!user) return res.status(400).json("User not found.");
+    const existingWallet = await Wallet.findOne({ userId: user._id });
+    if (existingWallet)
+      return res.status(400).json("Can not define another wallet.");
+    const wallet = new Wallet({
+      userId: user._id,
+    });
+    await wallet.save();
+    const url = `${process.env.APP_BASE_URL}/user`;
+    await sendEmail(
+      user.email,
+      "Your account has been approved.",
+      url,
+      "approved"
+    );
+    res.status(200).json("Profile has been updated.");
   } catch (err) {
     res.status(500).json(err);
   }

@@ -47,7 +47,6 @@ const Login = () => {
           navigate("/user");
         }
       }
-      console.log(response);
     } catch (err) {
       console.log(err);
       setError(err.response.data);

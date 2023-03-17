@@ -4,6 +4,7 @@ const Token = require("../models/Token");
 const referralCodes = require("referral-codes");
 const bcrypt = require("bcrypt");
 const Wallet = require("../models/Wallet");
+const sendEmail = require("../utlis");
 
 const createUser = async (req, res) => {
   try {
@@ -168,6 +169,8 @@ const deleteUser = async (req, res) => {
       wallet.active = false;
       await wallet.delete();
       await user.delete();
+      const url = `${process.env.APP_BASE_URL}`;
+      await sendEmail(user.email, "Account has been shut down.", url, "ceased");
     } else return res.status(400).json("Cannot process request.");
   } catch (error) {
     console.log(error);

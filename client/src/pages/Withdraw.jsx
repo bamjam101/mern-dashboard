@@ -20,12 +20,14 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import ErrorText from "../components/ErrorText";
+import ResponseText from "../components/ResponseText";
 import { getItemInLocalStorage } from "../utlis";
 
 const Withdraw = () => {
   const navigate = useNavigate();
   const theme = useTheme();
   const [error, setError] = useState("");
+  const [response, setResponse] = useState("");
   const [open, setOpen] = useState(false);
   const [isModalShown, setIsModalShown] = useState(false);
   const [isInsufficient, setIsInsufficient] = useState(false);
@@ -51,7 +53,8 @@ const Withdraw = () => {
         setIsModalShown(true);
       }
       if (isModalShown && profile.wallet - value > 0) {
-        await axios.post(
+        console.log("request sent");
+        const res = await axios.post(
           `${import.meta.env.VITE_APP_BASE_URL}/withdraw`,
           { amount: value },
           {
@@ -60,10 +63,14 @@ const Withdraw = () => {
             },
           }
         );
-        setAmount(0);
+        if (res) {
+          setAmount("");
+          setResponse("Withdrawal Request Sent");
+        }
       }
     } catch (error) {
       setError(error.response.data);
+      setAmount("");
     }
   };
   useEffect(() => {
@@ -136,7 +143,7 @@ const Withdraw = () => {
       </form>
 
       {error && <ErrorText error={error} />}
-
+      <ResponseText response={response} />
       <div>
         <Modal
           open={open}

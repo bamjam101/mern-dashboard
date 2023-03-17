@@ -35,7 +35,6 @@ const Customers = () => {
   async function createNewUser() {
     try {
       if (updatingRow) {
-        console.log(updatingRow);
         await axios.post(
           `${import.meta.env.VITE_APP_BASE_URL}/user/new`,
           updatingRow,
@@ -65,6 +64,11 @@ const Customers = () => {
             pan,
             aadhar,
             isApproved,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${getItemInLocalStorage("TOKEN")}`,
+            },
           }
         );
       }

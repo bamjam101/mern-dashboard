@@ -4,7 +4,7 @@ const cron = require("node-cron");
 
 const automateIncentives = async () => {
   try {
-    const users = await User.find({ role: "user" });
+    const users = await User.find({ role: "user", isActive: true });
     if (users.length) {
       for (let user = 0; user < users.length; user++) {
         const level = 5;

@@ -4,7 +4,11 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
 import Table from "../components/Table";
-import { getItemInLocalStorage } from "../utlis";
+import {
+  aadharValidation,
+  getItemInLocalStorage,
+  pancardValidation,
+} from "../utlis";
 import { SaveOutlined } from "@mui/icons-material";
 import ErrorText from "../components/ErrorText";
 import { Link } from "react-router-dom";
@@ -20,17 +24,30 @@ const Registrant = () => {
     try {
       if (updatingRow) {
         const { _id, name, pan, aadhar, isApproved, role } = updatingRow;
-        await axios.patch(
-          `${import.meta.env.VITE_APP_BASE_URL}/registrant/${_id}`,
-          {
-            _id,
-            name,
-            role,
-            pan,
-            aadhar,
-            isApproved,
-          }
-        );
+        const validPan = pancardValidation(pan);
+        const validAadhar = aadharValidation(aadhar);
+        if (validPan && validAadhar) {
+          await axios.patch(
+            `${import.meta.env.VITE_APP_BASE_URL}/registrant/${_id}`,
+            {
+              _id,
+              name,
+              role,
+              pan,
+              aadhar,
+              isApproved,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${getItemInLocalStorage("TOKEN")}`,
+              },
+            }
+          );
+        } else {
+          setError(
+            "PAN & Aadhar validation conflict. Kindly recheck your input."
+          );
+        }
       }
     } catch (error) {
       setError(error.response.data);
@@ -39,9 +56,15 @@ const Registrant = () => {
 
   useEffect(() => {
     handleEditSubmit();
-    fetchRegistrants();
+    setTimeout(() => {
+      fetchRegistrants();
+    });
     setIsUpdated(false);
   }, [isUpdated]);
+
+  useEffect(() => {
+    fetchRegistrants();
+  }, []);
 
   const columns = [
     {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   Box,
   Button,
@@ -10,7 +10,9 @@ import {
   useTheme,
   AppBar,
   useMediaQuery,
+  IconButton,
 } from "@mui/material";
+import { Close, Menu } from "@mui/icons-material";
 import { keyframes } from "@mui/system";
 import { motion, useAnimation } from "framer-motion";
 import { useInView } from "react-intersection-observer";
@@ -34,21 +36,104 @@ const floating = keyframes`
 const textVariant = {
   hidden: {
     opacity: 0,
-    y: -10,
+    y: 10,
+    scale: 0.95,
   },
   visible: {
     opacity: 1,
     y: 0,
+    scale: 1,
+    transition: {
+      ease: "easeInOut",
+      duration: 1,
+      type: "spring",
+      stiffness: 100,
+    },
   },
+};
+
+const imgVariant = {
+  hidden: {
+    opacity: 0,
+    y: 10,
+    scale: 0.95,
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      ease: "easeInOut",
+      duration: 1,
+      type: "spring",
+      stiffness: 100,
+    },
+  },
+};
+
+const CustomImage = ({ url }) => {
+  const controls = useAnimation();
+  const [ref, inView] = useInView();
+  useEffect(() => {
+    if (inView) {
+      controls.start("visible");
+    }
+  }, [controls, inView]);
+  return (
+    <motion.img
+      ref={ref}
+      loading="lazy"
+      src={url}
+      alt="profit"
+      variants={imgVariant}
+      initial="hidden"
+      animate={controls}
+      style={{
+        width: "100%",
+        objectFit: "contain",
+      }}
+    />
+  );
+};
+
+const CustomTypography = ({ text }) => {
+  const theme = useTheme();
+  const CustomTypography = styled(Typography)({
+    display: "flex",
+    fontSize: "1.1rem",
+    textAlign: "justify",
+    lineHeight: "1.5",
+    color: theme.palette.primary[200],
+    marginTop: "1.5rem",
+  });
+
+  const controls = useAnimation();
+  const [ref, inView] = useInView();
+  useEffect(() => {
+    if (inView) {
+      controls.start("visible");
+    }
+  }, [controls, inView]);
+  return (
+    <motion.p
+      ref={ref}
+      variants={textVariant}
+      initial="hidden"
+      animate={controls}
+    >
+      <CustomTypography>{text}</CustomTypography>
+    </motion.p>
+  );
 };
 
 const Home = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const theme = useTheme();
-  const { isAdmin } = useSelector((state) => state.global);
+  const [isOpen, setIsOpen] = useState(false);
+  const [isHomePage, setIsHomePage] = useState(true);
   const [isFixed, setIsFixed] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [redirectText, setRedirectText] = useState("");
   const token = getItemInLocalStorage("TOKEN");
   const isNonMediumDevice = useMediaQuery("(max-width: 900px)");
 
@@ -69,22 +154,21 @@ const Home = () => {
     },
   }));
   const CustomBox = styled(Box)(({ theme }) => ({
-    minHeight: "80vh",
+    minHeight: "100vh",
     display: "grid",
     placeItems: "center",
     overflow: "hidden",
     gridTemplateColumns: "repeat(2, 1fr)",
-    // tamanhos
-    gap: theme.spacing(2),
+
+    gap: isNonMediumDevice ? theme.spacing(0) : theme.spacing(2),
     padding: isNonMediumDevice ? theme.spacing(2) : theme.spacing(18),
     paddingTop: theme.spacing(20),
-    // cor de fundo
+
     [theme.breakpoints.down("lg")]: {
-      gridTemplateColumns: "1fr 0.1fr",
+      gridTemplateColumns: "1fr 1fr",
     },
     [theme.breakpoints.down("md")]: {
-      gridTemplateRows: "0.5fr 0.5fr",
-      gridTemplateColumns: "1fr",
+      gridTemplateColumns: "1fr 0.5fr",
     },
     [theme.breakpoints.down("sm")]: {
       display: "flex",
@@ -96,19 +180,11 @@ const Home = () => {
   const BoxText = styled(Box)(({ theme }) => ({
     flex: "1",
     [theme.breakpoints.down("md")]: {
+      flex: "2",
       paddingLeft: theme.spacing(2),
       paddingRight: theme.spacing(2),
     },
   }));
-
-  const CustomTypography = styled(Typography)({
-    display: "flex",
-    fontSize: "1.1rem",
-    textAlign: "justify",
-    lineHeight: "1.5",
-    color: theme.palette.primary[200],
-    marginTop: "1.5rem",
-  });
 
   function onWindowScroll() {
     if (window.scrollY > 0) {
@@ -118,14 +194,51 @@ const Home = () => {
     }
   }
 
+  const handleMenuClick = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const onHomeButtonClick = () => {
+    if (!isHomePage) {
+      navigate("/#home");
+    }
+    if (isMobile && isOpen) {
+      setIsOpen(false);
+    }
+  };
+  const onAboutButtonClick = () => {
+    if (isMobile && isOpen) {
+      setIsOpen(false);
+    }
+  };
+  const onBenefitButtonClick = () => {
+    if (!isHomePage) {
+      navigate("/#contact");
+    }
+    if (isMobile && isOpen) {
+      setIsOpen(false);
+    }
+  };
+  const onContactButtonClick = () => {
+    if (!isHomePage) {
+      navigate("/#contact");
+    }
+    if (isMobile && isOpen) {
+      setIsOpen(false);
+    }
+  };
+  useEffect(() => {
+    if (location.pathname === "/") {
+      setIsHomePage(true);
+      setIsPreviousEventPage(false);
+    } else {
+      setIsHomePage(false);
+    }
+  }, [location]);
+
   useEffect(() => {
     if (token) {
       setIsLoggedIn(true);
-      if (isAdmin) {
-        setRedirectText("/");
-      } else {
-        setRedirectText("/user");
-      }
     }
     window.addEventListener("scroll", onWindowScroll);
     return () => window.removeEventListener("scroll", onWindowScroll);
@@ -178,68 +291,74 @@ const Home = () => {
               Richdollar
             </Typography>
           </Link>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              gap: "1rem",
-            }}
-          >
-            <a
-              style={{
-                textDecoration: "none",
-                color: "inherit",
+          {isNonMediumDevice ? (
+            <IconButton onClick={handleMenuClick}>
+              {isOpen ? <Close /> : <Menu />}
+            </IconButton>
+          ) : (
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: "1rem",
               }}
-              href="#home"
             >
-              Home
-            </a>
-            <a
-              style={{ textDecoration: "none", color: "inherit" }}
-              href="#about"
-            >
-              About
-            </a>
-            <a
-              style={{ textDecoration: "none", color: "inherit" }}
-              href="#benefits"
-            >
-              Benefits
-            </a>
-            <a
-              style={{ textDecoration: "none", color: "inherit" }}
-              href="#contact"
-            >
-              Contact
-            </a>
-            {!isLoggedIn && (
-              <Button
-                component={Link}
-                to={"/login"}
-                variant="contained"
-                sx={{
-                  px: 3,
-                  py: 1,
-                  fontWeight: "bold",
-                  fontSize: "0.9rem",
-                  textTransform: "capitalize",
-                  borderRadius: 0,
-                  ml: "1rem",
-                  "&&:hover": {
-                    color: theme.palette.primary[800],
-                    background: theme.palette.primary[300],
-                  },
-                  "&&:focus": {
-                    color: "#343a55",
-                    borderColor: "#343a55",
-                  },
+              <a
+                style={{
+                  textDecoration: "none",
+                  color: "inherit",
                 }}
+                href="#home"
               >
-                Login
-              </Button>
-            )}
-          </Box>
+                Home
+              </a>
+              <a
+                style={{ textDecoration: "none", color: "inherit" }}
+                href="#about"
+              >
+                About
+              </a>
+              <a
+                style={{ textDecoration: "none", color: "inherit" }}
+                href="#benefits"
+              >
+                Benefits
+              </a>
+              <a
+                style={{ textDecoration: "none", color: "inherit" }}
+                href="#contact"
+              >
+                Contact
+              </a>
+              {!isLoggedIn && (
+                <Button
+                  component={Link}
+                  to={"/login"}
+                  variant="contained"
+                  sx={{
+                    px: 3,
+                    py: 1,
+                    fontWeight: "bold",
+                    fontSize: "0.9rem",
+                    textTransform: "capitalize",
+                    borderRadius: 0,
+                    ml: "1rem",
+                    "&&:hover": {
+                      color: theme.palette.primary[800],
+                      background: theme.palette.primary[300],
+                    },
+                    "&&:focus": {
+                      color: "#343a55",
+                      borderColor: "#343a55",
+                    },
+                  }}
+                >
+                  Login
+                </Button>
+              )}
+            </Box>
+          )}
         </FlexBetween>
       </AppBar>
       <CustomBox component="header">
@@ -296,6 +415,7 @@ const Home = () => {
                   fontWeight: "bold",
                   "&:hover": {
                     backgroundColor: "white",
+                    transform: "scale(1.02)",
                   },
                 }}
                 onClick={() => navigate("/signup")}
@@ -309,9 +429,9 @@ const Home = () => {
                 variant="p"
                 component="p"
                 sx={{
-                  py: 3,
+                  py: isNonMediumDevice ? 0 : 3,
                   lineHeight: 1.6,
-                  fontSize: "1.2rem",
+                  fontSize: isNonMediumDevice ? "" : "1.2rem",
                 }}
               >
                 Welcome Customer!
@@ -335,7 +455,7 @@ const Home = () => {
                     backgroundColor: "white",
                   },
                 }}
-                onClick={() => navigate(redirectText)}
+                onClick={() => navigate("/")}
               >
                 Go to profile
               </Button>
@@ -354,9 +474,9 @@ const Home = () => {
             }}
           />
         </AnimatedBox>
-        <div id="benefits"></div>
         <GlowBox bottom={"40%"} right={"0"} opacity={"0.11"} />
       </CustomBox>
+      <div id="benefits"></div>
       <Box
         px={isNonMediumDevice ? theme.spacing(2) : theme.spacing(18)}
         display="flex"
@@ -374,93 +494,9 @@ const Home = () => {
               gridTemplateRows: "1fr 0.5fr",
             },
           }}
-        >
-          {!isNonMediumDevice && (
-            <Box component="article">
-              <Typography
-                variant="h2"
-                component="h3"
-                sx={{
-                  fontWeight: "700",
-                  textAlign: "start",
-                }}
-              >
-                {"24/7 Service Available"}
-              </Typography>
-              <CustomTypography
-                component={motion.p}
-                variants={textVariant}
-                initial="hidden"
-                animate="visible"
-              >
-                Our servers are connected and active day &amp; night. Feel free
-                to browse, track and complete transactions that will make you
-                prosperous. Connect your friends and family and get endless
-                profit.
-              </CustomTypography>
-            </Box>
-          )}
-          <Box width={"100%"}>
-            <img
-              loading="lazy"
-              src={imgDetail}
-              alt="profit"
-              style={{
-                width: "100%",
-                objectFit: "contain",
-              }}
-            />
-          </Box>
-          {isNonMediumDevice && (
-            <Box component="article">
-              <Typography
-                variant="h2"
-                component="h3"
-                sx={{
-                  fontWeight: "700",
-                  textAlign: "start",
-                }}
-              >
-                {"24/7 Service Available"}
-              </Typography>
-              <CustomTypography
-                component={motion.p}
-                variants={textVariant}
-                initial="hidden"
-                animate="visible"
-              >
-                Our servers are connected and active day &amp; night. Feel free
-                to browse, track and complete transactions that will make you
-                prosperous. Connect your friends and family and get endless
-                profit.
-              </CustomTypography>
-            </Box>
-          )}
-        </Box>
-
-        <Box
-          sx={{
-            display: "grid",
-            gridTemplateColumns: "repeat(2, 1fr)",
-            gap: isNonMediumDevice ? "0" : "3rem",
-            [theme.breakpoints.down("md")]: {
-              gridTemplateColumns: "1fr",
-              gridTemplateRows: "1fr 0.5fr",
-            },
-          }}
           mt="3rem"
         >
-          <Box width={"100%"} display="flex" alignItems={"baseline"}>
-            <img
-              loading="lazy"
-              src={imgDetail3}
-              alt="knowledge"
-              style={{
-                objectFit: "contain",
-                width: "100%",
-              }}
-            />
-          </Box>
+          {isNonMediumDevice && <CustomImage url={imgDetail2} />}
           <Box component="article">
             <Typography
               variant="h2"
@@ -470,21 +506,16 @@ const Home = () => {
                 textAlign: "start",
               }}
             >
-              {"Have full control on your wealth"}
+              {"24/7 Service Available"}
             </Typography>
             <CustomTypography
-              component={motion.p}
-              variants={textVariant}
-              initial="hidden"
-              animate="visible"
-            >
-              We have exclusive dashboard where you can track your account
-              activities. As well as information about your growing wealth. We
-              have put together an experience which will nor limit nor
-              disappoint you as our customer. Break the surface of ordinary and
-              come join us on the glorious side!
-            </CustomTypography>
+              text={`Our servers are connected and active day &amp; night. Feel free
+                to browse, track and complete transactions that will make you
+                prosperous. Connect your friends and family and get endless
+                profit.`}
+            />
           </Box>
+          {!isNonMediumDevice && <CustomImage url={imgDetail2} />}
         </Box>
 
         <Box
@@ -501,15 +532,46 @@ const Home = () => {
         >
           {isNonMediumDevice && (
             <Box width={"100%"} display="flex" alignItems={"baseline"}>
-              <img
-                loading="lazy"
-                src={imgDetail2}
-                alt="descritive"
-                style={{
-                  objectFit: "contain",
-                  width: "100%",
-                }}
-              />
+              <CustomImage url={imgDetail} />
+            </Box>
+          )}
+          <Box component="article">
+            <Typography
+              variant="h2"
+              component="h3"
+              sx={{
+                fontWeight: "700",
+                textAlign: "start",
+              }}
+            >
+              {"Have full control on your wealth"}
+            </Typography>
+            <CustomTypography
+              text={`We have exclusive dashboard where you can track your account
+              activities. As well as information about your growing wealth. We
+              have put together an experience which will nor limit nor
+              disappoint you as our customer. Break the surface of ordinary and
+              come join us on the glorious side!`}
+            />
+          </Box>
+          {!isNonMediumDevice && <CustomImage url={imgDetail} />}
+        </Box>
+
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: "repeat(2, 1fr)",
+            gap: isNonMediumDevice ? "0" : "3rem",
+            [theme.breakpoints.down("md")]: {
+              gridTemplateColumns: "1fr",
+              gridTemplateRows: "1fr 0.5fr",
+            },
+          }}
+          mt="3rem"
+        >
+          {isNonMediumDevice && (
+            <Box width={"100%"} display="flex" alignItems={"baseline"}>
+              <CustomImage url={imgDetail2} />
             </Box>
           )}
           <Box>
@@ -522,17 +584,12 @@ const Home = () => {
                   textAlign: "start",
                 }}
               >
-                {"Match with the best agent"}
+                Match with the best agent
               </Typography>
               <CustomTypography
-                component={motion.p}
-                variants={textVariant}
-                initial="hidden"
-                animate="visible"
-              >
-                We have a number of happy customers. Don't believe me? Confirm
-                with our officials right now.
-              </CustomTypography>
+                text={` We have a number of happy customers. Don't believe me? Confirm
+                with our officials right now.`}
+              />
               <Button
                 component={Link}
                 to={"/contact"}
@@ -551,6 +608,7 @@ const Home = () => {
                   color: theme.palette.primary[800],
                   fontWeight: "bold",
                   "&:hover": {
+                    transform: "scale(1.02)",
                     backgroundColor: "white",
                   },
                 }}
@@ -560,17 +618,9 @@ const Home = () => {
               <GlowBox bottom={"-20%"} left={"0"} opacity={"0.11"} />
             </Box>
           </Box>
-          {!isNonMediumDevice && (
-            <img
-              loading="lazy"
-              src={imgDetail2}
-              alt="descritive"
-              style={{
-                objectFit: "contain",
-                width: "100%",
-              }}
-            />
-          )}
+          <Box width={"100%"} display="flex" alignItems={"baseline"}>
+            {!isNonMediumDevice && <CustomImage url={imgDetail3} />}
+          </Box>
         </Box>
       </Box>
 
@@ -582,7 +632,8 @@ const Home = () => {
         alignItems="center"
         sx={{
           py: 10,
-          mx: 6,
+
+          px: isNonMediumDevice ? theme.spacing(4) : theme.spacing(18),
         }}
       >
         <Typography
@@ -596,26 +647,11 @@ const Home = () => {
           {"Find us and peace at once."}
         </Typography>
 
-        <Typography
-          sx={{
-            maxWidth: "sm",
-            mx: 0,
-            textAlign: "center",
-            py: 3,
-            color: "#7b7b7b",
-          }}
-          component={motion.p}
-          variants={textVariant}
-          initial="hidden"
-          animate="visible"
-        >
-          {
-            "It is our commitment to ensure a profitable and enjoyable \
-                earning experience for you. \
-                Multiply your money at exponential rate \
-                and good ahead and live your dream life while we take care of your earnings."
-          }
-        </Typography>
+        <CustomTypography
+          text={`It is our commitment to ensure a profitable and enjoyable earning
+          experience for you. Multiply your money at exponential rate and good
+          ahead and live your dream life while we take care of your earnings.`}
+        />
         <GlowBox right="0" top="200%" opacity={".11"} />
       </Stack>
     </>

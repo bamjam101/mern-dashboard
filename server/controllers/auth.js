@@ -59,7 +59,7 @@ const handleUserSignUp = async (req, res) => {
           email,
           contact,
           password: hashedPass,
-          isEmailVerified: true,
+          isEmailVerified: false,
           isApproved: false,
           referredBy: referralInfo.referredBy,
           referralLinks: [
@@ -89,7 +89,12 @@ const handleUserSignUp = async (req, res) => {
         }).save();
 
         const url = `${process.env.APP_BASE_URL}/user/${modelToken.userId}/verify/${modelToken.token}`;
-        await sendEmail(user.email, "Verify Your Gmail For Richdollar", url);
+        await sendEmail(
+          user.email,
+          "Verify Your Gmail For Richdollar",
+          url,
+          "recovery"
+        );
         res
           .status(200)
           .json(
@@ -100,7 +105,7 @@ const handleUserSignUp = async (req, res) => {
           name,
           email,
           contact,
-          isEmailVerified: true,
+          isEmailVerified: false,
           isApproved: false,
           password: hashedPass,
           referralLinks: [
@@ -129,7 +134,12 @@ const handleUserSignUp = async (req, res) => {
         }).save();
 
         const url = `${process.env.APP_BASE_URL}/user/${modelToken.userId}/verify/${modelToken.token}`;
-        await sendEmail(user.email, "Verify Your Gmail For Richdollar", url);
+        await sendEmail(
+          user.email,
+          "Verify Your Gmail For Richdollar",
+          url,
+          "recovery"
+        );
         res
           .status(200)
           .json(

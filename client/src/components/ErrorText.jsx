@@ -1,16 +1,26 @@
 import { Box, Typography } from "@mui/material";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 const ErrorText = ({ error }) => {
+  const [visibility, setVisibility] = useState(true);
+  useEffect(() => {
+    setTimeout(() => {
+      setVisibility(false);
+    }, 5000);
+  }, []);
   return (
     <Box
+      position={"absolute"}
+      bottom="0"
+      left={"0"}
       width={"100%"}
+      zIndex="1000"
       padding="2rem 0"
       display={"flex"}
       justifyContent="center"
       alignItems={"center"}
     >
-      {error ? (
+      {error && visibility ? (
         <Typography
           paragraph
           color={"tomato"}

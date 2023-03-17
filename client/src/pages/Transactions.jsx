@@ -14,7 +14,7 @@ const Transactions = () => {
 
   const columns = [
     {
-      field: "name",
+      field: "transactionHolder",
       headerName: "Name",
       flex: 1,
       renderCell: (params) => {
@@ -25,16 +25,15 @@ const Transactions = () => {
               color: theme.palette.secondary[400],
               textDecoration: "none",
             }}
-            to={`/user/${row._id}`}
+            to={`/user/${row.requestedBy}`}
           >
-            {row.name}
+            {row.transactionHolder}
           </Link>
         );
       },
     },
-    { field: "balance", headerName: "Current Balance", flex: 0.5 },
-    { field: "amount", headerName: "Transaction Amount", flex: 0.5 },
-    { field: "date", headerName: "Transaction Date", flex: 0.5 },
+    { field: "transactionAmount", headerName: "Transaction Amount", flex: 0.5 },
+    { field: "dispatchTime", headerName: "Transaction Date", flex: 0.5 },
     { field: "status", headerName: "Approved/Rejected", flex: 0.5 },
   ];
 
@@ -48,8 +47,8 @@ const Transactions = () => {
           },
         }
       );
-      const result = response.data;
-      setData(result);
+      setData(response.data);
+      console.log(response.data);
     } catch (error) {
       setError(error.response.data);
     }

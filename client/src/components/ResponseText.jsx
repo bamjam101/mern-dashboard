@@ -1,16 +1,26 @@
 import { Box, Typography } from "@mui/material";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 const ResponseText = ({ response }) => {
+  const [visibility, setVisibility] = useState(true);
+  useEffect(() => {
+    setTimeout(() => {
+      setVisibility(false);
+    }, 5000);
+  }, []);
   return (
     <Box
+      position={"absolute"}
+      bottom="0"
+      left={"0"}
+      zIndex="1000"
       width={"100%"}
       padding="2rem 0"
       display={"flex"}
       justifyContent="center"
       alignItems={"center"}
     >
-      {response ? (
+      {response && visibility ? (
         <Typography
           paragraph
           color={"lightgreen"}
