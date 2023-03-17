@@ -1,6 +1,7 @@
 const Wallet = require("../models/Wallet");
 const User = require("../models/User");
 const Request = require("../models/Request");
+const sendEmail = require("../utlis");
 
 const postWithdrawalRequest = async (req, res) => {
   try {
@@ -78,6 +79,13 @@ const withdrawalApproval = async (req, res) => {
 
     await pending.save();
     await wallet.save();
+    const url = `${process.env.APP_BASE_URL}`;
+    await sendEmail(
+      user.email,
+      "Your transaction was successfull",
+      url,
+      "success"
+    );
   } catch (error) {
     console.log(error);
     res.status(500).json(error);
@@ -102,6 +110,8 @@ const withdrawalRejection = async (req, res) => {
     if (error) return res.status(400).json("App error encountered");
 
     await pending.save();
+    const url = `${process.env.APP_BASE_URL}/home`;
+    await sendEmail(user.email, "Your transaction was rejected.", url, "fail");
   } catch (error) {
     console.log(error);
     res.status(500).json(error);

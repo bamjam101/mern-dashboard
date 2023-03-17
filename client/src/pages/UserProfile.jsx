@@ -11,6 +11,7 @@ import {
   Container,
   IconButton,
   Typography,
+  useMediaQuery,
   useTheme,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
@@ -34,6 +35,7 @@ const UserProfile = () => {
   const [error, setError] = useState("");
   const [response, setResponse] = useState("");
   const [userProfile, setUserProfile] = useState({});
+  const isNonMediumDevice = useMediaQuery("(max-width: 900px)");
   const [wallet, setWallet] = useState({});
   const params = useParams();
   let index;
@@ -199,16 +201,16 @@ const UserProfile = () => {
           src="/profile.png"
           alt="profile-img"
           sx={{
-            width: "10rem",
+            width: isNonMediumDevice ? "8rem" : "10rem",
             objectFit: "contain",
-            height: "10rem",
+            height: isNonMediumDevice ? "8rem" : "10rem",
           }}
         ></Avatar>
         <Box
           padding={"0 1rem"}
           display="flex"
           flexDirection={"column"}
-          gap="0.5rem"
+          gap={`${isNonMediumDevice ? "" : "0.5rem"}`}
           justifyContent="center"
         >
           <Typography variant="h3" component={"h2"} textTransform="uppercase">
@@ -281,7 +283,7 @@ const UserProfile = () => {
                   marginTop: "1rem",
                 }}
               >
-                {!isAdmin && (
+                {!isAdmin && profile.wallet !== 0 && (
                   <Button
                     variant="default"
                     sx={{

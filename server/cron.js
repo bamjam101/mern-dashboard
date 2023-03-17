@@ -11,9 +11,15 @@ const automateIncentives = async () => {
         const queue = [];
         let currentLevel = 0;
         const networkOwner = users[user];
-        if (networkOwner.referralLinks.some((link) => link.isUsed === false))
-          continue;
         const wallet = await Wallet.findOne({ userId: networkOwner._id });
+        if (!wallet.active) continue;
+        const interestRateInvestment = 20 / 100;
+        const returnOnInvestment = 200 * interestRateInvestment;
+        wallet.balance = wallet.balance + returnOnInvestment;
+        if (networkOwner.referralLinks.some((link) => link.isUsed === false)) {
+          await wallet.save();
+          continue;
+        }
         let newBalance = wallet.balance;
 
         queue.push(networkOwner._id);
@@ -23,12 +29,20 @@ const automateIncentives = async () => {
             const userId = queue.shift();
             const newUser = await User.findById(userId);
             const newUserWallet = await Wallet.findOne({ userId });
-            if (newUserWallet && newUserWallet.balance >= 200) {
-              let interestRate;
-              if (currentLevel === 1) {
-                interestRate = 10 / 100;
-              } else {
+            if (newUserWallet) {
+              let interestRate = 0;
+              // if (currentLevel === 0) {
+              //   interestRate = 20 / 100;
+              // } else if (currentLevel === 1) {
+              //   interestRate = 10 / 100;
+              // } else {
+              //   interestRate = 5 / 100;
+              // }
+
+              if (currentLevel > 1) {
                 interestRate = 5 / 100;
+              } else if (currentLevel === 1) {
+                interestRate = 10 / 100;
               }
               const incentive = 200 * interestRate;
               newBalance = newBalance + incentive;
@@ -51,3 +65,4 @@ const automateIncentives = async () => {
 };
 
 exports.task = cron.schedule("0 0 1 * *", automateIncentives);
+// exports.task = cron.schedule("*/10 * * * * *", automateIncentives);

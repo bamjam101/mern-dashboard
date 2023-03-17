@@ -42,7 +42,7 @@ const Login = () => {
         const { token, user } = response.data;
         setItemInLocalStorage("TOKEN", token);
         if (user.role === "superadmin" || user.role === "admin") {
-          navigate("/");
+          navigate("/dashboard");
           setItemInLocalStorage("REDIRECT", "/dashboard");
         } else {
           navigate("/user");

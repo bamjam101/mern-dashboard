@@ -33,6 +33,7 @@ const Network = () => {
       );
 
       setData(response.data);
+      console.log(data);
     } catch (error) {
       setError(error.response.data);
     }
@@ -49,6 +50,7 @@ const Network = () => {
         }
       );
       setData(response.data);
+      console.log(data);
     } catch (error) {
       setError(error.response.data);
     }
@@ -78,11 +80,12 @@ const Network = () => {
   return (
     <Box>
       <Box
-        width={"100%"}
         p="0 2.5rem"
         height={"10vh"}
-        display="grid"
-        sx={{ placeItems: "center" }}
+        sx={{
+          display: "grid",
+          width: "100%",
+        }}
       >
         <FlexBetween>
           {!isAdmin ? (
@@ -95,7 +98,7 @@ const Network = () => {
           </IconButton>
         </FlexBetween>
       </Box>
-      <Box overflowX={"scroll"} width="100svw" height="90svh">
+      <Box sx={{ overflowX: "scroll" }} width="100svw" height="90svh">
         {isTreeReady ? <Tree /> : null}
       </Box>
       {error ? <ErrorText error={error} /> : null}

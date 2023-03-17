@@ -159,7 +159,12 @@ const Customers = () => {
       flex: 0.8,
     },
     { field: "email", headerName: "Email", flex: 1 },
-    { field: "pan", headerName: "PAN", flex: 0.6, editable: true },
+    {
+      field: "pan",
+      headerName: "PAN",
+      flex: 0.6,
+      editable: true,
+    },
     { field: "aadhar", headerName: "Aadhar", flex: 0.8, editable: true },
     { field: "role", headerName: "Role", flex: 0.2, editable: true },
     {
@@ -173,6 +178,7 @@ const Customers = () => {
           <Box
             display={"flex"}
             alignItems="center"
+            width="100%"
             justifyContent={"center"}
             gap="0.5rem"
           >

@@ -1,5 +1,12 @@
 import { CopyAllOutlined, ExitToAppOutlined } from "@mui/icons-material";
-import { Avatar, Box, IconButton, Typography, useTheme } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  IconButton,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
 import Header from "../components/Header";
@@ -19,6 +26,7 @@ const Dashboard = () => {
   const [investments, setInvestments] = useState({});
   const [registrants, setRegistrants] = useState(0);
   const [requests, setRequests] = useState({});
+  const isNonSmallDevice = useMediaQuery("(max-width: 900px)");
 
   const getUserStats = async () => {
     try {
@@ -90,76 +98,74 @@ const Dashboard = () => {
   return (
     <Box sx={{ m: "1.5rem 2.25rem" }}>
       <Header title="DASHBOARD" subtitle="Overview Of System" />
-      <FlexBetween gap={"1rem"}>
-        <Box
-          sx={{
-            backgroundColor: theme.palette.background.alt,
-            borderRadius: "16px",
-            padding: "1rem 1.2rem",
-            width: "100%",
-            position: "relative",
-            display: "flex",
-            justifyContent: "center",
-            gap: "1rem",
-            flexDirection: "column",
-            height: "20svh",
-            mt: "1rem",
-          }}
-        >
-          <FlexBetween>
-            <Typography
-              variant="h5"
-              fontWeight={"bold"}
-              color={"gold"}
-              sx={{ margin: "0", padding: "0" }}
-            >
-              Number of registrantion requests
-            </Typography>
-            <IconButton onClick={() => navigate("/registrants")}>
-              <ExitToAppOutlined />
-            </IconButton>
-          </FlexBetween>
-          <Box>
-            <Typography variant="h4" fontWeight="bold" padding="0.4rem">
-              {registrants} Pending
-            </Typography>
-          </Box>
+      <Box
+        sx={{
+          backgroundColor: theme.palette.background.alt,
+          borderRadius: "16px",
+          padding: "1rem 1.2rem",
+          width: "100%",
+          position: "relative",
+          display: "flex",
+          justifyContent: "center",
+          gap: "1rem",
+          flexDirection: "column",
+          height: "20svh",
+          mt: "1rem",
+        }}
+      >
+        <FlexBetween>
+          <Typography
+            variant="h5"
+            fontWeight={"bold"}
+            color={"gold"}
+            sx={{ margin: "0", padding: "0" }}
+          >
+            Number of registrantion requests
+          </Typography>
+          <IconButton onClick={() => navigate("/registrants")}>
+            <ExitToAppOutlined />
+          </IconButton>
+        </FlexBetween>
+        <Box>
+          <Typography variant="h4" fontWeight="bold" padding="0.4rem">
+            {registrants} Pending
+          </Typography>
         </Box>
-        <Box
-          sx={{
-            backgroundColor: theme.palette.background.alt,
-            borderRadius: "16px",
-            padding: "1rem 1.2rem",
-            width: "100%",
-            position: "relative",
-            display: "flex",
-            justifyContent: "center",
-            gap: "1rem",
-            flexDirection: "column",
-            height: "20svh",
-            mt: "1rem",
-          }}
-        >
-          <FlexBetween>
-            <Typography
-              variant="h5"
-              fontWeight={"bold"}
-              color={"gold"}
-              sx={{ margin: "0", padding: "0" }}
-            >
-              Number of withdrawal requests
-            </Typography>
-            <IconButton onClick={() => navigate("/requests")}>
-              <ExitToAppOutlined />
-            </IconButton>
-          </FlexBetween>
-          <Box>
-            <Typography variant="h4" fontWeight="bold" padding="0.4rem">
-              {requests?.numberOfRequests} Pending
-            </Typography>
-          </Box>
+      </Box>
+      <Box
+        sx={{
+          backgroundColor: theme.palette.background.alt,
+          borderRadius: "16px",
+          padding: "1rem 1.2rem",
+          width: "100%",
+          position: "relative",
+          display: "flex",
+          justifyContent: "center",
+          gap: "1rem",
+          flexDirection: "column",
+          height: "20svh",
+          mt: "1rem",
+        }}
+      >
+        <FlexBetween>
+          <Typography
+            variant="h5"
+            fontWeight={"bold"}
+            color={"gold"}
+            sx={{ margin: "0", padding: "0" }}
+          >
+            Number of withdrawal requests
+          </Typography>
+          <IconButton onClick={() => navigate("/requests")}>
+            <ExitToAppOutlined />
+          </IconButton>
+        </FlexBetween>
+        <Box>
+          <Typography variant="h4" fontWeight="bold" padding="0.4rem">
+            {requests?.numberOfRequests} Pending
+          </Typography>
         </Box>
-      </FlexBetween>
+      </Box>
       <Box
         sx={{
           backgroundColor: theme.palette.background.alt,
@@ -188,7 +194,11 @@ const Dashboard = () => {
             <ExitToAppOutlined />
           </IconButton>
         </FlexBetween>
-        <Box display={"grid"} gridTemplateColumns="repeat(3, 1fr)">
+        <Box
+          display={"grid"}
+          gridTemplateColumns="repeat(3, 1fr)"
+          gap={"0.5rem"}
+        >
           <Box>
             <Typography variant="h6">Total number of users</Typography>
             <Typography variant="h4" fontWeight="bold" padding="0.4rem">
@@ -232,7 +242,11 @@ const Dashboard = () => {
         >
           Investments
         </Typography>
-        <Box display={"grid"} gridTemplateColumns="repeat(3, 1fr)">
+        <Box
+          display={"grid"}
+          gridTemplateColumns="repeat(3, 1fr)"
+          gap={"0.5rem"}
+        >
           <Box>
             <Typography variant="h6">Total investments</Typography>
             <Typography variant="h4" fontWeight="bold" padding="0.4rem">
