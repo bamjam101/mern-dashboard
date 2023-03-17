@@ -40,7 +40,7 @@ const Withdraw = () => {
     event.preventDefault();
     try {
       let value = parseInt(amount);
-      if (profile.wallet - value <= 0) {
+      if (profile.wallet - value < 0) {
         handleOpen();
         setIsInsufficient(true);
         setIsModalShown(false);
@@ -52,9 +52,11 @@ const Withdraw = () => {
         }
         setIsModalShown(true);
       }
-      if (isModalShown && profile.wallet - value > 0) {
-        console.log("request sent");
-        const res = await axios.post(
+      if (isModalShown && profile.wallet - value >= 0) {
+        setIsModalShown(false);
+        setAmount("");
+        setResponse("Withdrawal Request Sent");
+        await axios.post(
           `${import.meta.env.VITE_APP_BASE_URL}/withdraw`,
           { amount: value },
           {
@@ -63,10 +65,6 @@ const Withdraw = () => {
             },
           }
         );
-        if (res) {
-          setAmount("");
-          setResponse("Withdrawal Request Sent");
-        }
       }
     } catch (error) {
       setError(error.response.data);

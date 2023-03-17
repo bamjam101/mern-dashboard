@@ -135,6 +135,7 @@ const Home = () => {
   const [isFixed, setIsFixed] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const token = getItemInLocalStorage("TOKEN");
+  const redirect = getItemInLocalStorage("REDIRECT");
   const isNonMediumDevice = useMediaQuery("(max-width: 900px)");
 
   const AnimatedBox = styled(Box)(({ theme }) => ({
@@ -455,7 +456,7 @@ const Home = () => {
                     backgroundColor: "white",
                   },
                 }}
-                onClick={() => navigate("/")}
+                onClick={() => navigate(redirect)}
               >
                 Go to profile
               </Button>

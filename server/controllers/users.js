@@ -152,13 +152,28 @@ const getAllUsers = async (req, res) => {
   }
 };
 
+const updateUser = async (req, res) => {
+  try {
+    if (req.user.role === "user")
+      return res.status(401).json("Not authorized to make such request.");
+
+    const user = await User.findById(req.params.id);
+    if (!user) return res.status(404).json("No such user found.");
+    const { pan, aadhar, role } = req.body;
+    if (user.role === "user") {
+      user.pan = pan;
+      user.aadhar = aadhar;
+      user.role = role;
+      await user.save();
+    } else return res.status(400).json("Cannot process request.");
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
 const deleteUser = async (req, res) => {
   try {
-    if (
-      req.user.role !== "superadmin" &&
-      req.user.role !== "admin" &&
-      req.user.role !== "partialAdmin"
-    )
+    if (req.user.role === "user")
       return res.status(401).json("Not authorized to make such request.");
     const user = await User.findById(req.params.id);
     if (!user) return res.status(404).json("No such user found.");
@@ -167,8 +182,8 @@ const deleteUser = async (req, res) => {
       if (!wallet) return res.status(404).json("User wallet not found.");
       user.isActive = false;
       wallet.active = false;
-      await wallet.delete();
-      await user.delete();
+      await wallet.save();
+      await user.save();
       const url = `${process.env.APP_BASE_URL}`;
       await sendEmail(user.email, "Account has been shut down.", url, "ceased");
     } else return res.status(400).json("Cannot process request.");
@@ -206,6 +221,7 @@ module.exports = {
   createUser,
   getMe,
   getUser,
+  updateUser,
   deleteUser,
   getAllUsers,
 };

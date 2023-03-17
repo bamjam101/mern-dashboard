@@ -14,10 +14,12 @@ import {
 } from "@mui/icons-material";
 import Modal from "../components/Modal";
 import ErrorText from "../components/ErrorText";
+import ResponseText from "../components/ResponseText";
 
 const Customers = () => {
   const [data, setData] = useState([]);
   const [error, setError] = useState("");
+  const [response, setResponse] = useState("");
   const [isNewUser, setIsNewUser] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [isDeleteMode, setIsDeleteMode] = useState(false);
@@ -54,16 +56,13 @@ const Customers = () => {
   async function handleEditSubmit() {
     try {
       if (updatingRow) {
-        const { _id, name, pan, aadhar, isApproved, role } = updatingRow;
-        await axios.patch(
-          `${import.meta.env.VITE_APP_BASE_URL}/registrant/${_id}`,
+        const { _id, pan, aadhar, role } = updatingRow;
+        const res = await axios.patch(
+          `${import.meta.env.VITE_APP_BASE_URL}/user/${_id}`,
           {
-            _id,
-            name,
             role,
             pan,
             aadhar,
-            isApproved,
           },
           {
             headers: {
@@ -71,6 +70,9 @@ const Customers = () => {
             },
           }
         );
+        if (res) {
+          setResponse("User profile was updated.");
+        }
       }
     } catch (error) {
       setError(error.response.data);
@@ -251,6 +253,7 @@ const Customers = () => {
       </Box>
       <Table columns={columns} data={data} isEditable={true} height={"75vh"} />
       {error && <ErrorText error={error} />}
+      {response && <ResponseText response={response} />}
       <footer>
         <AnimatePresence initial={false} mode="wait">
           {modalOpen && (

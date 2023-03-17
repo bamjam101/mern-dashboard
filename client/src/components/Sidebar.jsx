@@ -126,7 +126,11 @@ const Sidebar = ({
                   }}
                   to="/"
                 >
-                  <Box width="100%" display={"grid"} placeItems="center">
+                  <Box
+                    width="100%"
+                    display={"grid"}
+                    sx={{ placeItems: "center" }}
+                  >
                     <img
                       src="/rd-logo.png"
                       style={{ objectFit: "contain", width: "2rem" }}

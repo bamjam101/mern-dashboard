@@ -7,6 +7,7 @@ const ResponseText = ({ response }) => {
     setTimeout(() => {
       setVisibility(false);
     }, 5000);
+    setVisibility(true);
   }, []);
   return (
     <Box

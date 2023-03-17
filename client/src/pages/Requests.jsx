@@ -7,10 +7,12 @@ import { ApprovalOutlined, CancelOutlined } from "@mui/icons-material";
 import { Box, IconButton, useTheme } from "@mui/material";
 import { Link } from "react-router-dom";
 import ErrorText from "../components/ErrorText";
+import ResponseText from "../components/ResponseText";
 
 const Requests = () => {
   const theme = useTheme();
   const [error, setError] = useState("");
+  const [response, setResponse] = useState("");
   const [data, setData] = useState([]);
 
   async function handleApproval(row) {
@@ -24,9 +26,7 @@ const Requests = () => {
           },
         }
       );
-      setTimeout(() => {
-        fetchWithdrawalRequests();
-      }, 1000);
+      setResponse("Transaction Approved.");
     } catch (error) {
       setError(error.response.data);
     }
@@ -43,9 +43,7 @@ const Requests = () => {
           },
         }
       );
-      setTimeout(() => {
-        fetchWithdrawalRequests();
-      }, 1000);
+      setResponse("Transaction Rejected.");
     } catch (error) {
       setError(error.response.data);
     }
@@ -150,6 +148,7 @@ const Requests = () => {
       <Header title="Requests" subtitle="List Of Requests..." />
       <Table columns={columns} data={data} isEditable={false} height={"75vh"} />
       {error && <ErrorText error={error} />}
+      {response && <ResponseText response={response} />}
     </Box>
   );
 };

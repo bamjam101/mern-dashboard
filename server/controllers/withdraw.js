@@ -19,7 +19,8 @@ const postWithdrawalRequest = async (req, res) => {
         .json("Cannot make another request, Wait for last one to process.");
 
     const { amount, error } = req.body;
-    console.log(amount);
+    if (parseInt(amount) > wallet.balance)
+      return res.status(400).json("Invalid request.");
     if (error) return res.status(400).json("App error encountered");
     const request = await Request.create({
       transactionHolder: user.name,
@@ -54,20 +55,29 @@ const withdrawalApproval = async (req, res) => {
   try {
     if (req.user.role === "user")
       return res.status(401).json("Not authorized for making such request.");
+
+    const { error } = req.body;
+    if (error) return res.status(400).json("App error encountered");
     const user = await User.findById(req.params.id);
+    const wallet = await Wallet.findOne({ userId: user._id });
     if (!user) return res.status(404).json("No Such User.");
 
     const pending = await Request.findOne({
       requestedBy: user._id,
       status: "pending",
     });
-
+    console.log(wallet.balance);
+    const transactionAmount = pending.transactionAmount;
+    if (wallet.balance - transactionAmount < 200) {
+      wallet.active = false;
+    }
+    const newBalance = wallet.balance - parseInt(transactionAmount);
     pending.status = "approved";
-
-    const { error } = req.body;
-    if (error) return res.status(400).json("App error encountered");
+    wallet.balance = parseInt(newBalance);
+    console.log(newBalance);
 
     await pending.save();
+    await wallet.save();
   } catch (error) {
     console.log(error);
     res.status(500).json(error);

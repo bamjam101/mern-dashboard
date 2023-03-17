@@ -51,7 +51,7 @@ const getWithdrawalRequestStats = async (req, res) => {
   try {
     if (req.user.role === "user")
       return res.status(401).json("Not authorized to make such request.");
-    const requests = await Request.find();
+    const requests = await Request.find({ status: "pending" });
     const numberOfRequests = requests.length;
     res.status(200).json({ numberOfRequests });
   } catch (error) {

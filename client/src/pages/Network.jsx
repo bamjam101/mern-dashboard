@@ -82,7 +82,7 @@ const Network = () => {
         p="0 2.5rem"
         height={"10vh"}
         display="grid"
-        placeItems="center"
+        sx={{ placeItems: "center" }}
       >
         <FlexBetween>
           {!isAdmin ? (
