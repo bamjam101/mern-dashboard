@@ -9,6 +9,8 @@ import {
   Container,
   Grid,
   IconButton,
+  List,
+  ListItem,
   Modal,
   TextField,
   Typography,
@@ -33,7 +35,7 @@ const Withdraw = () => {
   const [isInsufficient, setIsInsufficient] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const { profile, isLoading } = useSelector((state) => state.global);
+  const { profile, isLoading, levels } = useSelector((state) => state.global);
   const [amount, setAmount] = useState("");
 
   const putWithdrawalRequest = async (event) => {
@@ -84,7 +86,6 @@ const Withdraw = () => {
           borderRadius: "16px",
           padding: "1rem 1.2rem",
           width: "100%",
-          height: "40%",
           flex: "1",
           my: "2rem",
         }}
@@ -101,6 +102,96 @@ const Withdraw = () => {
         <Typography variant="h4" fontWeight="bold" padding="0.4rem">
           ~RD {profile?.wallet?.toString()}
         </Typography>
+        <FlexBetween>
+          <Box
+            sx={{
+              width: "100%",
+              position: "relative",
+              display: "flex",
+              justifyContent: "center",
+              gap: "1rem",
+              flexDirection: "column",
+              height: "10svh",
+              mt: "1rem",
+            }}
+          >
+            <FlexBetween>
+              <Typography
+                variant="h5"
+                fontWeight={"bold"}
+                color={"gold"}
+                sx={{ margin: "0", padding: "0" }}
+              >
+                Interest Earned Monthly
+              </Typography>
+            </FlexBetween>
+            <Box>
+              <Typography
+                variant="h4"
+                sx={{ fontWeight: "bold" }}
+                padding="0.4rem"
+              >
+                ~RD {`${(200 * 20) / 100 || ""}`}
+              </Typography>
+            </Box>
+          </Box>
+        </FlexBetween>
+      </Box>
+
+      <Box
+        sx={{
+          backgroundColor: theme.palette.background.alt,
+          borderRadius: "16px",
+          padding: "1rem 1.2rem",
+          width: "100%",
+          flex: "1",
+          my: "2rem",
+        }}
+      >
+        <FlexBetween>
+          <Typography
+            variant="h5"
+            fontWeight={"bold"}
+            color={"gold"}
+            sx={{ mb: "0.5rem", padding: "0" }}
+          >
+            Profit from connections
+          </Typography>
+        </FlexBetween>
+        <Box>
+          <Typography variant="h5">
+            <FlexBetween>
+              <ListItem>Level 1</ListItem>
+              <ListItem sx={{ color: "gold" }}>
+                ~RD {(levels?.one * 200 * 10) / 100 || "0"}
+              </ListItem>
+            </FlexBetween>
+            <FlexBetween>
+              <ListItem>Level 2</ListItem>
+              <ListItem sx={{ color: "gold" }}>
+                ~RD {(levels?.two * 200 * 10) / 100 || "0"}
+              </ListItem>
+            </FlexBetween>
+            <FlexBetween>
+              <ListItem>Level 3</ListItem>
+              <ListItem sx={{ color: "gold" }}>
+                ~RD {(levels?.three * 200 * 10) / 100 || "0"}
+              </ListItem>
+            </FlexBetween>
+            <FlexBetween>
+              <ListItem>Level 4</ListItem>
+              <ListItem sx={{ color: "gold" }}>
+                ~RD {(levels?.four * 200 * 10) / 100 || "0"}
+              </ListItem>
+            </FlexBetween>
+            <FlexBetween>
+              <ListItem>Level 5</ListItem>
+              <ListItem sx={{ color: "gold" }}>
+                ~RD {(levels?.five * 200 * 10) / 100 || "0"}
+              </ListItem>
+            </FlexBetween>
+          </Typography>
+        </Box>
       </Box>
       <form
         sx={{
@@ -139,7 +230,6 @@ const Withdraw = () => {
           </Grid>
         </Grid>
       </form>
-
       {error && <ErrorText error={error} />}
       <ResponseText response={response} />
       <div>

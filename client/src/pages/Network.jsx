@@ -16,14 +16,14 @@ const Network = () => {
   const [isTreeReady, setIsTreeReady] = useState(false);
   const { isAdmin } = useSelector((state) => state.global);
   const [error, setError] = useState("");
-  const [data, setData] = useState([]);
+  const [data, setData] = useState(null);
   const dispatch = useDispatch();
 
   const params = useParams();
 
   const getUserNetwork = async () => {
     try {
-      const { data: response } = await axios.get(
+      const { data } = await axios.get(
         `${import.meta.env.VITE_APP_BASE_URL}/network/${params.id}`,
         {
           headers: {
@@ -32,7 +32,7 @@ const Network = () => {
         }
       );
 
-      setData(response.data);
+      setData(data);
       console.log(data);
     } catch (error) {
       setError(error.response.data);
@@ -41,7 +41,7 @@ const Network = () => {
 
   const getMyNetwork = async () => {
     try {
-      const { data: response } = await axios.get(
+      const { data } = await axios.get(
         `${import.meta.env.VITE_APP_BASE_URL}/network/me`,
         {
           headers: {
@@ -49,26 +49,12 @@ const Network = () => {
           },
         }
       );
-      setData(response.data);
+      setData(data);
       console.log(data);
     } catch (error) {
       setError(error.response.data);
     }
   };
-
-  useEffect(() => {
-    dispatch(
-      setLevels({
-        zero: data[0],
-        one: data[1],
-        two: data[2],
-        three: data[3],
-        four: data[4],
-        five: data[5],
-      })
-    );
-    setIsTreeReady(true);
-  }, [data]);
 
   useEffect(() => {
     if (isAdmin) {
@@ -80,6 +66,10 @@ const Network = () => {
   return (
     <Box>
       <Box
+        position={"fixed"}
+        left="0"
+        top="0"
+        zIndex="10000"
         p="0 2.5rem"
         height={"10vh"}
         sx={{
@@ -98,8 +88,17 @@ const Network = () => {
           </IconButton>
         </FlexBetween>
       </Box>
-      <Box sx={{ overflowX: "scroll" }} width="100svw" height="90svh">
-        {isTreeReady ? <Tree /> : null}
+      <Box
+        sx={{
+          position: "absolute",
+          left: "0",
+          bottom: "0",
+          minWidth: "100svw",
+          minHeight: "90svh",
+        }}
+        width="auto"
+      >
+        {data && <Tree sx={{ width: "100%", height: "100%" }} data={data} />}
       </Box>
       {error ? <ErrorText error={error} /> : null}
     </Box>

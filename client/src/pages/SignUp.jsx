@@ -26,6 +26,7 @@ import ErrorText from "../components/ErrorText";
 const Register = () => {
   const navigate = useNavigate();
   const userId = getItemInLocalStorage("TOKEN");
+  const redirect = getItemInLocalStorage("REDIRECT");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -73,7 +74,7 @@ const Register = () => {
 
   useEffect(() => {
     if (userId) {
-      navigate("/dashboard");
+      navigate(redirect);
     }
   }, []);
   return (

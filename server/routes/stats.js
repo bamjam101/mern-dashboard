@@ -4,7 +4,7 @@ const {
   getInvestmentStats,
   getWithdrawalRequestStats,
   getRegistrantsStats,
-  getTransactions,
+  getMyNetworkLength,
 } = require("./../controllers/stats");
 const protect = require("../middlewares/jwtAuth");
 
@@ -14,6 +14,6 @@ router.get("/users", protect, getUserStats);
 router.get("/investments", protect, getInvestmentStats);
 router.get("/withdrawal-requests", protect, getWithdrawalRequestStats);
 router.get("/registrants", protect, getRegistrantsStats);
-router.get("/transactions", protect, getTransactions);
+router.get("/level-length", protect, getMyNetworkLength);
 
 module.exports = router;

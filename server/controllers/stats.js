@@ -74,15 +74,36 @@ const getRegistrantsStats = async (req, res) => {
   }
 };
 
-const getTransactions = async (req, res) => {
+const getMyNetworkLength = async (req, res) => {
   try {
-    if (req.user.role === "user")
-      return res.status(401).json("Not authorized to make such request.");
-    const transactions = await Request.find({ status: { $ne: "pending" } });
-    console.log(transactions);
-    if (!transactions) return res.status(404).json("No transactions found.");
-    res.status(200).json(transactions);
+    const level = 5;
+    const levelLengths = [];
+    const queue = [];
+    let currentLevel = 0;
+    const networkOwner = await User.findById(req.user._id);
+    if (!networkOwner) return res.status(401).json("Network doesn't exist.");
+
+    queue.push(networkOwner._id);
+    while (queue.length && currentLevel <= level) {
+      const size = queue.length;
+      let length = 0;
+      for (let i = 0; i < size; i++) {
+        const userId = queue.shift();
+        const newUser = await User.findById(userId);
+
+        newUser.referralLinks.forEach((referrals) => {
+          if (referrals.isUsed) {
+            length++;
+            queue.push(referrals._id);
+          }
+        });
+      }
+      levelLengths.push(length);
+      currentLevel++;
+    }
+    res.status(200).json(levelLengths);
   } catch (error) {
+    console.log(error);
     res.status(500).json(error);
   }
 };
@@ -92,5 +113,5 @@ module.exports = {
   getInvestmentStats,
   getWithdrawalRequestStats,
   getRegistrantsStats,
-  getTransactions,
+  getMyNetworkLength,
 };

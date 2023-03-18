@@ -1,236 +1,95 @@
-import React from "react";
-import { Avatar, List, ListItem, Typography, useTheme } from "@mui/material";
-import { useSelector } from "react-redux";
+import * as React from "react";
+import TreeView from "@mui/lab/TreeView";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import TreeItem from "@mui/lab/TreeItem";
+import { Avatar, ListItem, Typography, useTheme } from "@mui/material";
+import { ArrowDropDown } from "@mui/icons-material";
 
-const Tree = () => {
+const Tree = ({ data }) => {
+  console.log(data);
   const theme = useTheme();
-  const levels = useSelector((state) => state.global.levels);
+  const renderTree = (nodes) => (
+    <TreeItem key={nodes.id} nodeId={nodes.id}>
+      <ListItem
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          flexDirection: "column",
+          gap: "0.4rem",
+          padding: "0",
+          margin: "0",
+          borderRadius: "1rem",
+          backgroundColor: theme.palette.primary[400],
+        }}
+      >
+        <Avatar
+          src="/profile.png"
+          alt="user-profile"
+          sx={{ width: "3rem", height: "3rem" }}
+        ></Avatar>
+        <Typography
+          paragraph
+          fontSize={"0.6rem"}
+          textAlign="center"
+          fontWeight={"bold"}
+        >
+          {nodes?.name}
+        </Typography>
+      </ListItem>
+      {Array.isArray(nodes.children)
+        ? nodes.children.map((node) => renderTree(node))
+        : null}
+    </TreeItem>
+  );
+
   return (
-    <List width={"100%"} sx={{ display: "flex" }}>
-      {levels?.zero?.map((node) => {
-        return (
-          <ListItem
-            key={node?.id}
-            sx={{
-              display: "flex",
-              width: "100%",
-              justifyContent: "center",
-              alignItems: "center",
-              flexDirection: "column",
-              gap: "0.4rem",
-              borderRadius: "1rem",
-              backgroundColor: theme.palette.primary[700],
-            }}
-          >
-            <Avatar
-              src="/profile.png"
-              alt="user-profile"
-              sx={{ width: "3rem", height: "3rem" }}
-            ></Avatar>
-            <Typography
-              paragraph
-              fontSize={"0.6rem"}
-              textAlign="center"
-              fontWeight={"bold"}
-            >
-              {node?.name}
-            </Typography>
-
-            <List width={"100%"} sx={{ display: "flex", gap: "0.5rem" }}>
-              {levels?.one?.map((node) => {
-                return (
-                  <ListItem
-                    key={node.id}
-                    sx={{
-                      display: "flex",
-                      width: "100%",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      flexDirection: "column",
-                      gap: "0.4rem",
-                      borderRadius: "1rem",
-                      backgroundColor: theme.palette.primary[600],
-                    }}
-                  >
-                    <Avatar
-                      src="/profile.png"
-                      alt="user-profile"
-                      sx={{ width: "3rem", height: "3rem" }}
-                    ></Avatar>
-                    <Typography
-                      paragraph
-                      textAlign={"center"}
-                      fontSize={"0.6rem"}
-                      fontWeight={"bold"}
-                    >
-                      {node?.name}
-                    </Typography>
-
-                    <List
-                      width={"100%"}
-                      sx={{ display: "flex", gap: "0.5rem" }}
-                    >
-                      {levels?.two?.map((node) => {
-                        return (
-                          <ListItem
-                            key={node.id}
-                            sx={{
-                              display: "flex",
-                              width: "100%",
-                              justifyContent: "center",
-                              alignItems: "center",
-                              flexDirection: "column",
-                              gap: "0.4rem",
-                              borderRadius: "1rem",
-                              backgroundColor: theme.palette.primary[500],
-                            }}
-                          >
-                            <Avatar
-                              src="/profile.png"
-                              alt="user-profile"
-                              sx={{ width: "3rem", height: "3rem" }}
-                            ></Avatar>
-                            <Typography
-                              paragraph
-                              textAlign={"center"}
-                              fontSize={"0.6rem"}
-                              fontWeight={"bold"}
-                            >
-                              {node?.name}
-                            </Typography>
-                            <List
-                              width={"100%"}
-                              sx={{ display: "flex", gap: "0.5rem" }}
-                            >
-                              {levels?.three?.map((node) => {
-                                return (
-                                  <ListItem
-                                    key={node.id}
-                                    sx={{
-                                      display: "flex",
-                                      width: "100%",
-                                      justifyContent: "center",
-                                      alignItems: "center",
-                                      flexDirection: "column",
-                                      gap: "0.4rem",
-                                      borderRadius: "1rem",
-                                      backgroundColor:
-                                        theme.palette.primary[400],
-                                    }}
-                                  >
-                                    <Avatar
-                                      src="/profile.png"
-                                      alt="user-profile"
-                                      sx={{ width: "3rem", height: "3rem" }}
-                                    ></Avatar>
-                                    <Typography
-                                      paragraph
-                                      textAlign={"center"}
-                                      fontSize={"0.6rem"}
-                                      fontWeight={"bold"}
-                                    >
-                                      {node?.name}
-                                    </Typography>
-                                    <List
-                                      width={"100%"}
-                                      sx={{ display: "flex", gap: "0.5rem" }}
-                                    >
-                                      {levels?.four?.map((node) => {
-                                        return (
-                                          <ListItem
-                                            key={node.id}
-                                            sx={{
-                                              display: "flex",
-                                              width: "100%",
-                                              justifyContent: "center",
-                                              alignItems: "center",
-                                              flexDirection: "column",
-                                              gap: "0.4rem",
-                                              borderRadius: "1rem",
-                                              backgroundColor:
-                                                theme.palette.primary[300],
-                                            }}
-                                          >
-                                            <Avatar
-                                              src="/profile.png"
-                                              alt="user-profile"
-                                              sx={{
-                                                width: "3rem",
-                                                height: "3rem",
-                                              }}
-                                            ></Avatar>
-                                            <Typography
-                                              paragraph
-                                              textAlign={"center"}
-                                              fontSize={"0.6rem"}
-                                              fontWeight={"bold"}
-                                            >
-                                              {node?.name}
-                                            </Typography>
-                                            <List
-                                              width={"100%"}
-                                              sx={{
-                                                display: "flex",
-                                                gap: "0.5rem",
-                                              }}
-                                            >
-                                              {levels?.five?.map((node) => {
-                                                return (
-                                                  <ListItem
-                                                    key={node.id}
-                                                    sx={{
-                                                      display: "flex",
-                                                      width: "100%",
-                                                      justifyContent: "center",
-                                                      alignItems: "center",
-                                                      flexDirection: "column",
-                                                      gap: "0.4rem",
-                                                      borderRadius: "1rem",
-                                                      backgroundColor:
-                                                        theme.palette
-                                                          .primary[200],
-                                                    }}
-                                                  >
-                                                    <Avatar
-                                                      src="/profile.png"
-                                                      alt="user-profile"
-                                                      sx={{
-                                                        width: "3rem",
-                                                        height: "3rem",
-                                                      }}
-                                                    ></Avatar>
-                                                    <Typography
-                                                      paragraph
-                                                      textAlign={"center"}
-                                                      fontSize={"0.6rem"}
-                                                      fontWeight={"bold"}
-                                                    >
-                                                      {node?.name}
-                                                    </Typography>
-                                                  </ListItem>
-                                                );
-                                              })}
-                                            </List>
-                                          </ListItem>
-                                        );
-                                      })}
-                                    </List>
-                                  </ListItem>
-                                );
-                              })}
-                            </List>
-                          </ListItem>
-                        );
-                      })}
-                    </List>
-                  </ListItem>
-                );
-              })}
-            </List>
-          </ListItem>
-        );
-      })}
-    </List>
+    <TreeView
+      aria-label="rich object"
+      defaultExpanded={["open"]}
+      defaultExpandIcon={<ArrowDropDown />}
+      defaultCollapseIcon={<ExpandMoreIcon />}
+      sx={{
+        height: "90svh",
+        flexGrow: 1,
+        overflowY: "auto",
+        display: "grid",
+        placeItems: "center",
+        "& .MuiTreeItem-root": {
+          width: "6rem",
+          height: "auto",
+          position: "relative",
+        },
+        "& .MuiTreeItem-content": {
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          m: 0,
+          p: 0,
+          flexDirection: "column",
+        },
+        "& .MuiListItem-root": {
+          display: "flex",
+          flexDirection: "column",
+        },
+        "& .MuiCollapse-vertical": {
+          display: "flex",
+          flexDirection: "column",
+        },
+        "& .MuiCollapse-root": {
+          display: "flex",
+          padding: 0,
+          margin: 0,
+          "& .MuiCollapse-wrapperInner": {
+            display: "flex",
+            flexDirection: "column",
+            gap: "1rem",
+          },
+        },
+      }}
+    >
+      {data && renderTree(data)}
+    </TreeView>
   );
 };
 

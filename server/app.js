@@ -7,6 +7,7 @@ const referralRoutes = require("./routes/referrals");
 const withdrawRoutes = require("./routes/withdraw");
 const walletRoutes = require("./routes/wallet");
 const statsRoutes = require("./routes/stats");
+const transactionRoutes = require("./routes/transactions");
 
 const dotenv = require("dotenv");
 const express = require("express");
@@ -48,6 +49,7 @@ app.use("/recovery", recoveryRoutes);
 app.use("/withdraw", withdrawRoutes);
 app.use("/wallet", walletRoutes);
 app.use("/stat", statsRoutes);
+app.use("/transaction", transactionRoutes);
 
 // Mongoose setup
 const PORT = process.env.Port || 5001;

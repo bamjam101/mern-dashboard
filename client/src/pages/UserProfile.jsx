@@ -19,7 +19,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
-import { setProfile } from "../state";
+import { setLevels, setProfile } from "../state";
 import { getItemInLocalStorage } from "../utlis";
 import ErrorText from "../components/ErrorText";
 import Table from "../components/Table";
@@ -32,6 +32,7 @@ const UserProfile = () => {
   const { userId, isAdmin, isLoading, profile } = useSelector(
     (state) => state.global
   );
+  const [data, setData] = useState([]);
   const [error, setError] = useState("");
   const [response, setResponse] = useState("");
   const [userProfile, setUserProfile] = useState({});
@@ -180,6 +181,7 @@ const UserProfile = () => {
       fetchMyProfile();
       if (profile.isApproved) {
         fetchMyWallet();
+        getMyNetworkLength();
       }
     }
   }, [isLoading]);
@@ -187,6 +189,34 @@ const UserProfile = () => {
   useEffect(() => {
     dispatch(setProfile({ ...profile, wallet: wallet?.balance }));
   }, [wallet]);
+
+  const getMyNetworkLength = async () => {
+    try {
+      const { data } = await axios.get(
+        `${import.meta.env.VITE_APP_BASE_URL}/stat/level-length`,
+        {
+          headers: {
+            Authorization: `Bearer ${getItemInLocalStorage("TOKEN")}`,
+          },
+        }
+      );
+      setData(data);
+    } catch (error) {
+      setError(error.response.data);
+    }
+  };
+
+  useEffect(() => {
+    dispatch(
+      setLevels({
+        one: data[0],
+        two: data[1],
+        three: data[2],
+        four: data[3],
+        five: data[4],
+      })
+    );
+  }, [data]);
 
   return (
     <Container component={"main"} width="100%">
@@ -297,16 +327,6 @@ const UserProfile = () => {
                     <MoneyOutlined /> Withdraw
                   </Button>
                 )}
-                <Button
-                  sx={{
-                    fontWeight: "bold",
-                    backgroundColor: theme.palette.primary[500],
-                    color: theme.palette.primary[100],
-                    opacity: "0.8",
-                  }}
-                >
-                  <WalletOutlined /> Details
-                </Button>
               </Box>
             </Box>
             {isAdmin ? (
