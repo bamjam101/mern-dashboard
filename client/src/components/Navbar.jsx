@@ -24,6 +24,7 @@ import {
 } from "@mui/material";
 import FlexBetween from "./FlexBetween";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { getItemInLocalStorage } from "../utlis";
 
 const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
   const location = useLocation();
@@ -43,8 +44,8 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
   };
 
   const handleLogout = () => {
-    localStorage.clear();
     dispatch(setLogout());
+    localStorage.clear();
     navigate("/login");
   };
 

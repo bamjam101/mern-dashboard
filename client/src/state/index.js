@@ -45,7 +45,19 @@ export const globalSlice = createSlice({
       state.isLoading = boolean.payload;
     },
     setLogout: (state) => {
-      state = initialState;
+      state.userId = "";
+      state.isAdmin = false;
+      state.profile = {};
+      state.role = "user";
+      state.levels = {
+        zero: [],
+        one: [],
+        two: [],
+        three: [],
+        four: [],
+        five: [],
+      };
+      state.isLoading = true;
     },
   },
 });

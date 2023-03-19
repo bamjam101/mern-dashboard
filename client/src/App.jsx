@@ -35,15 +35,6 @@ const ProtectedRoute = ({ children }) => {
 function App() {
   const mode = useSelector((state) => state.global.mode);
   const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
-  const { isLoading, isAdmin } = useSelector((state) => state.global);
-  const [routeVisibility, setRouteVisibility] = useState(false);
-  useEffect(() => {
-    if (!isLoading) {
-      if (isAdmin) {
-        setRouteVisibility(true);
-      }
-    }
-  }, [isLoading]);
   return (
     <div className="app">
       <BrowserRouter>
@@ -51,9 +42,7 @@ function App() {
           <CssBaseline />
           <Routes>
             <Route element={<Layout />}>
-              {setRouteVisibility && (
-                <Route path="/" element={<Navigate to="/dashboard" />} />
-              )}
+              <Route path="/" element={<Navigate to="/dashboard" />} />
               <Route
                 path="/dashboard"
                 element={

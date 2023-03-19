@@ -5,11 +5,11 @@ import Header from "../components/Header";
 import axios from "axios";
 import { getItemInLocalStorage } from "../utlis";
 import ErrorText from "../components/ErrorText";
-import Tree from "../components/Tree";
 import { setLevels } from "../state";
 import { useNavigate, useParams } from "react-router-dom";
 import { CloseOutlined } from "@mui/icons-material";
 import FlexBetween from "../components/FlexBetween";
+import Chart from "../components/Chart";
 
 const Network = () => {
   const navigate = useNavigate();
@@ -33,7 +33,6 @@ const Network = () => {
       );
 
       setData(data);
-      console.log(data);
     } catch (error) {
       setError(error.response.data);
     }
@@ -50,7 +49,6 @@ const Network = () => {
         }
       );
       setData(data);
-      console.log(data);
     } catch (error) {
       setError(error.response.data);
     }
@@ -98,7 +96,8 @@ const Network = () => {
         }}
         width="auto"
       >
-        {data && <Tree sx={{ width: "100%", height: "100%" }} data={data} />}
+        {/* {data && <Tree sx={{ width: "100%", height: "100%" }} data={data} />} */}
+        {data && <Chart data={[data]} />}
       </Box>
       {error ? <ErrorText error={error} /> : null}
     </Box>

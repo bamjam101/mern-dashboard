@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Box, useMediaQuery } from "@mui/material";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
-import { getItemInLocalStorage } from "../utlis";
+import { getItemInLocalStorage, setItemInLocalStorage } from "../utlis";
 import axios from "axios";
 import {
   setAdmin,
@@ -17,7 +17,9 @@ import ErrorText from "../components/ErrorText";
 
 const Layout = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [error, setError] = useState("");
+  const redirect = getItemInLocalStorage("REDIRECT");
   const fetchUser = async () => {
     try {
       const { data: result } = await axios.get(
@@ -46,10 +48,11 @@ const Layout = () => {
       })
     );
     dispatch(setUserRole(result.role));
-    if (result?.role === "superadmin") {
+    if (result?.role === "superadmin" || result?.role === "admin") {
       dispatch(setAdmin(true));
-    } else if (result?.role === "admin") {
-      dispatch(setAdmin(true));
+      setItemInLocalStorage("REDIRECT", "/dashboard");
+    } else {
+      setItemInLocalStorage("REDIRECT", "/user");
     }
     dispatch(setLoading(false));
   }
@@ -59,6 +62,8 @@ const Layout = () => {
 
   useEffect(() => {
     fetchUser();
+    if (!redirect) return;
+    navigate(redirect);
   }, []);
   return (
     <Box

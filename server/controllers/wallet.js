@@ -27,7 +27,6 @@ const getUserWallet = async (req, res) => {
       return res
         .status(401)
         .json("Invalid request. Please relogin to fix the issue.");
-    console.log(req.params.id);
     const wallet = await Wallet.findOne({ userId: user._id });
     if (!wallet) return res.status(404).json("Wallet not found.");
     res.status(200).json(wallet);
