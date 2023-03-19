@@ -1,26 +1,24 @@
-import { CopyAllOutlined, ExitToAppOutlined } from "@mui/icons-material";
+import { ExitToAppOutlined } from "@mui/icons-material";
 import {
-  Avatar,
   Box,
   IconButton,
   Typography,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
-import Header from "../components/Header";
-import React, { useEffect, useState } from "react";
+import React, { lazy, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getItemInLocalStorage } from "../utlis";
-import ErrorText from "../components/ErrorText";
-import FlexBetween from "../components/FlexBetween";
+const Header = lazy(() => import("../components/Header"));
+const ErrorText = lazy(() => import("../components/ErrorText"));
+const FlexBetween = lazy(() => import("../components/FlexBetween"));
 
 const Dashboard = () => {
   const theme = useTheme();
   const navigate = useNavigate();
-  const { isAdmin, isLoading } = useSelector((state) => state.global);
+  const { isLoading } = useSelector((state) => state.global);
   const [error, setError] = useState("");
   const [users, setUsers] = useState({});
   const [investments, setInvestments] = useState({});

@@ -8,7 +8,7 @@ const Card = ({ data }) => {
         <Fragment key={item?.name}>
           <li
             style={{
-              borderRadius: "2rem",
+              borderRadius: "1rem",
               backgroundColor: theme.palette.primary[400],
             }}
           >

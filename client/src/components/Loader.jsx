@@ -1,10 +1,19 @@
 import CircularProgress from "@mui/material/CircularProgress";
-import { Backdrop } from "@mui/material";
+import { Backdrop, useTheme } from "@mui/material";
 
 const Loader = () => {
+  const theme = useTheme();
   return (
-    <Backdrop sx={{ color: "#fff", zIndex: "1000" }}>
-      <CircularProgress color="inherit" />
+    <Backdrop
+      open
+      sx={{
+        backgroundColor: theme.palette.background.default,
+        zIndex: "1000",
+        display: "grid",
+        placeItems: "center",
+      }}
+    >
+      <CircularProgress sx={{ color: theme.palette.secondary[400] }} />
     </Backdrop>
   );
 };

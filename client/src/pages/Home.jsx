@@ -5,7 +5,6 @@ import {
   Button,
   Typography,
   styled,
-  Grid,
   Stack,
   useTheme,
   AppBar,
@@ -17,7 +16,6 @@ import { keyframes } from "@mui/system";
 import { motion, useAnimation } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 
-//image that needs to be removed
 import headerImg from "../assets/rd-theme.png";
 import imgDetail from "../assets/profit.svg";
 import imgDetail2 from "../assets/descriptive.svg";
@@ -25,7 +23,6 @@ import imgDetail3 from "../assets/knowledge.svg";
 import FlexBetween from "../components/FlexBetween";
 import { getItemInLocalStorage } from "../utlis";
 import GlowBox from "../components/GlowBox";
-import { useSelector } from "react-redux";
 
 const floating = keyframes`
     0% { transform: translate(0,  0px) scale(1); }

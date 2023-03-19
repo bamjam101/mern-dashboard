@@ -2,7 +2,6 @@ import {
   CopyAllOutlined,
   JoinInnerOutlined,
   MoneyOutlined,
-  WalletOutlined,
 } from "@mui/icons-material";
 import {
   Avatar,
@@ -14,11 +13,10 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { setLevels, setProfile } from "../state";
 import { getItemInLocalStorage } from "../utlis";
 import ErrorText from "../components/ErrorText";

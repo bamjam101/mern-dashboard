@@ -12,12 +12,9 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import React, { useState } from "react";
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { setAdmin, setProfile, setUser, setUserRole } from "../state";
-import { getItemInLocalStorage, setItemInLocalStorage } from "../utlis";
+import { setItemInLocalStorage } from "../utlis";
 import ErrorText from "../components/ErrorText";
 
 const Login = () => {

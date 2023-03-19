@@ -1,17 +1,16 @@
 import { Typography, Box, useTheme, IconButton, Button } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
 import { AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-import Header from "../components/Header";
-import Table from "../components/Table";
 import { getItemInLocalStorage } from "../utlis";
 import {
   AddCircleOutline,
   DeleteOutlineOutlined,
   EditOutlined,
 } from "@mui/icons-material";
+import Header from "../components/Header";
+import Table from "../components/Table";
 import Modal from "../components/Modal";
 import ErrorText from "../components/ErrorText";
 import ResponseText from "../components/ResponseText";

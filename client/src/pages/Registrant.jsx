@@ -1,5 +1,4 @@
-import { Typography, Box, useTheme, IconButton } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
+import { Box, useTheme, IconButton } from "@mui/material";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Header from "../components/Header";

@@ -5,7 +5,6 @@ import Header from "../components/Header";
 import axios from "axios";
 import { getItemInLocalStorage } from "../utlis";
 import ErrorText from "../components/ErrorText";
-import { setLevels } from "../state";
 import { useNavigate, useParams } from "react-router-dom";
 import { CloseOutlined } from "@mui/icons-material";
 import FlexBetween from "../components/FlexBetween";
@@ -96,7 +95,6 @@ const Network = () => {
         }}
         width="auto"
       >
-        {/* {data && <Tree sx={{ width: "100%", height: "100%" }} data={data} />} */}
         {data && <Chart data={[data]} />}
       </Box>
       {error ? <ErrorText error={error} /> : null}
