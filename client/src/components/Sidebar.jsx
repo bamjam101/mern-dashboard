@@ -15,8 +15,6 @@ import {
   useTheme,
 } from "@mui/material";
 import {
-  AdminPanelSettingsOutlined,
-  ChevronLeft,
   ChevronRightOutlined,
   CloseOutlined,
   DataObjectOutlined,
@@ -26,11 +24,7 @@ import {
   ReceiptLongOutlined,
   RequestPageOutlined,
   SettingsOutlined,
-  ShoppingCartOutlined,
-  TodayOutlined,
-  TrendingUpOutlined,
 } from "@mui/icons-material";
-import { useSelector } from "react-redux";
 
 const navItems = [
   {
@@ -60,14 +54,6 @@ const navItems = [
   {
     text: "Transactions",
     icon: <DataObjectOutlined />,
-  },
-  {
-    text: "Management",
-    icon: null,
-  },
-  {
-    text: "Admin",
-    icon: <AdminPanelSettingsOutlined />,
   },
 ];
 

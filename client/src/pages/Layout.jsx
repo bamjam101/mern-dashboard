@@ -1,9 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { Box, useMediaQuery } from "@mui/material";
 import { Outlet, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
+import Loader from "../components/Loader";
+
 import { getItemInLocalStorage, setItemInLocalStorage } from "../utlis";
 import axios from "axios";
 import {
@@ -81,18 +84,20 @@ const Layout = () => {
           setIsSidebarOpen={setIsSidebarOpen}
         />
       ) : null}
-      <Box component="header" sx={{ width: "100%" }}>
-        <Navbar
-          user={state || {}}
-          isSidebarOpen={isSidebarOpen}
-          setIsSidebarOpen={setIsSidebarOpen}
-        />
-        {state.isAdmin ? null : (
-          <Box sx={{ height: "8vh", width: "100%" }}></Box>
-        )}
-        <Outlet />
-        {error && <ErrorText error={error} />}
-      </Box>
+      <Suspense fallback={<Loader />}>
+        <Box component="header" sx={{ width: "100%" }}>
+          <Navbar
+            user={state || {}}
+            isSidebarOpen={isSidebarOpen}
+            setIsSidebarOpen={setIsSidebarOpen}
+          />
+          {state.isAdmin ? null : (
+            <Box sx={{ height: "8vh", width: "100%" }}></Box>
+          )}
+          <Outlet />
+          {error && <ErrorText error={error} />}
+        </Box>
+      </Suspense>
     </Box>
   );
 };

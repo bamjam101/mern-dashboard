@@ -7,13 +7,13 @@ const Loader = () => {
     <Backdrop
       open
       sx={{
-        backgroundColor: theme.palette.background.default,
+        backgroundColor: "rgba(0,0,0,0.5)",
         zIndex: "1000",
         display: "grid",
         placeItems: "center",
       }}
     >
-      <CircularProgress sx={{ color: theme.palette.secondary[400] }} />
+      <CircularProgress sx={{ color: "gold" }} />
     </Backdrop>
   );
 };
